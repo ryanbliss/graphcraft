@@ -90,7 +90,10 @@ test("navigates physical district titles, breadcrumbs, and entrances", async ({
     "aria-pressed",
     "true",
   );
-  await page.keyboard.press("Escape");
+  await page.evaluate(() => document.exitPointerLock());
+  await expect
+    .poll(() => page.evaluate(() => document.pointerLockElement === null))
+    .toBe(true);
   await page.locator('[data-mode="survey"]').click();
   expect(errors).toEqual([]);
 });
@@ -193,7 +196,10 @@ test("enters the preview through a building and only shows its label on hover", 
   await expect(page.locator(".scene-caption")).toBeHidden();
   await expect(page.locator(".landing-footer")).toBeHidden();
   await expect(page.locator(".bottom-hud")).toBeVisible();
-  await page.keyboard.press("Escape");
+  await page.evaluate(() => document.exitPointerLock());
+  await expect
+    .poll(() => page.evaluate(() => document.pointerLockElement === null))
+    .toBe(true);
   await page.locator('[data-mode="survey"]').click();
   await expect(page.locator(".landing")).toBeHidden();
   await expect(page.locator(".world-label")).toHaveCount(0);
@@ -235,6 +241,7 @@ test("explores, searches, and changes views", async ({ page }) => {
   await page.getByRole("button", { name: "Controls", exact: true }).click();
   await expect(page.locator("#help-dialog")).toBeVisible();
   await page.keyboard.press("Escape");
+  await expect(page.locator("#help-dialog")).toBeHidden();
   expect(errors).toEqual([]);
 });
 test("opens and reopens a directory through the compatible picker", async ({
@@ -290,6 +297,7 @@ test("remembers only manually opened projects and keeps mobile controls reachabl
   await page.locator("#search-input").fill("greet");
   await expect(page.locator(".search-result").first()).toBeVisible();
   await page.keyboard.press("Escape");
+  await expect(page.locator("#search-dialog")).toBeHidden();
   await page
     .getByRole("button", { name: "Open a project", exact: true })
     .click();

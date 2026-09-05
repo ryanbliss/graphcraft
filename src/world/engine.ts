@@ -1,4 +1,9 @@
 import { AmbientSky } from "./ambient-sky.ts";
+import { Pets } from "./pets.ts";
+import { Pedestrians } from "./pedestrians.ts";
+import { StreetTraffic } from "./street-traffic.ts";
+import { CinemaCamera } from "./cinema.ts";
+import { installNeonFlicker, updateNeonFlicker } from "./neon-flicker.ts";
 import * as THREE from "three";
 import "./constellation.css";
 import { ConstellationMap } from "./constellation.ts";
@@ -18,12 +23,15 @@ import { disposeGroup, lineGeometry } from "./geometry.ts";
 import { furnitureSize } from "./furniture.ts";
 import type { ProjectGraph } from "../graph/types.ts";
 export type ViewMode = "survey" | "walk" | "constellation";
+export type CinemaState = "playing" | "paused" | "off";
 export interface EngineHooks {
   select: (id: string) => void;
   hover: (id: string | undefined, x: number, y: number) => void;
   mode: (mode: ViewMode) => void;
   lock: (locked: boolean) => void;
   error: (message: string) => void;
+  cinemaBlocked?: () => boolean;
+  cinema?: (state: CinemaState) => void;
 }
 export class WorldEngine {
   readonly renderer: THREE.WebGLRenderer;
@@ -35,6 +43,15 @@ export class WorldEngine {
   private flight: ShuttleFlight;
   private eyeHeight = new CameraHeight();
   private ambientSky?: AmbientSky;
+  private cinema?: CinemaCamera;
+  private pets?: Pets;
+  private pedestrians?: Pedestrians;
+  private streetTraffic?: StreetTraffic;
+  cinemaEnabled = true;
+  private cinemaResumeAt = 0;
+  private cinemaRunning = false;
+  private cinemaState?: CinemaState;
+  private orbiting = false;
   private constellation?: ConstellationMap;
   private sceneVeil = document.createElement("div");
   private crossingScene = false;
@@ -60,6 +77,7 @@ export class WorldEngine {
   private lastFrame = performance.now();
   private accumulator = 0;
   private elapsed = 0;
+  private reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   private raycaster = new THREE.Raycaster();
   private pointer = new THREE.Vector2();
   private pointerDown = { x: 0, y: 0 };
@@ -112,7 +130,13 @@ export class WorldEngine {
     this.controls.maxPolarAngle = Math.PI / 2 - 0.05;
     this.controls.minDistance = 8;
     this.controls.maxDistance = 2500;
+    this.controls.addEventListener("start", () => {
+      this.orbiting = true;
+      this.pauseCinema();
+    });
     this.controls.addEventListener("end", () => {
+      this.orbiting = false;
+      this.pauseCinema();
       if (this.mode === "constellation" && !this.cameraFlight)
         this.constellation?.followCamera(this.camera, this.controls.target);
     });
@@ -130,9 +154,13 @@ export class WorldEngine {
     this.miniMap.setAttribute("aria-label", "District map");
     container.append(this.miniMap);
     const signal = this.cleanup.signal;
+    document.addEventListener("pointerdown", () => this.pauseCinema(), {
+      signal,
+    });
     document.addEventListener(
       "keydown",
       (event) => {
+        this.pauseCinema();
         if ((event.target as HTMLElement).matches("input,textarea")) return;
         if (document.querySelector("dialog[open]")) return;
         if (
@@ -268,8 +296,12 @@ export class WorldEngine {
       this.scene.remove(this.city.group);
       disposeGroup(this.city.group);
     }
+    this.pets?.dispose();
+    this.pedestrians?.dispose();
+    this.streetTraffic?.dispose();
     this.graph = graph;
     this.layout = layoutWorld(graph);
+    this.cinema = new CinemaCamera(this.layout);
     this.survey = new SurveyHierarchy(this.layout);
     const extent = Math.max(this.layout.width, this.layout.depth);
     this.controls.maxDistance = Math.max(2500, extent * 2.5);
@@ -277,6 +309,13 @@ export class WorldEngine {
     this.camera.updateProjectionMatrix();
     this.city = buildCity(graph, this.layout);
     this.scene.add(this.city.group);
+    this.pets = new Pets(this.layout, this.city.colliders, this.scene);
+    this.pedestrians = new Pedestrians(
+      this.layout,
+      this.scene,
+      this.city.colliders,
+    );
+    this.streetTraffic = new StreetTraffic(this.layout, this.scene);
     this.ambientSky = new AmbientSky(this.scene, this.city.shuttles);
     this.constellation = new ConstellationMap(
       graph,
@@ -306,6 +345,7 @@ export class WorldEngine {
       },
     );
     this.scene.add(this.constellation.sky);
+    installNeonFlicker(this.scene);
     this.player = new PlayerPhysics(this.city.colliders);
     this.player.teleport(this.layout.spawn.x, this.layout.spawn.z);
     this.scene.fog = new THREE.FogExp2(
@@ -375,8 +415,28 @@ export class WorldEngine {
       this.crossingScene = false;
     }
   }
+  private reportCinema(state: CinemaState) {
+    if (state === this.cinemaState) return;
+    this.cinemaState = state;
+    this.hooks.cinema?.(state);
+  }
+  setCinemaEnabled(enabled: boolean) {
+    this.cinemaEnabled = enabled;
+    this.pauseCinema();
+    if (enabled) this.cinemaResumeAt = performance.now();
+  }
+  pauseCinema() {
+    this.cinemaResumeAt = performance.now() + 20000;
+    if (!this.cinemaRunning) return;
+    this.cinemaRunning = false;
+    this.cinema?.reset();
+    this.sceneVeil.style.opacity = "0";
+    this.reportCinema("paused");
+  }
   setMode(mode: ViewMode, celestialId?: string) {
     if (!this.layout) return;
+    this.pauseCinema();
+    this.cinemaResumeAt = performance.now() + 2000;
     this.flight.cancel();
     if (mode !== "survey") this.landing = false;
     this.container.classList.toggle("entered", !this.landing);
@@ -482,6 +542,7 @@ export class WorldEngine {
     return this.flight.start(source, destination, to, arrival, clearance);
   }
   private selectWorld(id: string) {
+    this.pauseCinema();
     if (this.landing) this.enter();
     const target = this.survey.get(id);
     if (this.mode === "survey" && target && !("nodes" in target))
@@ -489,6 +550,7 @@ export class WorldEngine {
     this.hooks.select(id);
   }
   focus(id: string, walk = false) {
+    this.pauseCinema();
     if (this.mode === "constellation" && !walk) {
       this.constellation?.focus(id);
       return;
@@ -778,6 +840,7 @@ export class WorldEngine {
     const dt = Math.min((now - this.lastFrame) / 1000, 0.08);
     this.lastFrame = now;
     this.elapsed += dt;
+    updateNeonFlicker(this.elapsed, this.reducedMotion.matches);
     if (!this.city) return;
     if (this.flight.active) {
       const x = Number(this.keys.has("KeyD")) - Number(this.keys.has("KeyA"));
@@ -858,10 +921,46 @@ export class WorldEngine {
           this.controls.enabled = true;
         }
       }
-      this.controls.update();
+      const cinemaBlocked =
+        this.mode !== "survey" ||
+        this.landing ||
+        !this.cinemaEnabled ||
+        this.reducedMotion.matches ||
+        this.orbiting ||
+        document.hidden ||
+        !!this.cameraFlight ||
+        this.hooks.cinemaBlocked?.();
+      if (cinemaBlocked) this.pauseCinema();
+      if (!cinemaBlocked && now >= this.cinemaResumeAt && this.cinema) {
+        if (!this.cinemaRunning) {
+          const damping = this.controls.enableDamping;
+          this.controls.enableDamping = false;
+          this.controls.update();
+          this.controls.enableDamping = damping;
+        }
+        this.cinemaRunning = true;
+        this.controls.minDistance = 0.5;
+        this.controls.autoRotate = false;
+        this.cinema.update(
+          dt,
+          this.camera,
+          this.controls.target,
+          this.ambientSky?.flyingShips ?? [],
+        );
+        this.sceneVeil.style.opacity = String(this.cinema.fadeOpacity);
+        this.reportCinema("playing");
+      } else {
+        this.controls.update();
+        this.reportCinema(this.cinemaEnabled ? "paused" : "off");
+      }
       this.accumulator = 0;
     }
-    this.ambientSky?.update(dt, this.camera, this.mode !== "constellation");
+    this.ambientSky?.update(
+      dt,
+      this.camera,
+      this.mode !== "constellation",
+      this.cinemaRunning,
+    );
     this.city.routes.visible = this.showRoutes;
     this.city.titles.visible = this.showLabels;
     for (const child of this.selected.children)
@@ -870,6 +969,19 @@ export class WorldEngine {
     for (const [id, roof] of this.city.roofs)
       roof.visible = this.mode === "walk" || this.selectedId !== id;
     animateTraffic(this.city, this.elapsed);
+    this.pedestrians?.update(dt, this.camera.position);
+    this.streetTraffic?.update(
+      dt,
+      this.pedestrians?.positions,
+      this.mode === "walk" && !this.flight.active
+        ? this.player.position
+        : undefined,
+    );
+    this.pets?.update(dt, this.camera.position, {
+      position: this.player.position,
+      grounded: this.player.grounded,
+      active: this.mode === "walk" && !this.flight.active,
+    });
     if (this.elapsed - this.lastHover > 0.12) {
       this.lastHover = this.elapsed;
       this.drawMinimap();
@@ -903,6 +1015,9 @@ export class WorldEngine {
   };
   dispose() {
     this.flight.dispose();
+    this.pets?.dispose();
+    this.pedestrians?.dispose();
+    this.streetTraffic?.dispose();
     this.ambientSky?.dispose();
     cancelAnimationFrame(this.animationId);
     this.cleanup.abort();

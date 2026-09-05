@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { disposeGroup } from "./geometry.ts";
+import { withNeonFlicker } from "./neon-flicker.ts";
 
 const samples = 28;
 /** A fixed-size pair of engine wakes; no particles accumulate in the world. */
@@ -24,14 +25,16 @@ export class ShipWake {
       "color",
       new THREE.BufferAttribute(this.colors, 3),
     );
-    const material = new THREE.MeshBasicMaterial({
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.65,
-      side: THREE.DoubleSide,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending,
-    });
+    const material = withNeonFlicker(
+      new THREE.MeshBasicMaterial({
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.65,
+        side: THREE.DoubleSide,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+      }),
+    );
     this.ribbon = new THREE.Mesh(this.geometry, material);
     this.ribbon.frustumCulled = false;
     this.ribbon.visible = false;
@@ -39,20 +42,24 @@ export class ShipWake {
     for (const side of [-1, 1]) {
       const flame = new THREE.Mesh(
         new THREE.ConeGeometry(0.38, 3.5, 12),
-        new THREE.MeshBasicMaterial({
-          color: "#62dfee",
-          transparent: true,
-          opacity: 0.65,
-          depthWrite: false,
-          blending: THREE.AdditiveBlending,
-        }),
+        withNeonFlicker(
+          new THREE.MeshBasicMaterial({
+            color: "#62dfee",
+            transparent: true,
+            opacity: 0.65,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending,
+          }),
+        ),
       );
       flame.rotation.x = -Math.PI / 2;
       flame.position.set(side * 1.05, 3.13, -5.25);
       this.exhaust.add(flame);
       const core = new THREE.Mesh(
         new THREE.ConeGeometry(0.19, 1.8, 10),
-        new THREE.MeshBasicMaterial({ color: "#eaffed", toneMapped: false }),
+        withNeonFlicker(
+          new THREE.MeshBasicMaterial({ color: "#eaffed", toneMapped: false }),
+        ),
       );
       core.rotation.x = -Math.PI / 2;
       core.position.set(side * 1.05, 3.13, -4.38);

@@ -16,6 +16,13 @@
     c.rooms.find(
       (r) => r.directory === "src/components/projects/universal-search",
     ) || core.rooms[0];
+  const petBed =
+    e.layout.positions.get(
+      "src/components/projects/world-grid-builder/collider/ColliderSection.tsx",
+    ) ||
+    [...e.layout.positions.values()].find(
+      (position) => position.furniture === "bed",
+    );
   const spaceBuilding =
     e.layout.buildings.find((b) => b.id === ".:src/components/projects/wiki") ||
     core;
@@ -26,7 +33,6 @@
     { start: 0, shot: 0 },
     { start: 2, shot: 1 },
     { start: 4, shot: 2 },
-    { start: 5.5, shot: 4 },
     { start: 6.85, shot: 3 },
     { start: 8.5, shot: 5 },
     { start: 10.5, shot: 9 },
@@ -86,17 +92,74 @@
       if (shot === 0) e.controls.autoRotateSpeed = 0.65;
       if (shot === 1) {
         document.querySelector("#demo").click();
-        walk(core.hallX - 22, core.z + core.depth / 2 + 14);
-        e.yaw = -Math.PI / 2;
-        e.pitch = 0.08;
+        const path =
+          e.layout.paths.find(
+            (path) =>
+              path.source === ".:src/components/projects/world-grid-builder",
+          ) || e.layout.paths.find((path) => path.source === core.id);
+        const segment = path?.points
+          .slice(1)
+          .map((b, i) => {
+            const a = path.points[i];
+            return { a, b, length: Math.hypot(b.x - a.x, b.z - a.z) };
+          })
+          .filter(
+            (segment) => segment.a.z === segment.b.z && segment.length >= 16,
+          )
+          .sort((a, b) => b.length - a.length)[0];
+        if (!segment) throw new Error("Street shot requires an entrance path");
+        walk(
+          segment.a.x + (segment.b.x - segment.a.x) * 0.8,
+          segment.a.z + (segment.b.z - segment.a.z) * 0.8,
+        );
+        e.yaw = Math.atan2(
+          segment.b.x - segment.a.x,
+          segment.b.z - segment.a.z,
+        );
+        e.pitch = 0.13;
       }
-      if (shot === 2) enter(lounge);
+      if (shot === 2) {
+        if (!petBed || petBed.furniture !== "bed") enter(lounge);
+        else {
+          const dx = Math.sin(petBed.rotation),
+            dz = Math.cos(petBed.rotation);
+          walk(
+            petBed.x + dx * 3 - dz * 3.2,
+            petBed.z + dz * 3 + dx * 3.2,
+            petBed.floorY,
+          );
+          const pets = e.pets;
+          pets.release();
+          const cat = pets.actors.find((actor) => actor.species === "cat");
+          cat.model.group.visible = true;
+          cat.model.group.position.set(
+            petBed.x + dx * 2.5,
+            petBed.floorY,
+            petBed.z + dz * 2.5,
+          );
+          cat.model.group.rotation.y = petBed.rotation + Math.PI;
+          cat.home = e.layout.buildings.find(
+            (building) => building.id === petBed.buildingId,
+          );
+          cat.returningHome = false;
+          cat.routeHome = [cat.model.group.position.clone()];
+          cat.state = "follow";
+          pets.companion = cat;
+          pets.trail.clear();
+          pets.feet.set(
+            e.player.position.x,
+            petBed.floorY,
+            e.player.position.z,
+          );
+          pets.seekFurniture(cat);
+          look(petBed.x, petBed.floorY + 1, petBed.z);
+        }
+      }
       if (shot === 3) {
         walk(tower.x + tower.width / 2 - 2.5, front - 6, floor - 5.4);
         e.yaw = 0;
         e.pitch = -0.12;
       }
-      if (shot === 4) enter(upper);
       if (shot === 5) {
         walk(tower.x + 2, tower.z - tower.depth / 2 + 0.35, floor);
         e.camera.fov = 75;
@@ -161,17 +224,32 @@
     }
     if (shot === 1) {
       e.keys.add("KeyW");
-      look(core.hallX + 20, 3.2, core.z + core.depth / 2 + 4);
     }
-    if (shot === 2)
-      look(lounge.x, lounge.floorY + 1.4, lounge.z - (t - 4) * 1.3);
+    if (shot === 2) {
+      if (petBed?.furniture === "bed") {
+        e.eyeHeight.reset(petBed.floorY + 2.1);
+        look(
+          petBed.x + 0.1 - (t - 4) * 0.07,
+          petBed.floorY + 0.55,
+          petBed.z + 1.2,
+        );
+      } else look(lounge.x, lounge.floorY + 1.4, lounge.z - (t - 4) * 1.3);
+    }
     if (shot === 3) e.keys.add("KeyW");
-    if (shot === 4)
-      look(upper.x, upper.floorY + 1.5, upper.z - (t - 5.5) * 1.2);
     if (shot === 5) {
       e.player.position.y = floor + 2.7;
       e.eyeHeight.reset(floor + 2.7);
       look(title.x - 35 + (t - 8.5) * 45, title.titleHeight * 0.65, title.z);
+    }
+    if (shot === 8) {
+      const display = e.layout.positions.get(
+        "src/components/projects/wiki/WikiPageEditor.tsx",
+      );
+      if (display) {
+        const progress = Math.min(1, (t - 20.5) / 1.5);
+        const sweep = progress * progress * (3 - 2 * progress);
+        look(display.x + 1 - sweep * 2.2, display.y + 0.1, display.z);
+      }
     }
     if (shot === 9) {
       const p = c.boardingShip.position;

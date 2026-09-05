@@ -22,7 +22,7 @@ The native directory picker reads source in the browser and saves its directory 
 - Each piece of furniture is a file. Seeded room compositions mix everyday furnishings with cyberpunk installations: drone docks, robot figures, aquariums, synths, DJ stations, ramen bars, hoverbikes, medical pods, shrines, portals, and more. Each furniture kind has three structural variants. A directory containing only one file type still gets varied furnishings, and cats appear only as rare accents. Rooms fit the occupied composition and a clear doorway approach, with staggered doorways. Large groups occupy up to four floors, with signed staircases accessible from both front and rear foyers.
 - Building silhouettes reflect their contents: pitched studios, townhouses, workshops with sawtooth roofs, and glazed atriums. Selecting a building in survey view removes its roof to reveal the rooms.
 - Ground paths connect real entrances. Arcing cables connect building import ports. Dense worlds show the strongest building connections; file selection reveals its exact imports. Moving lights travel from importer to dependency. Pink furniture beacons mark dependency cycles.
-- Every celestial object represents part of the graph. The overview groups packages by their top-level folders. Packages become galaxies, buildings become systems, rooms become planets, and files become moons. Clicking flies the camera through a persistent nested space. Parents remain present, and children orbit them while labels and import connections follow. Nearby detail expands as you approach; breadcrumbs travel outward. Large levels split into smaller groups labeled with their first name and the number of remaining items. There are no decorative stars.
+- Every celestial object represents part of the graph. The overview groups packages by their top-level folders. Packages become galaxies, buildings become systems, rooms become planets, and files become moons. Clicking flies the camera through a persistent nested space. Parents remain present, and children orbit them while labels and import connections follow. Nearby detail expands as you approach; breadcrumbs travel outward. Large levels split into smaller groups labeled with their first name and the number of remaining items. Subtle neon pinpoints decorate the night sky; graph galaxies remain larger, orbital, and interactive.
 - Click structures, signs, furniture, or labels to inspect them. Console screens carry their file titles. Resting the pointer on furniture shows a small filename above the toolbar while walking. Full paths stay in the inspector; opening it hides the hover hint. The inspector includes exports, incoming and outgoing imports. File and room visits teleport inside the correct room, including upper floors. File visits face the selected object. The import-route toggle also controls selected file connections.
 - The same graph produces the same layout, colors, furniture, and traffic seed. Changing the directory tree can repack the affected world.
 
@@ -81,4 +81,29 @@ The scanner has been exercised against Neo Compose, Retree, Zustand, Express, Vi
 
 ## Showcase videos
 
-The [30-second showcase sources](media/showcase/README.md) include landscape and portrait edits, licensed music, a storyboard, and a repeatable browser capture. Run `npm run showcase` with the development server running, or `npm run showcase:render` to revise the edit without recapturing.
+The [27-second showcase sources](media/showcase/README.md) include landscape and portrait edits, licensed music, a storyboard, and a repeatable browser capture. Run `npm run showcase` with the development server running, or `npm run showcase:render` to revise the edit without recapturing.
+
+### Survey cinema
+
+Survey starts an automatic camera tour after two seconds. It cycles through city
+arcs, building views, entrance paths, furnished rooms, and flying couriers. Drag
+or zoom to take control; cinema resumes after 20 idle seconds. Open inspectors
+and dialogs keep it paused. The camera button in the bottom toolbar turns it off
+and remembers the setting in this browser. Reduced-motion mode disables automatic
+camera movement.
+
+### City life
+
+A small cast of pedestrians walks sidewalks beside the roads in varied neon jackets, coats,
+visors, and boots. Compact futuristic cars follow street junctions, brake at
+traffic signals, and leave room for cars ahead. Neither residents nor traffic
+represent source files.
+
+Small cyber cats and dogs linger near entrances. A pet can tag along inside its own building
+at a comfortable distance, pausing between walks. Companions follow the route
+you walked through doors and stairs, then return to the entrance when you leave. Cats can hop onto a bed and settle down.
+The two articulated species have gestures, play, walking, and resting poses. Pets have no artifact labels and do not block navigation.
+
+Neon furniture, signs, facade lighting, and vehicle accents use asynchronous
+lighting circuits. Their occasional dim-and-recover sequences ease over several
+seconds. Reduced-motion mode keeps that lighting steady.

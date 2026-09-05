@@ -1,3 +1,5 @@
+import { VoxelBatch } from "./geometry.ts";
+import { hash } from "../graph/types.ts";
 import { extraPlaqueMounts } from "./extra-furniture.ts";
 import * as THREE from "three";
 import type { ProjectGraph } from "../graph/types.ts";
@@ -39,6 +41,7 @@ export interface Sign {
   width: number;
   height: number;
   rotation?: number;
+  appearance?: "storefront";
 }
 export function buildingSigns(
   layout: WorldLayout,
@@ -46,7 +49,7 @@ export function buildingSigns(
   parent: THREE.Object3D,
 ) {
   const packages = new Map(graph.packages.map((pkg) => [pkg.id, pkg]));
-  const signs: Sign[] = layout.buildings.map((building) => {
+  const entrances: Sign[] = layout.buildings.map((building) => {
     const pkg = packages.get(building.packageId);
     let path = building.directory;
     if (pkg?.directory)
@@ -57,12 +60,14 @@ export function buildingSigns(
       subtitle: `${pkg?.name ?? graph.name} / ${path || "."}`,
       color: palette[building.kind],
       x: building.x,
-      y: 5.2,
-      z: building.z + building.depth / 2 + 0.85,
-      width: 6,
-      height: 2.25,
+      y: 5.25,
+      z: building.z + building.depth / 2 + 1.02,
+      width: 6.4,
+      height: 1.9,
+      appearance: "storefront",
     };
   });
+  const signs: Sign[] = [];
   for (const building of layout.buildings) {
     for (const well of stairwells(building))
       for (let floor = 0; floor < building.stories; floor++) {
@@ -95,8 +100,109 @@ export function buildingSigns(
       });
     }
   }
-  return renderSigns(signs, parent);
+  return [
+    ...renderSigns(entrances, parent, 512, 128),
+    ...renderSigns(signs, parent),
+    ...storefrontMarquees(entrances, parent),
+  ];
 }
+
+function storefrontMarquees(signs: Sign[], parent: THREE.Object3D) {
+  if (!signs.length) return [];
+  const bodies = new VoxelBatch();
+  const tubes = new VoxelBatch(true);
+  for (const sign of signs) {
+    const { x, y, z, width, height, id } = sign;
+    const side = hash(id) % 2 === 0 ? -1 : 1;
+    const primary = side === 1 ? "#ff4fba" : "#43eaff";
+    const secondary = side === 1 ? "#43eaff" : "#ff4fba";
+    bodies.owner = id;
+    tubes.owner = id;
+    // The reading plane is 0.03 ahead of the backing, with trim outside its edges.
+    bodies.add(x, y, z - 0.12, width + 0.24, height + 0.2, 0.18, "#142331");
+    bodies.add(
+      x - side * 0.35,
+      y + height / 2 + 0.24,
+      z - 0.22,
+      width + 0.6,
+      0.22,
+      0.68,
+      "#253544",
+    );
+    tubes.add(
+      x - side * 0.35,
+      y + height / 2 + 0.25,
+      z + 0.14,
+      width + 0.6,
+      0.075,
+      0.065,
+      primary,
+    );
+    tubes.add(
+      x + side * 0.48,
+      y - height / 2 - 0.1,
+      z + 0.015,
+      width - 0.65,
+      0.07,
+      0.07,
+      secondary,
+    );
+    tubes.add(
+      x - side * (width / 2 + 0.075),
+      y - 0.1,
+      z + 0.015,
+      0.075,
+      height - 0.25,
+      0.07,
+      primary,
+    );
+    const bladeX = x + side * (width / 2 + 0.58);
+    bodies.add(bladeX, y + 0.1, z - 0.24, 0.56, height + 0.74, 1.04, "#192937");
+    tubes.add(
+      bladeX + side * 0.21,
+      y + 0.1,
+      z + 0.32,
+      0.07,
+      height + 0.65,
+      0.07,
+      secondary,
+    );
+    tubes.add(
+      bladeX,
+      y + height / 2 + 0.38,
+      z - 0.22,
+      0.56,
+      0.07,
+      1.15,
+      primary,
+    );
+    for (let stripe = 0; stripe < 3; stripe++)
+      tubes.add(
+        bladeX - side * 0.04,
+        y + 0.48 - stripe * 0.3,
+        z + 0.32,
+        0.25,
+        0.09,
+        0.07,
+        primary,
+      );
+    for (const mountSide of [-1, 1])
+      bodies.add(
+        x + mountSide * 2.6,
+        y,
+        z - 0.52,
+        0.16,
+        height - 0.24,
+        0.55,
+        "#2c3d48",
+      );
+  }
+  const frames = [bodies.build(parent), tubes.build(parent)];
+  frames[0].name = "Storefront marquee housings";
+  frames[1].name = "Storefront neon tubes";
+  return frames;
+}
+
 export function filePlacards(
   layout: WorldLayout,
   graph: ProjectGraph,
@@ -162,22 +268,25 @@ export function renderSigns(
       const designWidth = (96 * sign.width) / sign.height;
       const textWidth = designWidth - 24;
       context.scale(cellWidth / designWidth, cellHeight / 96);
-      context.fillStyle = "#122530";
+      const storefront = sign.appearance === "storefront";
+      context.fillStyle = storefront ? "#090f1b" : "#122530";
       context.fillRect(0, 0, designWidth, 96);
-      context.strokeStyle = sign.color;
+      context.strokeStyle = storefront ? "#314252" : sign.color;
       context.lineWidth = 2;
       context.strokeRect(2, 2, designWidth - 4, 92);
-      context.fillStyle = sign.color;
+      context.fillStyle = storefront ? "#d1faff" : sign.color;
       context.textAlign = "center";
       context.textBaseline = "middle";
       let fontSize = sign.subtitle ? 21 : 64;
-      context.font = `500 ${fontSize}px monospace`;
+      if (storefront) fontSize = 30;
+      const fontWeight = storefront ? 700 : 500;
+      context.font = `${fontWeight} ${fontSize}px monospace`;
       while (
         fontSize > 11 &&
         context.measureText(sign.title).width > textWidth
       ) {
         fontSize--;
-        context.font = `500 ${fontSize}px monospace`;
+        context.font = `${fontWeight} ${fontSize}px monospace`;
       }
       let lines = wrapSignTitle(context, sign.title, textWidth);
       if (lines.length > 2)
@@ -193,7 +302,7 @@ export function renderSigns(
         context.fillText(line, designWidth / 2, titleY + index * lineHeight);
       if (sign.subtitle) {
         context.fillStyle = "#b8d1d9";
-        context.font = "12px monospace";
+        context.font = storefront ? "500 13px monospace" : "12px monospace";
         context.fillText(
           fitText(context, sign.subtitle, textWidth),
           designWidth / 2,

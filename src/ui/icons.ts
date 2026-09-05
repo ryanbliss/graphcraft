@@ -1,4 +1,6 @@
 const paths: Record<string, string> = {
+  cinema:
+    '<rect x="3" y="5" width="13" height="14" rx="2"/><path d="m16 10 5-3v10l-5-3M7 8h5M7 16h5"/>',
   cube: '<path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"/><path d="m4 7.5 8 4.5 8-4.5M12 12v9M12 3v9"/>',
   folder:
     '<path d="M3 7V5a1 1 0 0 1 1-1h5l2 3h9a1 1 0 0 1 1 1v11H3V7Z"/><path d="M3 9h18"/>',

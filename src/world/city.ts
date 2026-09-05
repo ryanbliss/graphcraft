@@ -1,7 +1,7 @@
 import { buildStreetscape } from "./streetscape.ts";
 import * as THREE from "three";
 import { hash, type ProjectGraph } from "../graph/types.ts";
-import { palette, type WorldLayout, type Building } from "./layout.ts";
+import { type WorldLayout, type Building } from "./layout.ts";
 import { CollisionWorld } from "./physics.ts";
 import { buildingSigns, filePlacards } from "./signs.ts";
 import { furnishBuilding, roomCeilingHeight } from "./interiors.ts";
@@ -164,15 +164,17 @@ export function buildCity(graph: ProjectGraph, layout: WorldLayout): City {
             alongX ? 0.18 : 0.7,
             0.04,
             alongX ? 0.7 : 0.18,
-            "#6bafb6",
+            hash(path.target) % 2 === 0 ? "#ff67c1" : "#65ddeb",
           );
       }
     }
   function building(b: Building) {
     blocks.owner = b.id;
     lights.owner = b.id;
-    const { x, z, width: w, depth: d } = b,
-      color = palette[b.kind];
+    const { x, z, width: w, depth: d } = b;
+    const neonStyle = hash(`${b.id}:neon`) % 4;
+    const color = ["#ff42b3", "#59eadc", "#fd70d3", "#69cfff"][neonStyle];
+    const accent = neonStyle % 2 === 0 ? "#61e8ff" : "#ff59bf";
     solid(blocks, colliders, x, 1.3, z - d / 2, w, 2.6, 0.6, "#283948", b.id);
     solid(blocks, colliders, x - w / 2, 1.3, z, 0.6, 2.6, d, "#263744", b.id);
     solid(blocks, colliders, x + w / 2, 1.3, z, 0.6, 2.6, d, "#263744", b.id);
@@ -239,7 +241,7 @@ export function buildCity(graph: ProjectGraph, layout: WorldLayout): City {
             0.25,
             1.35,
             0.025,
-            "#e5c59c",
+            accent,
           );
       }
     lights.add(x, 2.68, z - d / 2, w, 0.08, 0.72, color);
@@ -249,6 +251,48 @@ export function buildCity(graph: ProjectGraph, layout: WorldLayout): City {
       b.kind === "module" || b.kind === "schema" ? "#735b54" : "#344b58";
     for (let floor = 0; floor < b.stories; floor++) {
       const floorY = floor * 5.4;
+      // Mounted outside the cladding; the entrance gap stays open.
+      for (const side of [-1, 1]) {
+        const run = (w - 6) / 2;
+        for (const end of [-1, 1]) {
+          const railX = x + side * (3 + run / 2);
+          const railZ = z + end * (d / 2 + 0.43);
+          blocks.add(railX, floorY + 0.78, railZ, run, 0.25, 0.16, "#111b30");
+          lights.add(
+            railX,
+            floorY + 0.78,
+            railZ + end * 0.12,
+            run - 0.22,
+            0.085,
+            0.065,
+            end === side ? color : accent,
+          );
+        }
+        const railX = x + side * (w / 2 + 0.46);
+        const sectionCount = Math.max(1, Math.floor(d / 9));
+        const section = (d - 2) / sectionCount;
+        for (let i = 0; i < sectionCount; i++) {
+          const railZ = z - d / 2 + 1 + (i + 0.5) * section;
+          blocks.add(
+            railX,
+            floorY + 0.78,
+            railZ,
+            0.18,
+            0.26,
+            section - 0.65,
+            "#111b30",
+          );
+          lights.add(
+            railX + side * 0.13,
+            floorY + 0.78,
+            railZ,
+            0.065,
+            0.095,
+            section - 0.9,
+            (i + floor) % 2 === 0 ? color : accent,
+          );
+        }
+      }
       const facadeSide = hash(`${b.id}:facade`) % 2 === 0 ? -1 : 1;
       for (const end of [-1, 1]) {
         const finZ = z + end * (d / 2 - 1.1);
@@ -337,7 +381,9 @@ export function buildCity(graph: ProjectGraph, layout: WorldLayout): City {
             0.05,
             1.05,
             1.4,
-            "#e4c89a",
+            (hash(b.id) + floor + Math.round(offset)) % 4 === 0
+              ? "#e4c89a"
+              : accent,
           );
         }
       }
@@ -408,6 +454,27 @@ export function buildCity(graph: ProjectGraph, layout: WorldLayout): City {
       );
     }
     const top = b.stories * 5.4;
+    const roofNeon = hash(`${b.id}:neon`) % 2 === 0 ? "#ff52bb" : "#62e3ff";
+    for (const side of [-1, 1]) {
+      accents.add(
+        b.x + side * (b.width / 2 + 0.1),
+        top + 0.7,
+        b.z,
+        0.12,
+        0.16,
+        b.depth - 1,
+        roofNeon,
+      );
+      accents.add(
+        b.x,
+        top + 0.7,
+        b.z + side * (b.depth / 2 + 0.1),
+        b.width - 1,
+        0.16,
+        0.12,
+        side < 0 ? "#ff77d2" : "#6bedef",
+      );
+    }
     const width = b.width - 0.6;
     const depth = b.depth - 0.6;
     const rise = Math.min(3.6, Math.max(1.2, b.height - top - 0.15));
@@ -435,7 +502,7 @@ export function buildCity(graph: ProjectGraph, layout: WorldLayout): City {
       w: number,
       h: number,
       d: number,
-    ) => accents.add(b.x + dx, y, b.z + dz, w, h, d, "#d6c594");
+    ) => accents.add(b.x + dx, y, b.z + dz, w, h, d, roofNeon);
     const deck = (dx: number, dz: number, w: number, d: number) =>
       solid(
         roof,

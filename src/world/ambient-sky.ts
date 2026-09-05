@@ -213,7 +213,13 @@ export class AmbientSky {
     return false;
   }
 
-  update(dt: number, camera: THREE.Camera, active = true) {
+  get flyingShips(): THREE.Object3D[] {
+    return this.couriers
+      .filter((courier) => courier.from >= 0 && courier.ship.visible)
+      .map((courier) => courier.ship);
+  }
+
+  update(dt: number, camera: THREE.Camera, active = true, cinema = false) {
     camera.getWorldPosition(this.cameraPosition);
     this.stars.position.copy(this.cameraPosition);
     this.stars.material.uniforms.time.value += dt;
@@ -237,9 +243,11 @@ export class AmbientSky {
       courier.ship.position.y += courier.altitude * lift;
       courier.ship.rotation.z = Math.sin(t * Math.PI * 2) * 0.04 * lift;
       const fade =
-        smooth(
-          (courier.ship.position.distanceTo(this.cameraPosition) - 45) / 25,
-        ) *
+        (cinema
+          ? 1
+          : smooth(
+              (courier.ship.position.distanceTo(this.cameraPosition) - 45) / 25,
+            )) *
         smooth(t / 0.025) *
         (1 - smooth((t - 0.975) / 0.025));
       for (const material of courier.materials) material.opacity = fade;

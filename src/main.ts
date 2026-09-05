@@ -36,7 +36,7 @@ app.innerHTML = `
   <footer class="landing-footer"><span>AN ARCHITECTURE YOU CAN GET LOST IN.</span><span>BUILT FROM CONNECTIONS <span class="footer-cross">+</span></span></footer>
   <nav class="view-switch" aria-label="World view" hidden><button data-mode="walk">${icon("walk")}<span>Walk</span></button><button data-mode="survey" class="active">${icon("survey")}<span>Survey</span></button><button data-mode="constellation">${icon("stars")}<span>Constellation</span></button></nav>
   <div class="tools" hidden><button id="travel-open" class="icon-button" title="District shuttle T" aria-label="Teleport">${icon("stars")}</button><button id="search-open" class="icon-button" title="Find a file /" aria-label="Find a file">${icon("search")}</button><button id="help-open" class="icon-button" title="Controls" aria-label="Controls">${icon("help")}</button></div>
-  <div class="bottom-hud" hidden><div class="world-location"><span class="live-dot"></span><span id="location">Neon harbor</span><small id="seed"></small></div><div class="world-toolbar"><button id="routes" class="active" title="Import routes G" aria-label="Toggle import routes" aria-pressed="true">${icon("routes")}</button><button id="stars" class="active" title="Constellation V" aria-label="Toggle constellation" aria-pressed="true">${icon("stars")}</button><button id="labels" class="active" title="Labels L" aria-label="Toggle labels" aria-pressed="true">${icon("label")}</button><span></span><button id="reset" title="Return to spawn R" aria-label="Return to spawn">${icon("reset")}</button><button id="fullscreen" title="Full screen" aria-label="Full screen">${icon("expand")}</button></div><div class="view-hint">Drag to orbit <b>·</b> Scroll to explore</div></div>
+  <div class="bottom-hud" hidden><div class="world-location"><span class="live-dot"></span><span id="location">Neon harbor</span><small id="seed"></small></div><div class="world-toolbar"><button id="cinema" class="active" title="Cinema mode" aria-label="Toggle cinema mode" aria-pressed="true">${icon("cinema")}</button><button id="routes" class="active" title="Import routes G" aria-label="Toggle import routes" aria-pressed="true">${icon("routes")}</button><button id="stars" class="active" title="Constellation V" aria-label="Toggle constellation" aria-pressed="true">${icon("stars")}</button><button id="labels" class="active" title="Labels L" aria-label="Toggle labels" aria-pressed="true">${icon("label")}</button><span></span><button id="reset" title="Return to spawn R" aria-label="Return to spawn">${icon("reset")}</button><button id="fullscreen" title="Full screen" aria-label="Full screen">${icon("expand")}</button></div><div class="view-hint">Drag to orbit <b>·</b> Scroll to explore</div></div>
   <div class="crosshair" hidden></div><button class="walk-prompt" hidden>Click to explore <span>W A S D to move · Mouse to look · Esc to release</span></button>
   <aside id="inspector" class="panel inspector" hidden></aside>
   <dialog id="search-dialog" class="panel search-dialog"><form method="dialog"><label class="search-field">${icon("search")}<input id="search-input" placeholder="Find a file, module, or package…" autocomplete="off" aria-label="Find a file, module, or package"/><button class="subtle" aria-label="Close search">Esc</button></label></form><div id="search-results"></div><div class="search-footer">Choose a result to locate it in the world.</div></dialog>
@@ -108,6 +108,7 @@ function setMode(mode: ViewMode) {
       button.classList.toggle("active", button.dataset.mode === mode);
       button.setAttribute("aria-pressed", String(button.dataset.mode === mode));
     });
+  get("#cinema").hidden = mode !== "survey";
   get(".crosshair").hidden = mode !== "walk";
   get(".walk-prompt").hidden = mode !== "walk" || !!document.pointerLockElement;
   get(".view-hint").textContent =
@@ -538,6 +539,15 @@ get("#diagnostics").onclick = () => {
       : "");
   get<HTMLDialogElement>("#diagnostics-dialog").showModal();
 };
+get("#cinema").onclick = () => {
+  engine.setCinemaEnabled(!engine.cinemaEnabled);
+  toggleButton("#cinema", engine.cinemaEnabled);
+  try {
+    localStorage.setItem("graphcraft.cinema", String(engine.cinemaEnabled));
+  } catch {
+    /* Storage may be disabled. */
+  }
+};
 get("#routes").onclick = () => {
   engine.showRoutes = !engine.showRoutes;
   toggleButton("#routes", engine.showRoutes);
@@ -596,7 +606,28 @@ try {
       get(".crosshair").hidden = !locked;
     },
     error: toast,
+    cinema: (state) => {
+      const button = get("#cinema");
+      button.dataset.state = state;
+      button.title =
+        state === "playing"
+          ? "Cinema mode · drag to pause"
+          : "Cinema mode · " +
+            (state === "paused" ? "resumes when idle" : "off");
+    },
+    cinemaBlocked: () =>
+      busy ||
+      !get("#inspector").hidden ||
+      !!document.querySelector("dialog[open]"),
   });
+  try {
+    engine.setCinemaEnabled(
+      localStorage.getItem("graphcraft.cinema") !== "false",
+    );
+  } catch {
+    /* Use the default when storage is unavailable. */
+  }
+  toggleButton("#cinema", engine.cinemaEnabled);
   travel = installTravel(engine);
   const response = await fetch("/demo.graph.json");
   if (!response.ok) throw new Error("The demo world could not be loaded.");

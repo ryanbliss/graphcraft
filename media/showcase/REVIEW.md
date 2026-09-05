@@ -8,7 +8,7 @@ playback or the music mix.
 
 The 27-second edit follows Ryan's latest notes:
 
-- Both furnished room shots precede the staircase.
+- The furnished room and cat interaction precede the staircase.
 - The high-window view lasts two seconds and sweeps farther across the city.
 - The sky selection shows a building corner beneath the galaxy, with no giant
   sign overhead.
@@ -39,9 +39,52 @@ Footage is captured from the real local neo-compose graph at 2560 × 1440 and
 The graph remains in ignored artifacts. Camera cuts are editorial choices; staircase motion, flight, bailout, and constellation
 selection use the application's implementations.
 
-All 77 unit tests and doctor checks pass. The added regression checks split-room
-names. Earlier shuttle and staircase browser regressions passed with the current
-flight and movement implementation; this revision changes the edit and naming.
+All 119 unit tests and doctor checks pass. The browser suite checks navigation,
+imports, constellation labels, depth precision, stairs, and shuttle controls.
 Both final exports are checked for duration, audio/video streams, and decoding.
 Music attribution is visible on the end card and included in metadata and
 [MUSIC.md](MUSIC.md).
+
+## Neon and composition revision
+
+The opening street shot now follows the entrance path between world-grid-builder
+and smart-tile buildings. Facades fill both sides of the frame. The room arrival
+at 19.5–21 seconds sweeps across the WikiPageEditor display instead of holding.
+
+Every building now has pink-and-cyan exterior bands and roof accents. Entrance
+marquees have asymmetric housings and neon blades while retaining the actual
+building name and path. These changes also appear in normal gameplay.
+
+The design references were [Secret 6's Cyberpunk 2077 signage work](https://secret6.com/case-studies/cyberpunk-2077)
+and [Hiroshi Sakakibara's Little China street composition](https://hiroshisakakibara.artstation.com/projects/oAlKlq).
+They informed the layered storefront signs and denser street framing.
+
+Shared neon circuits cover furniture accents, exterior lights, signs, and ship
+effects. Each circuit moves through a smooth 4.8-second sequence of broad dips and
+recoveries every 45–81 seconds, reaching a minimum of 68% brightness. Nearby
+pieces share a circuit; different areas have staggered timing. Reduced-motion
+mode disables flicker. A browser pixel check confirmed the dim and full-brightness
+reduced-motion output without shader errors.
+
+## City life and companion pass
+
+The current cut replaces the two short room shots at 4–6.85 seconds with a cat
+approaching a real file-bed, hopping up, and settling. The camera pans through
+that room; stairs, the high window sweep, ship rides, constellation sequence,
+and end card retain their timing.
+
+The game now includes sparse sidewalk pedestrians, signal-controlled cars, and
+house-bound cat and dog companions. Car and pedestrian proportions were
+reviewed together in the Neo scene. Sidewalk paths clear building footprints and
+colliders, so people do not slide aside to dodge cars. Pet eyes are small and
+non-emissive, with independent brief blinks. Pets are 25% smaller, with simpler
+closed mouths and no protruding tongues. The parrot was removed.
+Walking is driven by actual distance, with articulated knees, planted stance
+paws, turning steps, and blended starts/stops. Thin interior floor inlays and
+surface-aware foot placement prevent paws sinking into walkways.
+
+An instrumented browser replay used real Neo collision geometry and normal player
+physics to walk from the collider building entrance through the hall into its
+room. The cat reached the bed, hopped up, then dismounted and retraced its route
+to the exact entrance after the player left. No browser errors were reported.
+All 119 unit tests, doctor, build, and 13 browser interaction tests pass.

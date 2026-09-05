@@ -27,7 +27,14 @@ test("keeps long package names on one line and labels attached during inward tra
     exact: true,
   });
   await expect(folder).toBeVisible();
-  await folder.click({ force: true });
+  await folder.evaluate((button) => {
+    if (!(button instanceof HTMLButtonElement))
+      throw new Error("The packages label must be a button.");
+    button.click();
+  });
+  const labels = page.locator(".celestial-labels");
+  await expect(labels).toHaveCSS("opacity", "0");
+  await expect(labels).toHaveCSS("opacity", "1");
   const galaxy = page.getByRole("button", {
     name: `Explore ${name}`,
     exact: true,
@@ -44,8 +51,11 @@ test("keeps long package names on one line and labels attached during inward tra
   expect(typography.whiteSpace).toBe("nowrap");
   expect(typography.textWidth).toBeLessThanOrEqual(typography.width);
   expect(typography.height).toBeLessThanOrEqual(typography.lineHeight + 1);
-  await galaxy.click({ force: true });
-  const frames = await page.evaluate(async () => {
+  const frames = await galaxy.evaluate(async (button) => {
+    if (!(button instanceof HTMLButtonElement))
+      throw new Error("The package galaxy label must be a button.");
+    // Start travel and sampling together so a moving label cannot escape the click.
+    button.click();
     const samples: {
       id: string;
       x: number;
@@ -84,6 +94,11 @@ test("keeps long package names on one line and labels attached during inward tra
     }
     return samples;
   });
+  await expect(
+    page
+      .getByRole("navigation", { name: "Constellation breadcrumb" })
+      .getByRole("button", { name, exact: true }),
+  ).toBeVisible();
   const first = new Map<
     string,
     { x: number; y: number; dx: number; dy: number }

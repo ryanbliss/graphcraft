@@ -30,7 +30,8 @@ npm run analyze -- /absolute/path/to/neo-compose artifacts/showcase/neo-compose.
 ```
 
 Without `SHOWCASE_GRAPH`, the synthetic Neon harbor fixture is used. The tour
-chooses its database building when available, otherwise the fixture's core building.
+uses the world-grid-builder entrance alley, collider bedroom, and database building when available,
+otherwise the fixture's core building.
 This cut was composed for neo-compose, so another project needs camera scouting.
 
 The capture uses `http://127.0.0.1:5173/`. Override it with `SHOWCASE_URL` to use
@@ -78,8 +79,9 @@ Sans on Linux. Set `SHOWCASE_FONT` to another installed TrueType font.
 
 The capture intercepts `main.ts` only within its own browser session to access
 camera controls. It changes no application source or public runtime API. Cuts
-between locations are editorial cuts. The automated route is staged, not an
-uninterrupted play session. The capture adds no cursor or click rings. Some HUD
+between locations are editorial cuts. The pet shot stages a companion beside a real bed and runs its normal furniture approach, jump, and rest behavior. The automated route is staged, not an
+uninterrupted play session. The capture adds no cursor or click rings. It disables Survey cinema so the
+scripted camera takes precedence. Some HUD
 controls are hidden during capture, and walking shots use a wider camera lens.
 
 The saved graph and fixed browser clock keep locations and timing repeatable.

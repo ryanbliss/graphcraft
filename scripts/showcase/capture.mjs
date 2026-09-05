@@ -54,6 +54,7 @@ await page.addStyleTag({
 });
 await page.evaluate(() => {
   const e = window.__capture.engine;
+  e.setCinemaEnabled(false);
   e.renderer.setPixelRatio(2);
   e.composer.setPixelRatio(2);
   e.resize();

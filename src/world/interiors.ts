@@ -92,10 +92,10 @@ export function furnishBuilding(
       for (const side of [-1, 1]) {
         blocks.add(
           hallX + side * 1.56,
-          floorY + 0.045,
+          floorY + 0.01,
           (hallRear + hallFront) / 2,
           0.18,
-          0.06,
+          0.008,
           hallLength,
           "#617180",
         );
@@ -122,20 +122,20 @@ export function furnishBuilding(
         const z = hallRear + (bay + 0.5) * bayLength;
         blocks.add(
           hallX,
-          floorY + 0.045,
+          floorY + 0.01,
           z,
           2.82,
-          0.06,
+          0.008,
           bayLength - 0.12,
           bay % 2 === 0 ? runnerColor : "#2b384b",
         );
         for (const side of [-1, 1])
           lights.add(
             hallX + side * 1.13,
-            floorY + 0.112,
+            floorY + 0.022,
             z,
             0.1,
-            0.06,
+            0.008,
             Math.min(1.1, bayLength * 0.45),
             hallColor,
           );
@@ -173,29 +173,29 @@ export function furnishBuilding(
             continue;
           blocks.add(
             x,
-            floorY + 0.045,
+            floorY + 0.01,
             z,
             width,
-            0.06,
+            0.008,
             depth,
             (column + row) % 2 === 0 ? runnerColor : "#364258",
           );
           for (const side of [-1, 1]) {
             blocks.add(
               x,
-              floorY + 0.111,
+              floorY + 0.022,
               z + side * (depth / 2 - 0.3),
               width - 0.4,
-              0.06,
+              0.008,
               0.18,
               "#637587",
             );
             lights.add(
               x + side * (width / 2 - 0.35),
-              floorY + 0.111,
+              floorY + 0.022,
               z,
               0.16,
-              0.06,
+              0.008,
               depth - 1.2,
               hallColor,
             );
@@ -233,29 +233,29 @@ export function furnishBuilding(
     if (foyerWidth > 0) {
       blocks.add(
         foyerX,
-        floorY + 0.045,
+        floorY + 0.01,
         front - 3.4,
         foyerWidth,
-        0.06,
+        0.008,
         3.8,
         runnerColor,
       );
       for (const side of [-1, 1]) {
         blocks.add(
           foyerX,
-          floorY + 0.111,
+          floorY + 0.022,
           front - 3.4 + side * 1.52,
           foyerWidth - 0.4,
-          0.06,
+          0.008,
           0.16,
           "#718396",
         );
         lights.add(
           foyerX,
-          floorY + 0.111,
+          floorY + 0.022,
           front - 3.4 + side * 1.15,
           Math.min(4.2, foyerWidth - 0.6),
-          0.06,
+          0.008,
           0.12,
           hallColor,
         );
@@ -263,10 +263,10 @@ export function furnishBuilding(
       for (let stripe = -1; stripe <= 1; stripe++)
         blocks.add(
           foyerX + stripe * 0.5,
-          floorY + 0.111,
+          floorY + 0.022,
           front - 3.4,
           0.18,
-          0.06,
+          0.008,
           1.6,
           "#91a1af",
         );
@@ -281,10 +281,10 @@ export function furnishBuilding(
       for (let arrow = 0; arrow < 3; arrow++)
         lights.add(
           flightX,
-          floorY + 0.09,
+          floorY + 0.022,
           markerZ + direction * arrow * 0.28,
           1.1 - arrow * 0.35,
-          0.08,
+          0.008,
           0.16,
           hallColor,
         );

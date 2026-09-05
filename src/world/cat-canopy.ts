@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { withNeonFlicker } from "./neon-flicker.ts";
 
 const canopyRadius = 3.1;
 const canopyHeight = 5.2;
@@ -18,8 +19,12 @@ export function buildCatCanopy(): THREE.Group {
   rose.color.set("#e52d91");
   const blush = shell.clone();
   blush.color.set("#ffabd3");
-  const neon = new THREE.MeshBasicMaterial({ color: "#3ee9ff" });
-  const white = new THREE.MeshBasicMaterial({ color: "#edfbff" });
+  const neon = withNeonFlicker(
+    new THREE.MeshBasicMaterial({ color: "#3ee9ff" }),
+  );
+  const white = withNeonFlicker(
+    new THREE.MeshBasicMaterial({ color: "#edfbff" }),
+  );
   const dark = new THREE.MeshStandardMaterial({
     color: "#261039",
     roughness: 0.3,

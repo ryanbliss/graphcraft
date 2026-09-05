@@ -1,5 +1,7 @@
 import * as THREE from "three";
 import { CollisionWorld } from "./physics.ts";
+import { hash } from "../graph/types.ts";
+import { withNeonFlicker } from "./neon-flicker.ts";
 interface Box {
   x: number;
   y: number;
@@ -38,6 +40,9 @@ export class VoxelBatch {
     const mesh = new THREE.InstancedMesh(geometry, material, this.boxes.length),
       dummy = new THREE.Object3D();
     const ids: (string | undefined)[] = [];
+    const circuits = this.glow
+      ? new Float32Array(this.boxes.length)
+      : undefined;
     this.boxes.forEach((box, i) => {
       dummy.position.set(box.x, box.y, box.z);
       dummy.scale.set(box.w, box.h, box.d);
@@ -48,7 +53,19 @@ export class VoxelBatch {
         new THREE.Color(box.color).multiplyScalar(this.glow ? 1.7 : 1),
       );
       ids.push(box.id);
+      if (circuits)
+        circuits[i] =
+          hash(
+            `${box.id ?? ""}:${Math.floor(box.x / 8)},${Math.floor(box.y / 8)},${Math.floor(box.z / 8)}`,
+          ) % 64;
     });
+    if (circuits) {
+      geometry.setAttribute(
+        "neonCircuit",
+        new THREE.InstancedBufferAttribute(circuits, 1),
+      );
+      withNeonFlicker(material, { circuits: true });
+    }
     mesh.userData.ids = ids;
     mesh.computeBoundingSphere();
     parent.add(mesh);
@@ -87,14 +104,27 @@ export function lineGeometry(
     "position",
     new THREE.Float32BufferAttribute(segments, 3),
   );
+  const circuits = new Float32Array(segments.length / 3);
+  for (let vertex = 0; vertex < circuits.length; vertex += 2) {
+    const start = vertex * 3;
+    const circuit =
+      hash(`${segments[start]},${segments[start + 1]},${segments[start + 2]}`) %
+      64;
+    circuits[vertex] = circuit;
+    circuits[vertex + 1] = circuit;
+  }
+  geometry.setAttribute("neonCircuit", new THREE.BufferAttribute(circuits, 1));
   return new THREE.LineSegments(
     geometry,
-    new THREE.LineBasicMaterial({
-      color,
-      transparent: true,
-      opacity,
-      depthWrite: false,
-    }),
+    withNeonFlicker(
+      new THREE.LineBasicMaterial({
+        color,
+        transparent: true,
+        opacity,
+        depthWrite: false,
+      }),
+      { circuits: true },
+    ),
   );
 }
 export function disposeGroup(group: THREE.Object3D) {

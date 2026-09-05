@@ -542,6 +542,9 @@ h1 span {
 .world-toolbar button:hover {
   background: #ffffff0b;
 }
+.world-toolbar button[data-state="paused"] {
+  opacity: 0.6;
+}
 .world-toolbar button.active {
   color: #c2dba8;
 }

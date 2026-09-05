@@ -288,3 +288,54 @@ it("backs every plaque corner with real furniture and leaves its reading face cl
       }
   }
 });
+
+it("keeps storefront identities readable and clickable ahead of the marquee without blocking entry", () => {
+  const draws = recordingCanvas();
+  const graph = analyzeProject(
+    ["runtime", "components"].map((directory) => ({
+      path: `src/${directory}/entry.ts`,
+      content: "export const value = 1",
+    })),
+    "neo-compose",
+  );
+  const layout = layoutWorld(graph);
+  const scene = new THREE.Group();
+  const signs = buildingSigns(layout, graph, scene);
+  scene.updateMatrixWorld(true);
+  const housings = scene.getObjectByName("Storefront marquee housings");
+  expect(housings).toBeInstanceOf(THREE.InstancedMesh);
+  if (!(housings instanceof THREE.InstancedMesh)) return;
+  for (const building of layout.buildings) {
+    const title = draws.find((draw) => draw.text === building.name);
+    expect(title, building.id).toBeDefined();
+    expect(title!.width, building.id).toBeLessThanOrEqual(title!.available);
+    expect(
+      draws.some((draw) => draw.text.includes(building.directory)),
+      building.id,
+    ).toBe(true);
+    const ray = new THREE.Raycaster(
+      new THREE.Vector3(building.x, 5.25, building.z + building.depth / 2 + 3),
+      new THREE.Vector3(0, 0, -1),
+      0,
+      3,
+    );
+    const label = ray.intersectObjects(signs)[0];
+    expect(
+      label.object.userData.signIds[Math.floor(label.faceIndex! / 2)],
+    ).toBe(building.id);
+    const backing = ray.intersectObject(housings)[0];
+    expect(backing.distance - label.distance).toBeCloseTo(0.03, 5);
+    ray.ray.origin.y = 2;
+    expect(ray.intersectObjects(signs)).toHaveLength(0);
+    const side = hash(building.id) % 2 === 0 ? -1 : 1;
+    ray.ray.origin.set(
+      building.x + side * 3.78,
+      5.35,
+      building.z + building.depth / 2 + 3,
+    );
+    const blade = ray.intersectObjects(signs)[0];
+    expect(blade.object.userData.ids[blade.instanceId!]).toBe(building.id);
+  }
+  expect(new THREE.Box3().setFromObject(housings).min.y).toBeGreaterThan(4);
+  disposeGroup(scene);
+});
