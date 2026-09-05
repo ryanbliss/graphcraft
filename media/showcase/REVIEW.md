@@ -88,3 +88,12 @@ physics to walk from the collider building entrance through the hall into its
 room. The cat reached the bed, hopped up, then dismounted and retraced its route
 to the exact entrance after the player left. No browser errors were reported.
 All 119 unit tests, doctor, build, and 13 browser interaction tests pass.
+
+## Pet shot camera correction
+
+The 4–6.85-second shot reset the camera-height smoother above the player's eye
+height on every capture frame. Different animation-frame counts between captured
+frames caused a repeating 0.0416-unit vertical bounce. The shot now initializes
+the smoother once at the player's actual eye height. A replay of all 86 frames
+in that shot measured zero camera-position changes, with a continuous angular
+pan of at most 0.000327 radians per frame.

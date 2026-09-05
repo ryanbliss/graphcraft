@@ -128,6 +128,7 @@
             petBed.z + dz * 3 + dx * 3.2,
             petBed.floorY,
           );
+          e.eyeHeight.reset(e.player.position.y);
           const pets = e.pets;
           pets.release();
           const cat = pets.actors.find((actor) => actor.species === "cat");
@@ -227,7 +228,6 @@
     }
     if (shot === 2) {
       if (petBed?.furniture === "bed") {
-        e.eyeHeight.reset(petBed.floorY + 2.1);
         look(
           petBed.x + 0.1 - (t - 4) * 0.07,
           petBed.floorY + 0.55,
