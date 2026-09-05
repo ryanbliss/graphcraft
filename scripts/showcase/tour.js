@@ -23,7 +23,21 @@
   let shot = -1,
     time = 0,
     pulse = -10;
-  const stages = [0, 2, 4, 6, 7.65, 9, 12, 13, 16.5, 18.5, 19.5, 24];
+  const segments = [
+    { start: 0, shot: 0 },
+    { start: 2, shot: 1 },
+    { start: 4, shot: 2 },
+    { start: 5.5, shot: 4 },
+    { start: 6.85, shot: 3 },
+    { start: 8.5, shot: 5 },
+    { start: 10.5, shot: 9 },
+    { start: 11.5, shot: 10 },
+    { start: 16, shot: 6 },
+    { start: 17, shot: 7 },
+    { start: 20.5, shot: 8 },
+    { start: 22, shot: 11 },
+    { start: 26, shot: 12 },
+  ];
   const cursor = document.createElement("div");
   cursor.innerHTML =
     '<svg width="26" height="32" viewBox="0 0 26 32"><path d="M3 2 L3 25 L9 20 L14 30 L19 27 L14 18 L23 17 Z" fill="white" stroke="#0a2439" stroke-width="2"/></svg>';
@@ -78,10 +92,18 @@
     e.constellation.select(item.id);
     if (e.cameraFlight) e.cameraFlight.duration = 350;
   }
+  const endCard = document.createElement("section");
+  endCard.style.cssText =
+    "position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;flex-direction:column;backdrop-filter:blur(10px) brightness(.4);color:#e8fff5;text-align:center";
+  endCard.innerHTML = `<div class="film-end-brand" style="display:flex;align-items:center;gap:22px;color:#c4ff83;filter:drop-shadow(0 0 12px #84ffb0)">${document.querySelector(".brand svg").outerHTML}<span style="font:600 74px 'Space Grotesk Variable';letter-spacing:-4px">graphcraft</span></div><p style="font:500 25px 'DM Sans Variable';margin:30px 0 15px">Turn your code into a city.</p><div style="font:500 29px 'Space Grotesk Variable';color:#7deaff;text-shadow:0 0 14px #31bdda">graphcraftcity.vercel.app</div><div style="position:absolute;bottom:45px;font:13px/1.65 'DM Sans Variable';color:#d3e3e5">Music: Newer Wave · Kevin MacLeod<br>incompetech.com · CC BY 4.0</div>`;
+  const endLogo = endCard.querySelector("svg");
+  endLogo.style.width = "78px";
+  endLogo.style.height = "78px";
+  document.body.append(endCard);
   window.__tour = (t) => {
     time = t;
     e.keys.clear();
-    const next = stages.findLastIndex((v) => t >= v);
+    const next = segments.findLast((segment) => t >= segment.start).shot;
     if (next !== shot) {
       shot = next;
       if (shot === 0) e.controls.autoRotateSpeed = 0.65;
@@ -105,7 +127,7 @@
         look(title.x, title.titleHeight * 0.65, title.z);
       }
       if (shot === 6) {
-        walk(title.x, title.z + 24);
+        walk(core.x + core.width / 2 + 65, core.z + core.depth / 2 + 24);
         c.star =
           e.constellation.skyPickables.find(
             (o) => o.userData.celestialId === "galaxy:.",
@@ -115,7 +137,13 @@
         e.setMode("constellation");
         document.querySelector("#inspector").hidden = true;
       }
-      if (shot === 8) enter(spaceBuilding.rooms[0]);
+      if (shot === 8) {
+        enter(spaceBuilding.rooms[0]);
+        const display = e.layout.positions.get(
+          "src/components/projects/wiki/WikiPageEditor.tsx",
+        );
+        if (display) look(display.x, display.y, display.z);
+      }
       if (shot === 9) {
         const ship = e.city.shuttles.get("cli") || e.city.shuttles.get(".");
         walk(ship.position.x + 9, ship.position.z + 10);
@@ -134,6 +162,25 @@
         document.querySelector(".travel-arrival").hidden = true;
         e.flight.update(1.9, e.player, e.camera, { x: 0, z: 0 }, e.layout);
       }
+      if (shot === 12) {
+        e.setMode("survey");
+        e.camera.position.set(title.x + 130, 100, title.z + 150);
+        e.controls.target.set(title.x, 6, title.z - 120);
+        e.controls.autoRotate = true;
+        e.controls.autoRotateSpeed = 2.2;
+        document
+          .querySelectorAll(".masthead,.view-switch,.tools,.crosshair")
+          .forEach((el) => (el.style.display = "none"));
+        endCard.style.display = "flex";
+      }
+    }
+    if (shot === 12) {
+      const age = t - 26;
+      const flicker =
+        age < 0.1 || (age > 0.22 && age < 0.28) || (age > 0.43 && age < 0.47);
+      endCard.querySelector(".film-end-brand").style.opacity = flicker
+        ? ".55"
+        : "1";
     }
     if (shot === 1) {
       e.keys.add("KeyW");
@@ -143,31 +190,31 @@
       look(lounge.x, lounge.floorY + 1.4, lounge.z - (t - 4) * 1.3);
     if (shot === 3) e.keys.add("KeyW");
     if (shot === 4)
-      look(upper.x, upper.floorY + 1.5, upper.z - (t - 7.65) * 1.2);
+      look(upper.x, upper.floorY + 1.5, upper.z - (t - 5.5) * 1.2);
     if (shot === 5) {
       e.player.position.y = floor + 2.7;
       e.eyeHeight.reset(floor + 2.7);
-      look(title.x + (t - 9) * 6, title.titleHeight * 0.65, title.z);
+      look(title.x - 35 + (t - 8.5) * 45, title.titleHeight * 0.65, title.z);
     }
     if (shot === 6) {
       const p = c.star.position;
       look(p.x, p.y, p.z);
-      point(640, 360, t > 12.8 && pulse < 12);
+      point(640, 360, t > 16.8 && pulse < 16);
     }
-    once("galaxy", 13.25, () => {
+    once("galaxy", 17.25, () => {
       celestial("galaxy:.");
       if (e.cameraFlight) e.cameraFlight.duration = 350;
     });
-    once("building", 14.3, () => celestial(spaceBuilding.id));
-    once("room", 15.3, () => celestial(spaceBuilding.rooms[0].id));
-    once("bailout", 24.45, () =>
+    once("building", 18.3, () => celestial(spaceBuilding.id));
+    once("room", 19.3, () => celestial(spaceBuilding.rooms[0].id));
+    once("bailout", 22.45, () =>
       document.body.dispatchEvent(
         new KeyboardEvent("keydown", { code: "Space", bubbles: true }),
       ),
     );
-    if (t > 24.5) {
+    if (shot === 11 && t > 22.5) {
       if (c.glideYaw === undefined) c.glideYaw = 0;
-      const progress = t - 24.5;
+      const progress = t - 22.5;
       e.yaw = c.glideYaw + Math.sin(progress * 1.05) * 0.55;
       e.pitch = -0.3;
       e.keys.add("KeyW");

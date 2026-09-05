@@ -171,10 +171,12 @@ export function createCelestialModel(
         );
       for (const room of building.rooms) {
         const firstFile = nodes.get(room.nodeIds[0])?.name ?? "";
-        const lastFile = nodes.get(room.nodeIds.at(-1)!)?.name ?? "";
+        const remaining = room.nodeIds.length - 1;
+        const groupedName =
+          remaining > 0 ? `${firstFile} +${remaining} more` : firstFile;
         const roomName =
           (directoryRooms.get(room.directory) ?? 0) > 1
-            ? `${room.name} · ${firstFile} … ${lastFile}`
+            ? groupedName
             : room.name;
         const planet: CelestialItem = {
           id: `planet:${room.id}`,

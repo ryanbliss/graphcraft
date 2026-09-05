@@ -49,6 +49,28 @@ function project(packages: number, files: number): ProjectGraph {
 }
 
 describe("hierarchical constellation", () => {
+  it("names split rooms with their first file and remaining file count", () => {
+    const graph = project(1, 90);
+    const layout = layoutWorld(graph);
+    const model = createCelestialModel(graph, layout);
+    let splitRooms = 0;
+    for (const building of layout.buildings) {
+      for (const room of building.rooms) {
+        if (
+          building.rooms.filter((other) => other.directory === room.directory)
+            .length < 2
+        )
+          continue;
+        splitRooms++;
+        const first = graph.nodes.find((node) => node.id === room.nodeIds[0])!;
+        const suffix =
+          room.nodeIds.length > 1 ? ` +${room.nodeIds.length - 1} more` : "";
+        expect(model.sources.get(room.id)?.name).toBe(first.name + suffix);
+      }
+    }
+    expect(splitRooms).toBeGreaterThan(0);
+  });
+
   it("groups the overview by real top-level folders while preserving package names inside", () => {
     const files = [
       { path: "notes.json", content: "{}" },

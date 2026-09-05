@@ -5,21 +5,22 @@ Astra researched the structure and reviewed the first cut. TikTok's official
 recommends a clear early proposition, sound, and keeping essential content in
 safe areas. The timing below is an editorial choice for this product.
 
-| Time      | Scene               | Intent                                              |
-| --------- | ------------------- | --------------------------------------------------- |
-| 0–2       | Home pan            | Introduce the real neo-compose city.                |
-| 2–4       | Street approach     | Track past the database facade.                     |
-| 4–6       | Search lounge       | Show files represented by furniture.                |
-| 6–7.65    | Convex staircase    | Climb into a populated upper floor without pausing. |
-| 7.65–9    | Tenth-floor room    | Show a furnished room high in the tower.            |
-| 9–12      | High window         | Frame the neo-compose neon sign and city.           |
-| 12–13     | Sky                 | Look toward a galaxy with a visible cursor cue.     |
-| 13–16.5   | Constellation zooms | Quickly move from galaxy to building and room.      |
-| 16.5–18.5 | Room arrival        | Imply teleportation with a match cut.               |
-| 18.5–19.5 | Shuttle             | Show the craft before boarding.                     |
-| 19.5–24   | Inward shuttle ride | Complete a four-second flight and landing.          |
-| 24–24.45  | Second ride         | Cut to an airborne ship.                            |
-| 24.45–30  | Cyber-cat parachute | Deploy the pink canopy and snake toward the city.   |
+| Time      | Scene                | Intent                                                               |
+| --------- | -------------------- | -------------------------------------------------------------------- |
+| 0–2       | Home pan             | Introduce the real neo-compose city.                                 |
+| 2–4       | Street approach      | Track past the database facade.                                      |
+| 4–5.5     | Search lounge        | Show files represented by furniture.                                 |
+| 5.5–6.85  | Populated upper room | Show the furnished interior before the climb.                        |
+| 6.85–8.5  | Convex staircase     | Climb without pausing at the landing.                                |
+| 8.5–10.5  | High window          | Sweep across the neo-compose neon sign and city.                     |
+| 10.5–11.5 | Shuttle              | Show the craft before boarding.                                      |
+| 11.5–16   | Inward shuttle ride  | Complete a four-second flight and landing.                           |
+| 16–17     | Sky                  | Frame a building corner beneath the selected galaxy.                 |
+| 17–20.5   | Constellation zooms  | Move from galaxy to building and room, separating the two flights.   |
+| 20.5–22   | Room arrival         | Imply teleportation with a match cut.                                |
+| 22–22.45  | Second ride          | Cut to an already airborne ship.                                     |
+| 22.45–26  | Cyber-cat parachute  | Deploy the pink canopy and snake toward the city.                    |
+| 26–28     | Neon end card        | Logo, call to action, URL, and music credit over a blurred city pan. |
 
 Music is "Newer Wave" by Kevin MacLeod, 110 BPM. The excerpt starts at 17.4545s,
 is normalized to a -16 LUFS target, and fades in and out. This is a bright

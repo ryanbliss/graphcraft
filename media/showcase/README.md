@@ -1,6 +1,6 @@
 # Graphcraft showcase
 
-Two 30-second videos recorded from the app using the local neo-compose project,
+Two 28-second videos recorded from the app using the local neo-compose project,
 with permission from its owner. Both include music. The source graph stays in
 ignored artifacts and is not included in the repository.
 
@@ -64,7 +64,7 @@ Sans on Linux. Set `SHOWCASE_FONT` to another installed TrueType font.
 ## Editing the tour
 
 - `scripts/showcase/tour.js`: camera poses, shot timings, movement and cursor
-  emphasis. The staircase uses production collision physics. Constellation
+  emphasis and the flickering neon end card. The staircase uses production collision physics. Constellation
   zooms use production selection handlers, followed by an editorial room cut.
   The first shuttle flies inward from the CLI port to the main district in four
   seconds and completes its landing. The second ride begins 1.9 seconds into
@@ -86,4 +86,5 @@ Different Chromium/GPU/font versions can produce small pixel differences.
 
 See [STORYBOARD.md](STORYBOARD.md) for the research and shot plan and
 [REVIEW.md](REVIEW.md) for the director critique and revisions. Include the music
-credit in the description wherever the videos are published.
+credit in the description wherever the videos are published. The final two
+seconds also display the artist, source, and license on screen.

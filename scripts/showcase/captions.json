@@ -1,10 +1,9 @@
 [
   { "start": 2, "end": 4, "text": "Walk your architecture." },
-  { "start": 4, "end": 6, "text": "Files become furniture." },
-  { "start": 6, "end": 9, "text": "Explore every floor." },
-  { "start": 9, "end": 12, "text": "A city built from your code." },
-  { "start": 13, "end": 16.5, "text": "Follow a galaxy home." },
-  { "start": 19.5, "end": 23.5, "text": "Fly across your codebase." },
-  { "start": 24.5, "end": 27, "text": "Take the scenic route." },
-  { "start": 27, "end": 30, "text": "Explore Graphcraft." }
+  { "start": 4, "end": 6.85, "text": "Files become furniture." },
+  { "start": 6.85, "end": 8.5, "text": "Explore every floor." },
+  { "start": 8.5, "end": 10.5, "text": "A city built from your code." },
+  { "start": 11.5, "end": 15.5, "text": "Fly across your codebase." },
+  { "start": 17, "end": 20.5, "text": "Follow a galaxy home." },
+  { "start": 22.5, "end": 25.8, "text": "Take the scenic route." }
 ]

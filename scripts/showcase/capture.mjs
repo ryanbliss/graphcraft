@@ -144,7 +144,7 @@ const encoder = spawn(
 );
 let log = "";
 encoder.stderr.on("data", (d) => (log += d));
-const frames = 900;
+const frames = 840;
 for (let frame = 0; frame < frames; frame++) {
   const t = frame / 30;
   await page.evaluate((t) => window.__tour(t), t);
