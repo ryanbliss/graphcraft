@@ -78,3 +78,7 @@ The test suite covers resolution, generated-output exclusion, picker/scanner con
 The scanner has been exercised against Neo Compose, Retree, Zustand, Express, Vite, and the parent Neo workspace spanning TypeScript and C# projects. These include a large application, library monorepos, CommonJS, Unity source, and repositories with authored playground packages. Analysis notes distinguish unsupported or missing connections from syntax parsing failures.
 
 `npm run build` produces a static site in `dist`. Run `npm run preview` to inspect it locally; development-only filesystem endpoints are excluded from the production site.
+
+## Showcase videos
+
+The [30-second showcase sources](media/showcase/README.md) include landscape and portrait edits, licensed music, a storyboard, and a repeatable browser capture. Run `npm run showcase` with the development server running, or `npm run showcase:render` to revise the edit without recapturing.

@@ -13,7 +13,10 @@
     "lint:architecture": "node scripts/check-architecture.mjs",
     "doctor": "npm run typecheck && npm run lint && npm run lint:architecture && prettier --check .",
     "analyze": "tsx scripts/analyze.ts",
-    "test:browser": "playwright test"
+    "test:browser": "playwright test",
+    "showcase": "npm run showcase:capture && npm run showcase:render",
+    "showcase:capture": "tsx scripts/showcase/capture.mjs",
+    "showcase:render": "node scripts/showcase/render.mjs"
   },
   "dependencies": {
     "@babel/parser": "^7.29.8",
