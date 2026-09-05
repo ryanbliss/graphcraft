@@ -30,9 +30,9 @@ function stages(size, y) {
 const music = ["-ss", "17.4545", "-i", `${destination}/newer-wave.mp3`];
 const audio = [
   "-t",
-  "34",
+  "30",
   "-af",
-  "loudnorm=I=-16:TP=-1.5:LRA=9,afade=t=in:d=0.35,afade=t=out:st=32.5:d=1.5",
+  "loudnorm=I=-16:TP=-1.5:LRA=9,afade=t=in:d=0.35,afade=t=out:st=28.5:d=1.5",
   "-ar",
   "48000",
   "-c:a",
@@ -75,7 +75,7 @@ run([
   "-map",
   "1:a:0",
   "-vf",
-  `scale=in_range=pc:out_range=tv:out_color_matrix=bt709,setsar=1,${stages(48, "h-132")},${text("graphcraftcity.vercel.app", 32, 48, "h-70", ":enable='gte(t,31)' ")}`,
+  `scale=in_range=pc:out_range=tv:out_color_matrix=bt709,setsar=1,${stages(48, "h-132")},${text("graphcraftcity.vercel.app", 32, 48, "h-70", ":enable='gte(t,27)' ")}`,
   ...audio,
   ...video,
   ...metadata,

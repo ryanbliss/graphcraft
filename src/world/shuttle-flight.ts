@@ -1,10 +1,11 @@
 import * as THREE from "three";
 import { ShipWake } from "./ship-wake.ts";
+import { buildCatCanopy } from "./cat-canopy.ts";
 import { buildParachutist } from "./parachutist.ts";
 import type { PlayerPhysics, Vec3 } from "./physics.ts";
 import { disposeGroup, lineGeometry } from "./geometry.ts";
 
-export const flightDuration = 8;
+export const flightDuration = 4;
 const smooth = (t: number) => {
   t = Math.max(0, Math.min(1, t));
   return t * t * (3 - 2 * t);
@@ -16,11 +17,11 @@ export function flightPosition(
   seconds: number,
 ): Vec3 {
   const t = Math.max(0, Math.min(1, seconds / flightDuration));
-  const travel = smooth((t - 0.23) / 0.54);
-  const lift = smooth(t / 0.23) * (1 - smooth((t - 0.77) / 0.23));
+  const travel = smooth((t - 0.08) / 0.84);
+  const lift = smooth(t / 0.32) * (1 - smooth((t - 0.68) / 0.32));
   return {
     x: from.x + (to.x - from.x) * travel,
-    y: clearance * lift,
+    y: from.y + (to.y - from.y) * travel + clearance * lift,
     z: from.z + (to.z - from.z) * travel,
   };
 }
@@ -58,19 +59,7 @@ export class ShuttleFlight {
     this.label.setAttribute("role", "status");
     this.label.hidden = true;
     document.body.append(this.label);
-    const dome = new THREE.Mesh(
-      new THREE.SphereGeometry(3.1, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2),
-      new THREE.MeshStandardMaterial({
-        color: "#66ead4",
-        emissive: "#176968",
-        emissiveIntensity: 0.7,
-        side: THREE.DoubleSide,
-        metalness: 0.4,
-        roughness: 0.45,
-      }),
-    );
-    dome.position.y = 5.2;
-    this.canopy.add(dome);
+    this.canopy.add(buildCatCanopy());
     const cords: number[] = [];
     for (let i = 0; i < 8; i++) {
       const a = (i * Math.PI) / 4;
@@ -83,7 +72,7 @@ export class ShuttleFlight {
         0.14,
       );
     }
-    this.canopy.add(lineGeometry(cords, "#d8ffac", 0.9));
+    this.canopy.add(lineGeometry(cords, "#71dfff", 0.9));
     this.canopy.add(buildParachutist());
     this.canopy.visible = false;
     this.scene.add(this.canopy);
@@ -160,7 +149,7 @@ export class ShuttleFlight {
       );
       this.wake.update(ride.ship, ride.seconds);
       if (this.state === "flight") {
-        const landing = smooth((ride.seconds - 6) / 2);
+        const landing = smooth((ride.seconds / flightDuration - 0.75) / 0.25);
         const turn = Math.atan2(
           Math.sin(Math.PI - ride.heading),
           Math.cos(Math.PI - ride.heading),
@@ -177,9 +166,9 @@ export class ShuttleFlight {
           p.z + Math.cos(h) * 5 * (1 - landing),
         );
         this.label.textContent =
-          ride.seconds < 1.8
+          ride.seconds < flightDuration * 0.22
             ? "Taking off"
-            : ride.seconds > 6.2
+            : ride.seconds > flightDuration * 0.78
               ? "Landing"
               : "Space to jump out";
       }
@@ -233,13 +222,13 @@ export class ShuttleFlight {
         0.2 + 0.8 * smooth(this.descentSeconds / 0.5),
       );
       const pitch = Math.max(-0.95, Math.min(0.1, look?.pitch ?? -0.32));
-      const distance = Math.cos(pitch) * 12;
+      const distance = Math.cos(pitch) * 15;
       camera.position.set(
         p.x - Math.sin(this.heading) * distance,
-        p.y + 2 - Math.sin(pitch) * 12,
+        p.y + 3.4 - Math.sin(pitch) * 15,
         p.z - Math.cos(this.heading) * distance,
       );
-      camera.lookAt(p.x, p.y + 2, p.z);
+      camera.lookAt(p.x, p.y + 3.4, p.z);
       const blend = smooth(this.descentSeconds / 0.45);
       camera.position.lerpVectors(this.bailoutFrom, camera.position, blend);
       camera.quaternion.slerp(this.bailoutRotation, 1 - blend);

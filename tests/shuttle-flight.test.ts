@@ -3,14 +3,14 @@ import { flightPosition, flightDuration } from "../src/world/shuttle-flight.ts";
 import { CameraHeight } from "../src/world/camera-height.ts";
 import { CollisionWorld, PlayerPhysics } from "../src/world/physics.ts";
 
-it("takes off vertically, clears buildings during cruise, and lands without overshooting", () => {
+it("blends lift into forward travel, clears cruise, and lands without overshooting", () => {
   const from = { x: 20, y: 0, z: -30 },
     to = { x: 800, y: 0, z: 400 };
   expect(flightPosition(from, to, 70, 0)).toEqual(from);
-  const lift = flightPosition(from, to, 70, 1);
-  expect(lift.x).toBe(from.x);
+  const lift = flightPosition(from, to, 70, 0.6);
+  expect(lift.x).toBeGreaterThan(from.x);
   expect(lift.y).toBeGreaterThan(0);
-  const cruise = flightPosition(from, to, 70, 4);
+  const cruise = flightPosition(from, to, 70, flightDuration / 2);
   expect(cruise.y).toBe(70);
   expect(cruise.x).toBeCloseTo(410);
   expect(flightPosition(from, to, 70, flightDuration + 1)).toEqual(to);

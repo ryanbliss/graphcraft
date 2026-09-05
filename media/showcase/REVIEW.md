@@ -70,3 +70,31 @@ lighting, service rails, door sconces and stair approach markers. These are
 architectural finishes without file identities or extra collision obstacles.
 Single-story buildings no longer reserve five units of unused stair width.
 The staircase regression traverses all eleven flights of a twelve-story fixture.
+
+## Thirty-second revision
+
+The revised edit removes the long inspector sequence and explicitly enters
+constellation mode. Cursor arrows and click rings show selections. Zooms settle
+before the next selection; labels hide while the camera is moving. The upper
+floor is a populated Convex room, followed by a window facing the large
+neo-compose sign. The first shuttle trip runs inward from CLI to the root port.
+Flights now take four seconds, with overlapping ascent and forward motion.
+
+The canopy is a pink cyber cat with cyan ribs, ears, eyes, cheeks, and whiskers.
+Its camera sits farther back to keep the ears below the HUD. Dim neon stars and
+up to three background couriers add activity without becoming graph targets.
+The ambient simulation passed a 180-second bounded-flight and disposal check.
+
+Astra's frame review accepted the staircase, populated room, skyline, landing,
+and cat framing. It requested larger constellation targets, prompting faster
+zoom transitions with a settled view before each subsequent selection.
+
+The final constellation insert uses the smaller wiki system, a focused label,
+and an editorial cut into its room. The recording hides surrounding labels and
+navigation headings so the three zooms read clearly in a short insert.
+
+Astra accepted the final frames 14–16: large clusters, readable focus labels,
+a visible cursor, and a clear package-to-wiki-to-room progression. This review
+assessed composition rather than playback timing or audio. The exported media
+decodes successfully, and all 76 unit tests, doctor, and the shuttle/stair browser
+checks pass.

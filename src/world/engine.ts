@@ -1,3 +1,4 @@
+import { AmbientSky } from "./ambient-sky.ts";
 import * as THREE from "three";
 import "./constellation.css";
 import { ConstellationMap } from "./constellation.ts";
@@ -33,6 +34,7 @@ export class WorldEngine {
   private worldPass: RenderPass;
   private flight: ShuttleFlight;
   private eyeHeight = new CameraHeight();
+  private ambientSky?: AmbientSky;
   private constellation?: ConstellationMap;
   private sceneVeil = document.createElement("div");
   private crossingScene = false;
@@ -257,6 +259,7 @@ export class WorldEngine {
   }
   load(graph: ProjectGraph) {
     this.flight.cancel();
+    this.ambientSky?.dispose();
     if (this.constellation) {
       this.scene.remove(this.constellation.sky);
       this.constellation.dispose();
@@ -274,6 +277,7 @@ export class WorldEngine {
     this.camera.updateProjectionMatrix();
     this.city = buildCity(graph, this.layout);
     this.scene.add(this.city.group);
+    this.ambientSky = new AmbientSky(this.scene, this.city.shuttles);
     this.constellation = new ConstellationMap(
       graph,
       this.layout,
@@ -857,6 +861,7 @@ export class WorldEngine {
       this.controls.update();
       this.accumulator = 0;
     }
+    this.ambientSky?.update(dt, this.camera, this.mode !== "constellation");
     this.city.routes.visible = this.showRoutes;
     this.city.titles.visible = this.showLabels;
     for (const child of this.selected.children)
@@ -898,6 +903,7 @@ export class WorldEngine {
   };
   dispose() {
     this.flight.dispose();
+    this.ambientSky?.dispose();
     cancelAnimationFrame(this.animationId);
     this.cleanup.abort();
     this.resizeObserver.disconnect();

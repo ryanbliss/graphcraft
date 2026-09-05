@@ -50,7 +50,7 @@ await page
   });
 await page.evaluate(() => document.fonts.ready);
 await page.addStyleTag({
-  content: `#film-caption,.walk-prompt,.view-hint,#hover,.minimap,#diagnostics,.world-location,.world-toolbar {display:none!important} .masthead {pointer-events:none} .crosshair {opacity:.5} #film-caption{position:fixed;left:48px;bottom:42px;z-index:95;font:500 28px 'Space Grotesk Variable';color:#edffe4;text-shadow:0 2px 18px #000;pointer-events:none} #film-credit{position:fixed;right:34px;bottom:18px;z-index:95;font:10px 'DM Sans Variable';color:#b7c9cc;pointer-events:none}`,
+  content: `.celestial-heading,#film-caption,.walk-prompt,.view-hint,#hover,.minimap,#diagnostics,.world-location,.world-toolbar {display:none!important} .masthead {pointer-events:none} .crosshair {opacity:.5} #film-caption{position:fixed;left:48px;bottom:42px;z-index:95;font:500 28px 'Space Grotesk Variable';color:#edffe4;text-shadow:0 2px 18px #000;pointer-events:none} #film-credit{position:fixed;right:34px;bottom:18px;z-index:95;font:10px 'DM Sans Variable';color:#b7c9cc;pointer-events:none}`,
 });
 await page.evaluate(() => {
   const e = window.__capture.engine;
@@ -76,6 +76,11 @@ await writeFile(
       const e = window.__capture.engine;
       return {
         buildings: e.layout.buildings,
+        titles: e.city.titlePlacements,
+        shuttles: [...e.city.shuttles].map(([id, o]) => ({
+          id,
+          p: o.position,
+        })),
         positions: [...e.layout.positions],
         sky: e.constellation.skyPickables.map((o) => ({
           id: o.userData.celestialId,
@@ -139,7 +144,7 @@ const encoder = spawn(
 );
 let log = "";
 encoder.stderr.on("data", (d) => (log += d));
-const frames = 1020;
+const frames = 900;
 for (let frame = 0; frame < frames; frame++) {
   const t = frame / 30;
   await page.evaluate((t) => window.__tour(t), t);

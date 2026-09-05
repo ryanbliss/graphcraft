@@ -1115,6 +1115,8 @@ ${child.path || child.name} · ${kindName[child.kind]}`;
     this.labelCameraPosition.copy(relativeCamera);
     this.labelCameraRotation.copy(camera.quaternion);
     this.labelCameraReady = true;
+    this.labelLayer.style.opacity = moving ? "0" : "1";
+    this.leaders.style.opacity = moving ? "0" : "1";
     const attribute = this.particles?.geometry.getAttribute("position");
     if (attribute)
       this.connections.forEach(({ curve, edge }, index) => {

@@ -1,6 +1,6 @@
 # Graphcraft showcase
 
-Two 34-second videos recorded from the app using the local neo-compose project,
+Two 30-second videos recorded from the app using the local neo-compose project,
 with permission from its owner. Both include music. The source graph stays in
 ignored artifacts and is not included in the repository.
 
@@ -63,12 +63,12 @@ Sans on Linux. Set `SHOWCASE_FONT` to another installed TrueType font.
 
 ## Editing the tour
 
-- `scripts/showcase/tour.js`: camera poses, shot timings, movement and real UI
-  actions. The stair climb uses production collision physics and asserts the
-  upper-floor arrival height. The galaxy uses a scene raycast. The destination menu, constellation selection,
-  file inspection and teleport invoke production handlers. Flight and parachuting
-  use the game controller, including faster gliding and camera-relative turns. The second ride begins 4.8 seconds into a flight toward a central tower,
-  an editorial cut that skips repeated boarding.
+- `scripts/showcase/tour.js`: camera poses, shot timings, movement and cursor
+  emphasis. The staircase uses production collision physics. Constellation
+  zooms use production selection handlers, followed by an editorial room cut.
+  The first shuttle flies inward from the CLI port to the main district in four
+  seconds and completes its landing. The second ride begins 1.9 seconds into
+  flight, then uses the real Space bailout and steering controls.
 - `scripts/showcase/fixture.ts`: synthetic extension of the demo with enough
   rooms for an upper floor. Each furnished artifact remains a graph node.
 - `scripts/showcase/captions.json`: timed editorial captions.

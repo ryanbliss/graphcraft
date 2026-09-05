@@ -36,12 +36,12 @@ test("flies to a stop, lands, and supports a steerable Space bailout", async ({
     void e.flyTo(region.id, "packages/core");
     return e.survey.entry(region.id)!.position;
   });
-  await page.clock.runFor(4200);
+  await page.clock.runFor(2000);
   expect(
     await page.evaluate(() => window.__flightTest.camera.position.y),
   ).toBeGreaterThan(30);
   await expect(page.locator(".flight-hint")).toHaveText("Space to jump out");
-  await page.clock.runFor(4500);
+  await page.clock.runFor(2500);
   const landed = await page.evaluate(() => window.__flightTest.player.position);
   expect(landed.x).toBeCloseTo(destination.x);
   expect(landed.z).toBeCloseTo(destination.z);
@@ -53,7 +53,7 @@ test("flies to a stop, lands, and supports a steerable Space bailout", async ({
     )!;
     void e.flyTo(region.id, "packages/ui");
   });
-  await page.clock.runFor(3000);
+  await page.clock.runFor(1500);
   await page.keyboard.press("Space");
   await expect(page.locator(".flight-hint")).toContainText(
     "Parachute deployed",
