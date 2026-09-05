@@ -28,7 +28,7 @@ const plaqueMounts: Record<
   workbench: { x: 0, y: 1.59, z: -0.404, width: 2.5, height: 0.19 },
 };
 
-interface Sign {
+export interface Sign {
   id: string;
   title: string;
   subtitle: string;
@@ -131,7 +131,7 @@ export function filePlacards(
   });
   return renderSigns(signs, parent, 512, 48);
 }
-function renderSigns(
+export function renderSigns(
   signs: Sign[],
   parent: THREE.Object3D,
   cellWidth = 256,

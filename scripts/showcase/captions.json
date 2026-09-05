@@ -1,9 +1,10 @@
 [
-  { "start": 3, "end": 6, "text": "Walk your architecture." },
-  { "start": 6, "end": 10, "text": "Every object is a file." },
-  { "start": 10, "end": 13, "text": "Explore every floor." },
-  { "start": 15, "end": 18, "text": "Catch a district shuttle." },
-  { "start": 18, "end": 21, "text": "Your dependencies are up there." },
-  { "start": 21, "end": 27, "text": "Follow a connection home." },
-  { "start": 27, "end": 30, "text": "Explore Graphcraft." }
+  { "start": 2, "end": 4, "text": "Walk your architecture." },
+  { "start": 4, "end": 7, "text": "Files become furniture." },
+  { "start": 7, "end": 10, "text": "Explore every floor." },
+  { "start": 11.5, "end": 14, "text": "Your dependencies are up there." },
+  { "start": 14, "end": 18, "text": "Follow a connection home." },
+  { "start": 19, "end": 24, "text": "Fly across your codebase." },
+  { "start": 28.65, "end": 31, "text": "Take the scenic route." },
+  { "start": 31, "end": 34, "text": "Explore Graphcraft." }
 ]

@@ -1,3 +1,4 @@
+import { buildStreetscape } from "./streetscape.ts";
 import * as THREE from "three";
 import { hash, type ProjectGraph } from "../graph/types.ts";
 import { palette, type WorldLayout, type Building } from "./layout.ts";
@@ -22,6 +23,7 @@ export interface Route {
 export interface City {
   group: THREE.Group;
   roofs: Map<string, THREE.Object3D>;
+  shuttles: Map<string, THREE.Group>;
   routes: THREE.Group;
   colliders: CollisionWorld;
   pickables: THREE.Object3D[];
@@ -29,6 +31,7 @@ export interface City {
   trafficRoutes: Route[];
   titlePlacements: DistrictTitlePlacement[];
   titles: THREE.Group;
+  water: THREE.ShaderMaterial;
 }
 export function buildCity(graph: ProjectGraph, layout: WorldLayout): City {
   const group = new THREE.Group(),
@@ -124,6 +127,46 @@ export function buildCity(graph: ProjectGraph, layout: WorldLayout): City {
         Math.max(2.4, Math.abs(a.z - b.z)),
         "#354650",
       );
+      const alongX = a.z === b.z;
+      const length = Math.abs(a.x - b.x) + Math.abs(a.z - b.z);
+      const centerX = (a.x + b.x) / 2;
+      const centerZ = (a.z + b.z) / 2;
+      for (const side of [-1, 1]) {
+        blocks.add(
+          centerX + (alongX ? 0 : side * 0.97),
+          0.08,
+          centerZ + (alongX ? side * 0.97 : 0),
+          alongX ? length : 0.16,
+          0.04,
+          alongX ? 0.16 : length,
+          "#647783",
+        );
+      }
+      const panels = Math.min(96, Math.floor(length / 3.8));
+      for (let panel = 0; panel < panels; panel++) {
+        const fraction = (panel + 0.5) / panels;
+        const px = a.x + (b.x - a.x) * fraction;
+        const pz = a.z + (b.z - a.z) * fraction;
+        blocks.add(
+          px,
+          0.079,
+          pz,
+          alongX ? 2.8 : 1.55,
+          0.035,
+          alongX ? 1.55 : 2.8,
+          panel % 3 === 0 ? "#445e6a" : "#3b505e",
+        );
+        if (panel % 3 === 0)
+          lights.add(
+            px,
+            0.117,
+            pz,
+            alongX ? 0.18 : 0.7,
+            0.04,
+            alongX ? 0.7 : 0.18,
+            "#6bafb6",
+          );
+      }
     }
   function building(b: Building) {
     blocks.owner = b.id;
@@ -206,6 +249,28 @@ export function buildCity(graph: ProjectGraph, layout: WorldLayout): City {
       b.kind === "module" || b.kind === "schema" ? "#735b54" : "#344b58";
     for (let floor = 0; floor < b.stories; floor++) {
       const floorY = floor * 5.4;
+      const facadeSide = hash(`${b.id}:facade`) % 2 === 0 ? -1 : 1;
+      for (const end of [-1, 1]) {
+        const finZ = z + end * (d / 2 - 1.1);
+        blocks.add(
+          x + facadeSide * (w / 2 + 0.35),
+          floorY + 3.1,
+          finZ,
+          0.5,
+          3.1,
+          0.8,
+          "#758793",
+        );
+        lights.add(
+          x + facadeSide * (w / 2 + 0.64),
+          floorY + 3.4,
+          finZ,
+          0.12,
+          1.5,
+          0.34,
+          color,
+        );
+      }
       for (const side of [-1, 1]) {
         if (floor > 0) {
           solid(
@@ -471,107 +536,217 @@ export function buildCity(graph: ProjectGraph, layout: WorldLayout): City {
       }
     } else {
       deck(0, 0, width, depth);
-      if (b.template === "studio") {
-        for (let tier = 0; tier < 7; tier++)
-          panel(
-            0,
-            top + 0.25 + (rise * tier) / 7,
-            0,
-            width * (1 - tier / 8),
-            rise / 7 + 0.05,
-            depth,
-            "#6a555e",
-          );
-        panel(0, top + rise + 0.03, 0, 0.4, 0.18, depth, "#ba9680");
-        glow(0, top + rise * 0.46, depth / 2 - 0.03, width * 0.46, 0.14, 0.1);
-      } else if (b.template === "townhouse") {
-        for (const side of [-1, 1]) {
-          const ridge = side < 0 ? rise : rise * 0.72;
-          const dx = (side * width) / 4;
-          for (let tier = 0; tier < 6; tier++)
-            panel(
-              dx,
-              top + 0.25 + (ridge * tier) / 6,
-              0,
-              (width / 2) * (1 - tier / 7),
-              ridge / 6 + 0.05,
-              depth,
-              side < 0 ? "#70535d" : "#586c6b",
-            );
-          panel(dx, top + ridge + 0.04, 0, 0.3, 0.18, depth, "#b79985");
-          panel(
-            dx,
-            top + ridge * 0.55,
-            depth / 2 - 1,
-            3.5,
-            ridge * 0.8,
-            1.8,
-            "#41565f",
-          );
-          glass(
-            dx,
-            top + ridge * 0.55,
-            depth / 2 - 0.07,
-            2.8,
-            ridge * 0.6,
-            0.08,
-          );
-          glow(dx, top + ridge * 0.42, depth / 2 - 0.01, 2.5, 0.12, 0.05);
-          panel(dx, top + ridge * 0.97, depth / 2 - 1, 4, 0.2, 2, "#b09882");
-        }
-      } else {
-        const sawDepth = (depth - 4) / 3;
-        for (let bay = 0; bay < 3; bay++) {
-          const dz = -depth / 2 + 2 + (bay + 0.5) * sawDepth;
-          for (let tier = 0; tier < 4; tier++)
-            panel(
-              -3,
-              top + 0.3 + (rise * 0.55 * tier) / 4,
-              dz + (tier * sawDepth) / 8,
-              width - 8,
-              (rise * 0.55) / 4 + 0.06,
-              sawDepth * (1 - tier / 4),
-              "#65766f",
-            );
-          glass(
-            -3,
-            top + rise * 0.32,
-            dz + sawDepth / 2,
-            width - 9,
-            rise * 0.45,
-            0.08,
-          );
-        }
-        const utilityX = width / 2 - 3;
-        panel(utilityX, top + 0.65, -depth / 4, 4.5, 1.05, 5, "#93978c");
-        panel(utilityX, top + rise / 2, depth / 4, 2, rise - 0.2, 2, "#617982");
+      const silhouette = hash(`${b.id}:roof`) % 4;
+      const cladding = ["#47626d", "#635164", "#4e6966", "#5c6779"][silhouette];
+      const crownY = top + 0.45;
+      // Broad volumes keep the skyline readable without a stack of thin ribs.
+      if (silhouette === 0) {
+        const crownWidth = width * 0.62;
+        const crownDepth = depth * 0.64;
+        const dx = -width * 0.1;
         panel(
-          utilityX,
-          top + rise - 0.05,
-          depth / 4,
-          2.7,
-          0.22,
-          2.7,
-          "#a4aaa0",
+          dx,
+          crownY + rise * 0.32,
+          -depth * 0.06,
+          crownWidth,
+          rise * 0.64,
+          crownDepth,
+          cladding,
         );
-        panel(utilityX, top + 0.35, 0, 0.65, 0.45, depth / 2, "#9fa595");
-        for (let slat = 0; slat < 5; slat++)
+        panel(
+          dx,
+          crownY + rise * 0.64 + 0.22,
+          -depth * 0.06,
+          crownWidth + 1.2,
+          0.44,
+          crownDepth + 1.2,
+          "#8b9c9e",
+        );
+        glow(
+          dx,
+          crownY + rise * 0.64 - 0.12,
+          depth * 0.26 + 0.08,
+          crownWidth - 1,
+          0.2,
+          0.16,
+        );
+        glass(
+          dx,
+          crownY + rise * 0.31,
+          depth * 0.26 + 0.06,
+          crownWidth - 1.2,
+          rise * 0.34,
+          0.12,
+        );
+        panel(
+          width * 0.34,
+          crownY + rise * 0.44,
+          -depth * 0.27,
+          1.25,
+          rise * 0.88,
+          depth * 0.28,
+          "#354c5b",
+        );
+      } else if (silhouette === 1) {
+        for (const side of [-1, 1]) {
+          const crownHeight = rise * (side < 0 ? 0.82 : 0.48);
+          const dx = side * width * 0.27;
           panel(
-            utilityX - 1.6 + slat * 0.8,
-            top + 1.2,
-            -depth / 4,
-            0.18,
-            0.08,
-            4.2,
-            "#3d5358",
+            dx,
+            crownY + crownHeight / 2,
+            -depth * 0.1,
+            width * 0.31,
+            crownHeight,
+            depth * 0.72,
+            cladding,
           );
+          panel(
+            dx,
+            crownY + crownHeight + 0.16,
+            -depth * 0.1,
+            width * 0.35,
+            0.32,
+            depth * 0.77,
+            "#91a6aa",
+          );
+          glow(
+            dx + side * width * 0.157,
+            crownY + crownHeight * 0.5,
+            -depth * 0.1,
+            0.16,
+            0.22,
+            depth * 0.62,
+          );
+        }
+        glass(0, top + 0.3, 0, width * 0.17, 0.14, depth * 0.68);
+        for (const side of [-1, 1])
+          panel(
+            side * width * 0.092,
+            top + 0.45,
+            0,
+            0.22,
+            0.35,
+            depth * 0.7,
+            "#8a9d9e",
+          );
+      } else if (silhouette === 2) {
+        panel(
+          -width * 0.17,
+          crownY + rise * 0.38,
+          -depth * 0.15,
+          width * 0.54,
+          rise * 0.76,
+          depth * 0.51,
+          cladding,
+        );
+        panel(
+          width * 0.17,
+          crownY + rise * 0.2,
+          depth * 0.19,
+          width * 0.53,
+          rise * 0.4,
+          depth * 0.37,
+          "#425a69",
+        );
+        panel(
+          -width * 0.12,
+          crownY + rise * 0.76 + 0.2,
+          -depth * 0.1,
+          width * 0.72,
+          0.4,
+          depth * 0.67,
+          "#7b8e99",
+        );
+        glow(
+          -width * 0.12,
+          crownY + rise * 0.76 - 0.11,
+          depth * 0.235,
+          width * 0.68,
+          0.18,
+          0.16,
+        );
+        glass(
+          width * 0.17,
+          crownY + rise * 0.4 + 0.08,
+          depth * 0.19,
+          width * 0.38,
+          0.12,
+          depth * 0.25,
+        );
+      } else {
+        const centerWidth = width * 0.52;
+        const centerDepth = depth * 0.57;
+        panel(
+          0,
+          crownY + rise * 0.21,
+          0,
+          centerWidth,
+          rise * 0.42,
+          centerDepth,
+          cladding,
+        );
+        glass(
+          0,
+          crownY + rise * 0.42 + 0.1,
+          0,
+          centerWidth - 0.8,
+          0.16,
+          centerDepth - 0.8,
+        );
+        for (const side of [-1, 1]) {
+          panel(
+            side * width * 0.33,
+            crownY + rise * 0.42,
+            0,
+            0.9,
+            rise * 0.84,
+            depth * 0.77,
+            "#6e8691",
+          );
+          glow(
+            side * width * 0.33,
+            crownY + rise * 0.84 + 0.07,
+            0,
+            0.45,
+            0.14,
+            depth * 0.74,
+          );
+        }
+        panel(
+          0,
+          crownY + rise * 0.84 + 0.18,
+          -depth * 0.31,
+          width * 0.76,
+          0.36,
+          depth * 0.17,
+          "#90a3a7",
+        );
+      }
+      for (const side of [-1, 1]) {
+        panel(
+          side * (width / 2 - 0.2),
+          top + 0.47,
+          0,
+          0.4,
+          0.54,
+          depth,
+          "#516572",
+        );
+        glow(
+          side * (width / 2 - 0.2),
+          top + 0.79,
+          -depth * 0.2,
+          0.22,
+          0.1,
+          depth * 0.4,
+        );
       }
     }
     roof.build(roofGroup);
     const ceilingMesh = ceilings.build(roofGroup);
     if (!Array.isArray(ceilingMesh.material)) ceilingMesh.material.dispose();
     ceilingMesh.material = new THREE.MeshBasicMaterial({ color: "#ffffff" });
-    if (b.template !== "studio") {
+    {
       const glassMesh = glazing.build(roofGroup);
       if (glassMesh.material instanceof THREE.MeshStandardMaterial) {
         glassMesh.material.transparent = true;
@@ -589,15 +764,27 @@ export function buildCity(graph: ProjectGraph, layout: WorldLayout): City {
     building(b);
     buildRoof(b);
   }
-  buildTransitStops(layout, blocks, lights, colliders);
+  const shuttles = buildTransitStops(layout, blocks, lights, colliders);
+  group.add(...shuttles.values());
   const titlePlacements = planDistrictTitles(layout, graph);
   const titles = new THREE.Group();
   group.add(titles);
   const titleMeshes = buildDistrictTitles(titlePlacements, titles);
+  blocks.owner = undefined;
+  lights.owner = undefined;
+  const streetscape = buildStreetscape(
+    layout,
+    titlePlacements,
+    blocks,
+    lights,
+    colliders,
+    group,
+  );
   const solidMesh = blocks.build(group),
     fileMesh = files.build(group);
   const lightMesh = lights.build(group);
   const signMeshes = [
+    ...streetscape.signs,
     ...buildingSigns(layout, graph, group),
     ...filePlacards(layout, graph, group),
   ];
@@ -680,9 +867,11 @@ export function buildCity(graph: ProjectGraph, layout: WorldLayout): City {
   return {
     group,
     roofs,
+    shuttles,
     routes,
     colliders,
     pickables: [
+      ...shuttles.values(),
       fileMesh,
       solidMesh,
       lightMesh,
@@ -693,10 +882,12 @@ export function buildCity(graph: ProjectGraph, layout: WorldLayout): City {
     traffic,
     trafficRoutes,
     titlePlacements,
+    water: streetscape.water,
     titles,
   };
 }
 export function animateTraffic(city: City, time: number) {
+  city.water.uniforms.time.value = time;
   const attribute = city.traffic.geometry.getAttribute("position");
   const position = new THREE.Vector3();
   city.trafficRoutes.forEach((route, i) => {

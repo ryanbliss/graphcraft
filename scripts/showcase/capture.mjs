@@ -8,14 +8,21 @@ import { once } from "node:events";
 
 const out = "artifacts/showcase";
 await mkdir(out, { recursive: true });
-const graph = showcaseGraph();
+const graph = process.env.SHOWCASE_GRAPH
+  ? JSON.parse(await readFile(process.env.SHOWCASE_GRAPH, "utf8"))
+  : showcaseGraph();
 await writeFile(`${out}/graph.json`, JSON.stringify(graph));
-const browser = await chromium.launch({ headless: true });
+const browser = await chromium.launch({
+  channel: "chromium",
+  headless: true,
+  args: process.platform === "darwin" ? ["--use-angle=metal"] : [],
+});
 const context = await browser.newContext({
   viewport: { width: 1280, height: 720 },
-  deviceScaleFactor: 1,
+  deviceScaleFactor: 2,
 });
 const page = await context.newPage();
+page.setDefaultTimeout(120000);
 page.on("pageerror", (error) => console.error(error));
 await page.route("**/demo.graph.json", (route) =>
   route.fulfill({ json: graph }),
@@ -47,6 +54,9 @@ await page.addStyleTag({
 });
 await page.evaluate(() => {
   const e = window.__capture.engine;
+  e.renderer.setPixelRatio(2);
+  e.composer.setPixelRatio(2);
+  e.resize();
   e.captureMouse = () => {
     e.mouseFallback = true;
     e.hooks.lock(true);
@@ -54,9 +64,9 @@ await page.evaluate(() => {
   const caption = document.createElement("div");
   caption.id = "film-caption";
   document.body.append(caption);
-  window.__capture.core = e.layout.buildings.find(
-    (b) => b.packageId === "packages/core",
-  );
+  window.__capture.core =
+    e.layout.buildings.find((b) => b.id === ".:src/database") ??
+    e.layout.buildings.find((b) => b.packageId === "packages/core");
   window.__capture.rooms = e.layout.buildings.flatMap((b) => b.rooms);
 });
 await writeFile(
@@ -82,8 +92,8 @@ if (process.argv.includes("--probe")) {
   await browser.close();
   process.exit(0);
 }
-await page.clock.install();
-await page.clock.pauseAt(new Date());
+await page.clock.install({ time: new Date("2030-01-01T00:00:00Z") });
+await page.clock.pauseAt(new Date("2030-01-01T01:00:00Z"));
 await page.evaluate(() => {
   const e = window.__capture.engine;
   e.lastFrame = performance.now();
@@ -120,7 +130,7 @@ const encoder = spawn(
     "-preset",
     "fast",
     "-crf",
-    "18",
+    "14",
     "-pix_fmt",
     "yuv420p",
     `${out}/silent.mp4`,
@@ -129,13 +139,13 @@ const encoder = spawn(
 );
 let log = "";
 encoder.stderr.on("data", (d) => (log += d));
-const frames = 900;
+const frames = 1020;
 for (let frame = 0; frame < frames; frame++) {
   const t = frame / 30;
   await page.evaluate((t) => window.__tour(t), t);
   await page.clock.runFor(1000 / 30);
   if (process.argv.includes("--draft") && frame % 30 !== 0) continue;
-  const jpeg = await page.screenshot({ type: "jpeg", quality: 94 });
+  const jpeg = await page.screenshot({ type: "jpeg", quality: 100 });
   if (!encoder.stdin.write(jpeg)) await once(encoder.stdin, "drain");
   if (frame % 30 === 0 || frames === 30) {
     await writeFile(

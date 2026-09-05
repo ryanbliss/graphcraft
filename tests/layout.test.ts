@@ -46,7 +46,7 @@ describe("spatial directory hierarchy", () => {
         (sum, building) => sum + building.width * building.depth,
         0,
       );
-    expect(occupied / (layout.width * layout.depth)).toBeGreaterThan(0.1);
+    expect(occupied / (layout.width * layout.depth)).toBeGreaterThan(0.16);
     expect(Math.max(layout.width, layout.depth)).toBeLessThan(1000);
     expect(layout.buildings).toHaveLength(25);
     expect(
@@ -72,10 +72,10 @@ describe("spatial directory hierarchy", () => {
       layout = layoutWorld(source),
       building = layout.buildings[0],
       floors = new Map<number, number>();
-    expect(building.stories).toBe(4);
+    expect(building.stories).toBe(9);
     expect(layout.buildings).toHaveLength(1);
     expect(building.rooms).toHaveLength(25);
-    expect(building.height).toBeGreaterThanOrEqual(4 * 5.4 + 1.5);
+    expect(building.height).toBeGreaterThanOrEqual(9 * 5.4 + 1.5);
     for (const position of layout.positions.values()) {
       floors.set(position.floorY, (floors.get(position.floorY) ?? 0) + 1);
       expect(position.y).toBeGreaterThan(position.floorY);
@@ -84,9 +84,13 @@ describe("spatial directory hierarchy", () => {
         building.x + building.width / 2 - 5,
       );
     }
-    expect(floors.size).toBe(4);
-    expect(Math.max(...floors.keys())).toBeCloseTo(16.2);
-    expect([...floors.values()]).toEqual([84, 84, 84, 48]);
+    expect(floors.size).toBe(9);
+    expect(Math.max(...floors.keys())).toBeCloseTo(43.2);
+    expect([...floors.values()]).toEqual([...Array<number>(8).fill(36), 12]);
+    expect(building.width).toBeLessThanOrEqual(32);
+    expect(new Set(building.rooms.map((room) => room.side))).toEqual(
+      new Set(["left"]),
+    );
     for (const room of building.rooms) {
       expect(contains(building, room)).toBe(true);
       expect(room.nodeIds.length).toBeLessThanOrEqual(12);
@@ -97,6 +101,49 @@ describe("spatial directory hierarchy", () => {
         expect(position.floorY).toBe(room.floorY);
       }
     }
+  });
+  it("uses distinct repeatable tower footprints with occupied floors and clear room banks", () => {
+    const files = ["api", "authentication", "components", "storage"].flatMap(
+      (directory) =>
+        Array.from({ length: 61 }, (_, index) => ({
+          path: `src/${directory}/file${index}.ts`,
+          content: "export const value=1",
+        })),
+    );
+    const source = analyzeProject(files, "tower profiles");
+    const layout = layoutWorld(source);
+    const capacities = new Set<number>();
+    for (const building of layout.buildings) {
+      const floors = new Map<number, typeof building.rooms>();
+      for (const room of building.rooms) {
+        const floor = floors.get(room.floorY) ?? [];
+        floor.push(room);
+        floors.set(room.floorY, floor);
+        expect(contains(building, room)).toBe(true);
+      }
+      capacities.add(
+        Math.max(...[...floors.values()].map((rooms) => rooms.length)),
+      );
+      expect(floors.size).toBe(building.stories);
+      expect(building.stories).toBeLessThanOrEqual(12);
+      if (building.stories > 1)
+        expect(building.depth).toBeGreaterThanOrEqual(36);
+      for (const rooms of floors.values()) {
+        for (let i = 0; i < rooms.length; i++) {
+          for (const other of rooms.slice(i + 1)) {
+            const room = rooms[i];
+            expect(
+              Math.abs(room.x - other.x) >= (room.width + other.width) / 2 ||
+                Math.abs(room.z - other.z) >= (room.depth + other.depth) / 2,
+            ).toBe(true);
+          }
+        }
+      }
+    }
+    expect(capacities).toEqual(new Set([1, 2, 4, 6]));
+    expect(
+      layoutWorld({ ...source, nodes: [...source.nodes].reverse() }),
+    ).toEqual(layout);
   });
   it("varies room proportions while preserving a straight hall and separate doorways", () => {
     const files = [1, 3, 6, 8, 12].flatMap((count, directory) =>
@@ -109,6 +156,15 @@ describe("spatial directory hierarchy", () => {
       building = layout.buildings[0];
     expect(layout.buildings).toHaveLength(1);
     expect(building.rooms).toHaveLength(5);
+    expect(building.stories).toBe(1);
+    const leftEdge = Math.min(
+      ...building.rooms.map((room) => room.x - room.width / 2),
+    );
+    const rightEdge = Math.max(
+      ...building.rooms.map((room) => room.x + room.width / 2),
+    );
+    expect(leftEdge - (building.x - building.width / 2)).toBeCloseTo(2);
+    expect(building.x + building.width / 2 - rightEdge).toBeCloseTo(2);
     expect(
       new Set(building.rooms.map((room) => room.width)).size,
     ).toBeGreaterThanOrEqual(3);

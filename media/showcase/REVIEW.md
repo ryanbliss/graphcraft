@@ -1,32 +1,72 @@
 # Director review
 
-Astra reviewed the first cut's contact sheet, per-second frames, fresh samples
-from the shuttle sequence, and a portrait frame. This was a visual frame review,
-not an audio or playback-smoothness assessment.
+Astra reviewed the previous cut and the revised neo-compose contact sheet and
+individual frames. This was a visual frame review, not an audio assessment.
 
-The room variety and shuttle arrival were clear. Requested revisions:
+The review prompted these changes:
 
-- Reframe the window to avoid the facade lettering, lamps and supports.
-- Pull back after arriving at Physics.ts so its label is fully visible.
-- Add a landscape end CTA and public URL.
-- Start the street approach farther back and slightly off axis.
-- Bring the galaxy into view sooner during the upward tilt.
-- Give portrait captions a larger separate band, using sentence case.
+- Capture at 2560 × 1440 and export portrait at 1080 × 1920.
+- Move the street camera back and off axis.
+- Film the final staircase in the four-story database building, with smoothed
+  camera height and the landing visible ahead.
+- Use a narrower lens through the side window.
+- Use a different lounge for the second interior shot.
+- Face canonical-json.ts after teleporting to its room.
+- Preserve the first shuttle's takeoff, cruise and landing.
+- Clear the old arrival toast before the second ride.
+- Begin the second ride farther along its route, so the parachute has rooftops
+  behind it instead of the giant district lettering.
+- Blend the camera into the bailout and finish while descending.
 
-Those revisions are reflected in the capture and edit sources. The window shot
-uses a narrower lens between facade supports. The final arrival includes a
-short backward step through the normal movement system. The source app and
-its materials are unchanged.
+Ryan's subsequent feedback was that the parachute moved too slowly. Horizontal
+steering now moves at 28 world units per second, four times walking speed, while
+its descent remains capped at 5 units per second. The ending was recorded again
+with this game change. Mouse look now turns the camera and character together;
+the recorded ending follows a curved S-shaped glide with a slight canopy bank.
 
-## Final pass
+The source graph stays in ignored artifacts. Both versions use the same real
+neo-compose layout. The synthetic fixture remains available for development.
 
-Astra inspected frames extracted from the revised MP4s and judged them ready for
-user feedback. The window view, complete Physics.ts artifact, landscape CTA,
-and separate portrait caption band were clear. Fine interface labels remain
-small in the framed portrait edit.
+## Revised ending review
 
-Both final files were decoded in full without errors: 900 frames, 30 seconds,
-30 fps, square pixels, H.264 video and 48 kHz stereo AAC. Measured audio loudness
-was -16.6 LUFS with a -2.4 dBFS true peak after fades and encoding. This verifies
-levels and encoding, not musical taste or beat synchronization. The app's
-66 unit tests and doctor checks passed.
+Astra inspected frames at 29, 31 and 33 seconds after the steering changes and
+judged the ending ready for feedback. The parachutist and departing shuttle read
+clearly, and the rooftops show travel through the turns. The canopy approaches
+the top navigation bar in the last shots, a minor framing limitation.
+
+Validation: 76 unit tests, the flight/landing/bailout/mouse-turn browser test,
+the front/rear staircase browser test, and doctor checks passed. The final
+outputs are 34 seconds at 30 fps, with stereo music and the licensing credit in
+metadata. The portrait version preserves the entire landscape frame; small
+application labels therefore remain smaller than in the landscape version.
+
+## City and model revision
+
+The city packing change reduced the saved neo-compose layout area by 56.6%.
+Narrow profiles put one or two rooms on each floor, with a maximum of twelve
+stories. Room contents and package boundaries remain derived from the graph.
+
+The exterior catalog contains 52 distinct shapes, including 16 foliage forms.
+Street fixtures and planted water gardens occupy reserved clear lots. Water
+ripples animate in one shared shader. Direction boards face the adjacent path
+and have separate readable faces with arrows corrected for each side.
+
+A geometric audit corrected 34 coplanar face conflicts across the catalog.
+Tests check all prop footprints, distinct geometry, repeatable selection,
+conflicting faces, and both sides of directional signs.
+
+The shuttle has armor, intake grilles, canopy framing and twin exhaust trails.
+The pilot has connected shoulders and bent arms, control grips, a visor,
+harness, canopy pack and boots. The camera moves closer above the craft during
+landing to keep foreground buildings out of the touchdown shot.
+
+Astra reviewed the new draft frames and flagged the blocked landing view and
+high stair gaze. Both were revised. The corrected window vista and S-curve
+ending were accepted. Water gardens and small wayfinding text remain easier to
+inspect in the app than in wide aerial footage. This critique used still frames.
+
+Shared corridors now have segmented rugs, entrance mats, floor guides, overhead
+lighting, service rails, door sconces and stair approach markers. These are
+architectural finishes without file identities or extra collision obstacles.
+Single-story buildings no longer reserve five units of unused stair width.
+The staircase regression traverses all eleven flights of a twelve-story fixture.

@@ -5,19 +5,20 @@ Astra researched the structure and reviewed the first cut. TikTok's official
 recommends a clear early proposition, sound, and keeping essential content in
 safe areas. The timing below is an editorial choice for this product.
 
-| Time    | Scene                        | Intent                                                      |
-| ------- | ---------------------------- | ----------------------------------------------------------- |
-| 0–3     | Home screen with moving city | Establish the premise with the existing headline.           |
-| 3–6     | Street approach              | Show the neon district and a real entrance.                 |
-| 6–7.4   | Systems room                 | DJ console and robot, each tied to a file.                  |
-| 7.4–8.7 | Engine room                  | Contrasting med-pod and trophy silhouettes.                 |
-| 8.7–10  | Test room                    | A third interior composition.                               |
-| 10–13   | Stair ascent                 | Walk from ground level to the upper floor using collisions. |
-| 13–15   | Upper-floor side window      | Pause to see the neighboring district.                      |
-| 15–18   | Shuttle                      | Click the ship, choose Ui, show arrival.                    |
-| 18–21   | Sky                          | Look up, settle on a galaxy, click it.                      |
-| 21–27   | Constellation                | Open runtime, systems, Physics.ts, then teleport.           |
-| 27–30   | Room arrival                 | Frame the selected artifact and invite viewers to explore.  |
+| Time     | Scene                         | Intent                                                         |
+| -------- | ----------------------------- | -------------------------------------------------------------- |
+| 0–2      | Home pan                      | Introduce the premise over the real neo-compose city.          |
+| 2–4      | Diagonal street approach      | Show the database building and street fixtures.                |
+| 4–7      | Database and search rooms     | Contrast the workstations with a furnished lounge.             |
+| 7–10     | Final staircase               | Climb the final flight with production physics.                |
+| 10–11.5  | Side window                   | Look across neighboring rooftops.                              |
+| 11.5–14  | Sky                           | Look up and click a galaxy.                                    |
+| 14–18    | Constellation                 | Select the database, a room, canonical-json.ts, then teleport. |
+| 18–19    | Room arrival                  | Face the selected artifact.                                    |
+| 19–28    | First shuttle ride            | Preserve the complete takeoff, cruise, descent and touchdown.  |
+| 28–28.65 | Second ride, already airborne | Cut ahead to skip repeated boarding.                           |
+| 28.65–31 | Space bailout                 | Show separation, canopy deployment and steering over rooftops. |
+| 31–34    | Parachuting                   | Continue descent behind the closing invitation and URL.        |
 
 Music is "Newer Wave" by Kevin MacLeod, 110 BPM. The excerpt starts at 17.4545s,
 is normalized to a -16 LUFS target, and fades in and out. This is a bright

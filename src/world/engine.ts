@@ -10,6 +10,8 @@ import { atmosphere } from "./atmosphere.ts";
 import { buildCity, animateTraffic, type City } from "./city.ts";
 import { layoutWorld, palette, type WorldLayout } from "./layout.ts";
 import { SurveyHierarchy } from "./survey.ts";
+import { CameraHeight } from "./camera-height.ts";
+import { ShuttleFlight } from "./shuttle-flight.ts";
 import { PlayerPhysics } from "./physics.ts";
 import { disposeGroup, lineGeometry } from "./geometry.ts";
 import { furnitureSize } from "./furniture.ts";
@@ -29,6 +31,8 @@ export class WorldEngine {
   readonly controls: OrbitControls;
   readonly composer: EffectComposer;
   private worldPass: RenderPass;
+  private flight: ShuttleFlight;
+  private eyeHeight = new CameraHeight();
   private constellation?: ConstellationMap;
   private sceneVeil = document.createElement("div");
   private crossingScene = false;
@@ -98,6 +102,7 @@ export class WorldEngine {
     this.sceneVeil.setAttribute("aria-hidden", "true");
     container.append(this.sceneVeil);
     atmosphere(this.scene);
+    this.flight = new ShuttleFlight(this.scene);
     this.scene.add(this.selected);
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enableDamping = true;
@@ -134,6 +139,14 @@ export class WorldEngine {
           this.mode === "walk"
         ) {
           this.setMode("survey");
+          return;
+        }
+        if (this.flight.active && event.code === "Space") {
+          event.preventDefault();
+          if (!event.repeat && this.flight.jump(this.player)) {
+            this.yaw = this.camera.rotation.y;
+            this.pitch = this.camera.rotation.x;
+          }
           return;
         }
         this.keys.add(event.code);
@@ -203,6 +216,7 @@ export class WorldEngine {
           this.captureMouse();
           return;
         }
+        if (this.flight.active) return;
         const id = this.pick(event.clientX, event.clientY);
         if (!id) return;
         if (this.constellation?.model.items.has(id)) {
@@ -217,7 +231,9 @@ export class WorldEngine {
       (event) => {
         if (
           document.pointerLockElement === this.renderer.domElement ||
-          (this.mode === "walk" && this.mouseFallback && this.dragLook)
+          (this.mode === "walk" &&
+            this.dragLook &&
+            (this.mouseFallback || this.flight.parachuting))
         ) {
           this.yaw -= event.movementX * 0.002;
           this.pitch = Math.max(
@@ -240,6 +256,7 @@ export class WorldEngine {
     this.animate();
   }
   load(graph: ProjectGraph) {
+    this.flight.cancel();
     if (this.constellation) {
       this.scene.remove(this.constellation.sky);
       this.constellation.dispose();
@@ -356,6 +373,7 @@ export class WorldEngine {
   }
   setMode(mode: ViewMode, celestialId?: string) {
     if (!this.layout) return;
+    this.flight.cancel();
     if (mode !== "survey") this.landing = false;
     this.container.classList.toggle("entered", !this.landing);
     const enteringConstellation =
@@ -388,6 +406,7 @@ export class WorldEngine {
       document.exitPointerLock();
     const size = Math.max(this.layout.width, this.layout.depth);
     if (mode === "walk") {
+      this.eyeHeight.reset(this.player.position.y);
       this.camera.position.set(
         this.player.position.x,
         this.player.position.y,
@@ -421,6 +440,42 @@ export class WorldEngine {
     this.controls.update();
     this.hooks.mode(mode);
     if (mode === "walk" && this.mouseFallback) this.hooks.lock(true);
+  }
+  async flyTo(id: string, originId?: string): Promise<boolean> {
+    const target =
+      this.layout.regions.find((region) => region.id === id) ??
+      this.layout.buildings.find((building) => building.id === id);
+    if (!target) return false;
+    const arrival = this.survey.entry(id)?.position;
+    if (!arrival) return false;
+    const ships = [...this.city.shuttles.entries()];
+    const source =
+      this.city.shuttles.get(originId ?? "") ??
+      ships.sort(
+        (a, b) =>
+          a[1].position.distanceToSquared(this.camera.position) -
+          b[1].position.distanceToSquared(this.camera.position),
+      )[0]?.[1];
+    if (!source) return false;
+    const destination = this.layout.buildings.some(
+      (building) => building.id === id,
+    )
+      ? undefined
+      : this.city.shuttles.get(target.packageId);
+    const to =
+      destination?.position.clone() ??
+      new THREE.Vector3(arrival.x, 0, arrival.z + 2);
+    if (source.position.distanceTo(to) < 1) {
+      this.focus(id, true);
+      return true;
+    }
+    this.setMode("walk");
+    this.clearHighlight();
+    const clearance = Math.max(
+      35,
+      ...this.layout.buildings.map((building) => building.height + 28),
+    );
+    return this.flight.start(source, destination, to, arrival, clearance);
   }
   private selectWorld(id: string) {
     if (this.landing) this.enter();
@@ -720,7 +775,29 @@ export class WorldEngine {
     this.lastFrame = now;
     this.elapsed += dt;
     if (!this.city) return;
-    if (this.mode === "walk") {
+    if (this.flight.active) {
+      const x = Number(this.keys.has("KeyD")) - Number(this.keys.has("KeyA"));
+      const z = Number(this.keys.has("KeyS")) - Number(this.keys.has("KeyW"));
+      const magnitude = Math.hypot(x, z) || 1;
+      const heading = this.yaw;
+      this.flight.update(
+        dt,
+        this.player,
+        this.camera,
+        {
+          x: (x * Math.cos(heading) + z * Math.sin(heading)) / magnitude,
+          z: (z * Math.cos(heading) - x * Math.sin(heading)) / magnitude,
+        },
+        this.layout,
+        { yaw: this.yaw, pitch: this.pitch },
+      );
+      this.accumulator = 0;
+      if (!this.flight.active) {
+        this.eyeHeight.reset(this.player.position.y);
+        this.yaw = this.camera.rotation.y;
+        this.pitch = 0;
+      }
+    } else if (this.mode === "walk") {
       this.accumulator += dt;
       let dx = 0,
         dz = 0;
@@ -751,7 +828,7 @@ export class WorldEngine {
       }
       this.camera.position.set(
         this.player.position.x,
-        this.player.position.y,
+        this.eyeHeight.sample(this.player.position.y, this.player.grounded, dt),
         this.player.position.z,
       );
       this.camera.rotation.order = "YXZ";
@@ -820,6 +897,7 @@ export class WorldEngine {
     this.composer.render();
   };
   dispose() {
+    this.flight.dispose();
     cancelAnimationFrame(this.animationId);
     this.cleanup.abort();
     this.resizeObserver.disconnect();

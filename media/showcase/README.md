@@ -1,10 +1,11 @@
 # Graphcraft showcase
 
-Two 30-second videos, recorded from the actual app with a synthetic Neon harbor
-project. Both include music. Nothing from a personal project is recorded.
+Two 34-second videos recorded from the app using the local neo-compose project,
+with permission from its owner. Both include music. The source graph stays in
+ignored artifacts and is not included in the repository.
 
-- `graphcraft-landscape.mp4`: 1280 × 720, 30 fps, H.264/AAC.
-- `graphcraft-portrait.mp4`: 720 × 1280, 30 fps, H.264/AAC. Full application
+- `graphcraft-landscape.mp4`: 2560 × 1440, 30 fps, H.264/AAC.
+- `graphcraft-portrait.mp4`: 1080 × 1920, 30 fps, H.264/AAC. Full application
   footage remains visible, with larger editorial captions outside the footage.
 - `newer-wave.mp3`: original licensed music source. See [MUSIC.md](MUSIC.md).
 
@@ -19,8 +20,18 @@ npm ci
 npx playwright install chromium
 npm run dev
 # In another terminal at the repository root:
-npm run showcase
+SHOWCASE_GRAPH=artifacts/showcase/neo-compose.json npm run showcase
 ```
+
+Create that graph from a local checkout before recording:
+
+```sh
+npm run analyze -- /absolute/path/to/neo-compose artifacts/showcase/neo-compose.json
+```
+
+Without `SHOWCASE_GRAPH`, the synthetic Neon harbor fixture is used. The tour
+chooses its database building when available, otherwise the fixture's core building.
+This cut was composed for neo-compose, so another project needs camera scouting.
 
 The capture uses `http://127.0.0.1:5173/`. Override it with `SHOWCASE_URL` to use
 another local Vite development server. A production server cannot provide the
@@ -54,8 +65,10 @@ Sans on Linux. Set `SHOWCASE_FONT` to another installed TrueType font.
 
 - `scripts/showcase/tour.js`: camera poses, shot timings, movement and real UI
   actions. The stair climb uses production collision physics and asserts the
-  upper-floor arrival height. The shuttle and galaxy use actual scene raycasts;
-  the destination, hierarchy and teleport buttons use their real click handlers.
+  upper-floor arrival height. The galaxy uses a scene raycast. The destination menu, constellation selection,
+  file inspection and teleport invoke production handlers. Flight and parachuting
+  use the game controller, including faster gliding and camera-relative turns. The second ride begins 4.8 seconds into a flight toward a central tower,
+  an editorial cut that skips repeated boarding.
 - `scripts/showcase/fixture.ts`: synthetic extension of the demo with enough
   rooms for an upper floor. Each furnished artifact remains a graph node.
 - `scripts/showcase/captions.json`: timed editorial captions.
@@ -68,7 +81,7 @@ between locations are editorial cuts. The automated route is staged, not an
 uninterrupted play session. Pointer rings are editorial emphasis. Some HUD
 controls are hidden during capture, and walking shots use a wider camera lens.
 
-The fixture and fixed browser clock keep locations and timing repeatable.
+The saved graph and fixed browser clock keep locations and timing repeatable.
 Different Chromium/GPU/font versions can produce small pixel differences.
 
 See [STORYBOARD.md](STORYBOARD.md) for the research and shot plan and

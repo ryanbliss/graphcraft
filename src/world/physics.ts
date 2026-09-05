@@ -57,16 +57,20 @@ export class PlayerPhysics {
     direction: { x: number; z: number },
     jump: boolean,
     sprint: boolean,
+    descent: "normal" | "parachute" = "normal",
   ) {
-    const speed = sprint ? 13 : 7,
-      damping = 1 - Math.exp(-14 * dt);
+    const groundSpeed = sprint ? 13 : 7;
+    const speed = descent === "parachute" ? 28 : groundSpeed;
+    const damping = 1 - Math.exp(-14 * dt);
     this.velocity.x += (direction.x * speed - this.velocity.x) * damping;
     this.velocity.z += (direction.z * speed - this.velocity.z) * damping;
     if (jump && this.grounded) {
       this.velocity.y = 8;
       this.grounded = false;
     }
-    this.velocity.y -= 24 * dt;
+    this.velocity.y -= (descent === "parachute" ? 5 : 24) * dt;
+    if (descent === "parachute")
+      this.velocity.y = Math.max(-5, this.velocity.y);
     const height = 1.75,
       radius = 0.38;
     for (const axis of ["x", "z"] as const) {

@@ -1360,3 +1360,20 @@ h1 span {
 .directory-breadcrumb button:hover {
   color: var(--lime);
 }
+
+.flight-hint {
+  position: absolute;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  padding: 10px 18px;
+  border: 1px solid #66ead455;
+  border-radius: 8px;
+  background: #071421df;
+  color: #dcf8d2;
+  font:
+    13px "DM Sans Variable",
+    sans-serif;
+  pointer-events: none;
+}

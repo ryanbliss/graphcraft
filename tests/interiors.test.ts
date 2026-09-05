@@ -83,79 +83,82 @@ it("reaches furnished rooms on both sides of the hall from the entrance and stai
   }
 });
 
-it("ascends and descends every story from front and rear stairwells with head clearance", () => {
-  const building: Building = {
-    id: "building:src",
-    name: "src",
-    directory: "src",
-    parentId: "region:src",
-    packageId: "project",
-    nodes: [],
-    kind: "module",
-    x: 0,
-    z: 0,
-    width: 30,
-    depth: 40,
-    height: 23,
-    stories: 4,
-    hallX: 0,
-    template: "atrium",
-    rooms: [],
-  };
-  const layout: WorldLayout = {
-    buildings: [building],
-    districts: [],
-    regions: [],
-    paths: [],
-    positions: new Map(),
-    width: 30,
-    depth: 40,
-    spawn: { x: 11.7, z: -15 },
-  };
-  const world = new CollisionWorld();
-  furnishBuilding(
-    building,
-    layout,
-    new VoxelBatch(),
-    new VoxelBatch(true),
-    new VoxelBatch(),
-    world,
-    new Set(),
-  );
-  const player = new PlayerPhysics(world);
-  const wells = stairwells(building);
-  expect(wells).toHaveLength(2);
-  expect(wells[0].front + 2).toBeLessThan(wells[1].rear);
-  for (const well of wells) {
-    player.teleport(well.x - 0.8, well.entryZ - well.direction);
-    for (let flight = 0; flight < 3; flight++) {
-      const firstLane = flight % 2 === 0;
-      const laneX = well.x + (firstLane ? -0.8 : 0.8);
-      const landingZ = firstLane
-        ? well.exitZ + well.direction
-        : well.entryZ - well.direction;
-      walkTo(player, laneX, player.position.z);
-      walkTo(player, laneX, landingZ);
-      const expectedEyeHeight = (flight + 1) * 5.4 + 1.75;
-      expect(player.position.y).toBeCloseTo(expectedEyeHeight, 5);
-      expect(player.grounded).toBe(true);
+it.each([4, 12])(
+  "ascends and descends %i stories from front and rear stairwells with head clearance",
+  (stories) => {
+    const building: Building = {
+      id: "building:src",
+      name: "src",
+      directory: "src",
+      parentId: "region:src",
+      packageId: "project",
+      nodes: [],
+      kind: "module",
+      x: 0,
+      z: 0,
+      width: 30,
+      depth: 40,
+      height: stories * 5.4 + 1.5,
+      stories,
+      hallX: 0,
+      template: "atrium",
+      rooms: [],
+    };
+    const layout: WorldLayout = {
+      buildings: [building],
+      districts: [],
+      regions: [],
+      paths: [],
+      positions: new Map(),
+      width: 30,
+      depth: 40,
+      spawn: { x: 11.7, z: -15 },
+    };
+    const world = new CollisionWorld();
+    furnishBuilding(
+      building,
+      layout,
+      new VoxelBatch(),
+      new VoxelBatch(true),
+      new VoxelBatch(),
+      world,
+      new Set(),
+    );
+    const player = new PlayerPhysics(world);
+    const wells = stairwells(building);
+    expect(wells).toHaveLength(2);
+    expect(wells[0].front + 2).toBeLessThan(wells[1].rear);
+    for (const well of wells) {
+      player.teleport(well.x - 0.8, well.entryZ - well.direction);
+      for (let flight = 0; flight < stories - 1; flight++) {
+        const firstLane = flight % 2 === 0;
+        const laneX = well.x + (firstLane ? -0.8 : 0.8);
+        const landingZ = firstLane
+          ? well.exitZ + well.direction
+          : well.entryZ - well.direction;
+        walkTo(player, laneX, player.position.z);
+        walkTo(player, laneX, landingZ);
+        const expectedEyeHeight = (flight + 1) * 5.4 + 1.75;
+        expect(player.position.y).toBeCloseTo(expectedEyeHeight, 5);
+        expect(player.grounded).toBe(true);
 
-      walkTo(player, 0, landingZ);
-      walkTo(player, 0, 0);
-      expect(player.position.y).toBeCloseTo(expectedEyeHeight, 5);
-      walkTo(player, 0, landingZ);
-      walkTo(player, laneX, landingZ);
+        walkTo(player, 0, landingZ);
+        walkTo(player, 0, 0);
+        expect(player.position.y).toBeCloseTo(expectedEyeHeight, 5);
+        walkTo(player, 0, landingZ);
+        walkTo(player, laneX, landingZ);
+      }
+      for (let flight = stories - 2; flight >= 0; flight--) {
+        const firstLane = flight % 2 === 0;
+        const laneX = well.x + (firstLane ? -0.8 : 0.8);
+        const landingZ = firstLane
+          ? well.entryZ - well.direction
+          : well.exitZ + well.direction;
+        walkTo(player, laneX, player.position.z);
+        walkTo(player, laneX, landingZ);
+        expect(player.position.y).toBeCloseTo(flight * 5.4 + 1.75, 5);
+        expect(player.grounded).toBe(true);
+      }
     }
-    for (let flight = 2; flight >= 0; flight--) {
-      const firstLane = flight % 2 === 0;
-      const laneX = well.x + (firstLane ? -0.8 : 0.8);
-      const landingZ = firstLane
-        ? well.entryZ - well.direction
-        : well.exitZ + well.direction;
-      walkTo(player, laneX, player.position.z);
-      walkTo(player, laneX, landingZ);
-      expect(player.position.y).toBeCloseTo(flight * 5.4 + 1.75, 5);
-      expect(player.grounded).toBe(true);
-    }
-  }
-});
+  },
+);

@@ -1,4 +1,5 @@
 import {
+  hash,
   type ProjectGraph,
   type GraphNode,
   type FileKind,
@@ -135,8 +136,8 @@ interface Placement<T> {
 }
 function pack<T extends Rectangle>(
   items: T[],
-  padding = 8,
-  gap = 10,
+  padding = 3,
+  gap = 6,
 ): { width: number; depth: number; placements: Placement<T>[] } {
   if (!items.length) return { width: 24, depth: 24, placements: [] };
   const area = items.reduce(
@@ -148,40 +149,37 @@ function pack<T extends Rectangle>(
     minimumWidth = Math.max(...items.map((item) => item.width)),
     side = Math.sqrt(area);
   function arrange(limit: number) {
-    const placements: Placement<T>[] = [];
-    let x = padding,
-      z = padding,
-      rowDepth = 0,
-      width = 0,
-      rowStart = 0;
-    const finishRow = () => {
-      for (let i = rowStart; i < placements.length; i++)
-        placements[i].aisleZ = z + rowDepth + gap / 2;
-      rowStart = placements.length;
-    };
+    const rows: { items: T[]; width: number; depth: number }[] = [];
     for (const item of ordered) {
-      if (x > padding && x + item.width > limit + padding) {
-        finishRow();
-        x = padding;
-        z += rowDepth + gap;
-        rowDepth = 0;
-      }
-      placements.push({ item, x, z, aisleZ: 0 });
-      x += item.width + gap;
-      rowDepth = Math.max(rowDepth, item.depth);
-      width = Math.max(width, x - gap);
+      const row = rows.find((row) => row.width + gap + item.width <= limit);
+      if (row) {
+        row.items.push(item);
+        row.width += gap + item.width;
+      } else rows.push({ items: [item], width: item.width, depth: item.depth });
     }
-    finishRow();
+    const placements: Placement<T>[] = [];
+    let z = padding;
+    let width = 0;
+    for (const row of rows) {
+      let x = padding;
+      const aisleZ = z + row.depth + gap / 2;
+      for (const item of row.items) {
+        placements.push({ item, x, z: z + row.depth - item.depth, aisleZ });
+        x += item.width + gap;
+      }
+      width = Math.max(width, row.width);
+      z += row.depth + gap;
+    }
     return {
-      width: width + padding + 6,
-      depth: z + rowDepth + padding + 6,
+      width: width + padding * 2 + 6,
+      depth: z - gap + padding + 6,
       placements,
     };
   }
   const score = (result: Rectangle) =>
     result.width * result.depth + 0.2 * (result.width - result.depth) ** 2;
   let best = arrange(Math.max(minimumWidth, side));
-  for (const factor of [0.75, 1.25, 1.5]) {
+  for (const factor of [0.6, 0.75, 0.9, 1.1, 1.25, 1.5, 1.75]) {
     const candidate = arrange(Math.max(minimumWidth, side * factor));
     if (score(candidate) < score(best)) best = candidate;
   }
@@ -284,8 +282,19 @@ export function layoutWorld(graph: ProjectGraph): WorldLayout {
           door: { x: 0, z: 0, rotation: 0 },
         });
     }
-    const stories = Math.min(4, Math.ceil(rooms.length / 6)),
-      roomsPerFloor = Math.ceil(rooms.length / stories);
+    // The source path chooses a repeatable footprint, independent of scan order.
+    const profiles = [
+      { targetRooms: 1, maxStories: 12, narrow: true },
+      { targetRooms: 6, maxStories: 4, narrow: false },
+      { targetRooms: 2, maxStories: 12, narrow: true },
+      { targetRooms: 4, maxStories: 8, narrow: false },
+    ];
+    const { targetRooms, maxStories, narrow } = profiles[(hash(id) >>> 16) % 4];
+    const roomsPerFloor = Math.max(
+      targetRooms,
+      Math.ceil(rooms.length / maxStories),
+    );
+    const stories = Math.ceil(rooms.length / roomsPerFloor);
     const counts = new Map<FileKind, number>();
     for (const node of nodes)
       counts.set(node.kind, (counts.get(node.kind) ?? 0) + 1);
@@ -309,7 +318,7 @@ export function layoutWorld(graph: ProjectGraph): WorldLayout {
         room.width = size.width;
         room.depth = size.depth;
         room.door.z = size.doorZ;
-        room.side = leftRun <= rightRun ? "left" : "right";
+        room.side = narrow || leftRun <= rightRun ? "left" : "right";
         const run = room.side === "left" ? leftRun : rightRun;
         room.z = -8 - run - room.depth / 2;
         room.floorY = floor * 5.4;
@@ -332,7 +341,7 @@ export function layoutWorld(graph: ProjectGraph): WorldLayout {
       nodes,
       x: 0,
       z: 0,
-      width: leftWidth + rightWidth + 13,
+      width: leftWidth + rightWidth + (stories === 1 ? 8 : 13),
       depth: Math.max(longestRun + 12, stories > 1 ? minimumStairDepth : 0),
       height: Math.max(
         stories * 5.4 + 1.5,

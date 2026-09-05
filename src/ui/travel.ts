@@ -24,7 +24,7 @@ export function installTravel(engine: WorldEngine): {
   dialog.id = "travel-dialog";
   dialog.className = "panel travel-dialog";
   dialog.setAttribute("aria-labelledby", "travel-title");
-  dialog.innerHTML = `<header class="travel-header"><span class="travel-emblem" aria-hidden="true">${icon("stars")}</span><div><p class="travel-origin">District shuttle</p><h2 id="travel-title">Teleport to...</h2></div><button class="icon-button travel-close" aria-label="Close teleport menu">${icon("close")}</button></header><label class="travel-search">${icon("search")}<input id="travel-search" type="search" placeholder="Find a district or building" aria-label="Find a district or building" autocomplete="off"></label><div class="travel-destinations"></div><footer class="travel-footer">Choose a stop, then explore on foot.</footer>`;
+  dialog.innerHTML = `<header class="travel-header"><span class="travel-emblem" aria-hidden="true">${icon("stars")}</span><div><p class="travel-origin">District shuttle</p><h2 id="travel-title">Fly to...</h2></div><button class="icon-button travel-close" aria-label="Close teleport menu">${icon("close")}</button></header><label class="travel-search">${icon("search")}<input id="travel-search" type="search" placeholder="Find a district or building" aria-label="Find a district or building" autocomplete="off"></label><div class="travel-destinations"></div><footer class="travel-footer">Stay aboard to land. Press Space during flight to parachute.</footer>`;
   const search = dialog.querySelector<HTMLInputElement>("input")!;
   const results = dialog.querySelector<HTMLElement>(".travel-destinations")!;
   const origin = dialog.querySelector<HTMLElement>(".travel-origin")!;
@@ -40,9 +40,9 @@ export function installTravel(engine: WorldEngine): {
   function close() {
     dialog.close();
   }
-  function travel(destination: Destination) {
+  async function travel(destination: Destination) {
     close();
-    engine.focus(destination.id, true);
+    if (!(await engine.flyTo(destination.id, originId))) return;
     arrival.textContent = `Arrived at ${destination.name}`;
     arrival.hidden = false;
     arrival.classList.remove("arriving");
@@ -97,7 +97,9 @@ export function installTravel(engine: WorldEngine): {
       arrow.setAttribute("aria-hidden", "true");
       arrow.innerHTML = icon("arrow");
       button.append(marker, identity, arrow);
-      button.onclick = () => travel(destination);
+      button.onclick = () => {
+        void travel(destination);
+      };
       fragment.append(button);
     }
     if (!fragment.childNodes.length) {
@@ -111,6 +113,8 @@ export function installTravel(engine: WorldEngine): {
   }
   function open(id?: string) {
     if (!engine.layout) return;
+    clearTimeout(arrivalTimer);
+    arrival.hidden = true;
     originId = id?.replace(/^transit:/, "");
     const districts = new Map(
       engine.layout.districts.map((district) => [district.id, district]),

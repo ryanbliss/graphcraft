@@ -2,6 +2,7 @@ import { type Building, type Room, type WorldLayout } from "./layout.ts";
 import { solid, type VoxelBatch } from "./geometry.ts";
 import type { CollisionWorld } from "./physics.ts";
 import { stairwells } from "./stairs.ts";
+import { hash } from "../graph/types.ts";
 import { furnishArtifact } from "./furniture.ts";
 import { roomContentHeight, roomTheme, type RoomTheme } from "./room-plan.ts";
 export { roomTheme } from "./room-plan.ts";
@@ -73,8 +74,249 @@ export function furnishBuilding(
     );
   };
 
+  const blockOwner = blocks.owner;
+  const lightOwner = lights.owner;
+  blocks.owner = lights.owner = undefined;
+  const hallColor = ["#65b8c7", "#ba80b4", "#82bcb3"][hash(building.id) % 3];
+  const runnerColor = ["#243f54", "#3c304b", "#27484b"][hash(building.id) % 3];
+  const hallX = building.hallX;
+  const hallRear = rear + 1;
+  const hallFront = front - 6.5;
+  const hallLength = hallFront - hallRear;
   for (let floor = 0; floor < building.stories; floor++) {
     const floorY = floor * storyHeight;
+    // Finishes stay inside circulation space; every entrance and stair remains clear.
+    if (hallLength > 0) {
+      const bays = Math.ceil(hallLength / 4);
+      const bayLength = hallLength / bays;
+      for (const side of [-1, 1]) {
+        blocks.add(
+          hallX + side * 1.56,
+          floorY + 0.045,
+          (hallRear + hallFront) / 2,
+          0.18,
+          0.06,
+          hallLength,
+          "#617180",
+        );
+        blocks.add(
+          hallX + side * 1.52,
+          floorY + 4.68,
+          (hallRear + hallFront) / 2,
+          0.22,
+          0.22,
+          hallLength,
+          "#263846",
+        );
+        lights.add(
+          hallX + side * 1.52,
+          floorY + 4.52,
+          (hallRear + hallFront) / 2,
+          0.12,
+          0.1,
+          hallLength - 0.25,
+          hallColor,
+        );
+      }
+      for (let bay = 0; bay < bays; bay++) {
+        const z = hallRear + (bay + 0.5) * bayLength;
+        blocks.add(
+          hallX,
+          floorY + 0.045,
+          z,
+          2.82,
+          0.06,
+          bayLength - 0.12,
+          bay % 2 === 0 ? runnerColor : "#2b384b",
+        );
+        for (const side of [-1, 1])
+          lights.add(
+            hallX + side * 1.13,
+            floorY + 0.112,
+            z,
+            0.1,
+            0.06,
+            Math.min(1.1, bayLength * 0.45),
+            hallColor,
+          );
+        if (bay % 2 === 0) {
+          blocks.add(hallX, floorY + 4.39, z, 3.38, 0.2, 0.55, "#526578");
+          lights.add(hallX, floorY + 4.23, z, 2.7, 0.12, 0.3, "#bdcccb");
+        }
+      }
+    }
+    const floorRooms = building.rooms.filter((room) => room.floorY === floorY);
+    const wings = [
+      [left + 0.8, hallX - 2.25],
+      [hallX + 2.25, wells.length ? openingLeft - 0.7 : right - 0.8],
+    ];
+    for (const [wingLeft, wingRight] of wings) {
+      const wingWidth = wingRight - wingLeft;
+      if (wingWidth < 3 || hallLength < 3) continue;
+      const columns = Math.max(1, Math.floor(wingWidth / 6));
+      const rows = Math.max(1, Math.floor(hallLength / 6));
+      const cellWidth = wingWidth / columns;
+      const cellDepth = hallLength / rows;
+      for (let column = 0; column < columns; column++)
+        for (let row = 0; row < rows; row++) {
+          const x = wingLeft + (column + 0.5) * cellWidth;
+          const z = hallRear + (row + 0.5) * cellDepth;
+          const width = cellWidth - 0.45;
+          const depth = cellDepth - 0.45;
+          if (
+            floorRooms.some(
+              (room) =>
+                Math.abs(x - room.x) < (width + room.width) / 2 + 0.5 &&
+                Math.abs(z - room.z) < (depth + room.depth) / 2 + 0.5,
+            )
+          )
+            continue;
+          blocks.add(
+            x,
+            floorY + 0.045,
+            z,
+            width,
+            0.06,
+            depth,
+            (column + row) % 2 === 0 ? runnerColor : "#364258",
+          );
+          for (const side of [-1, 1]) {
+            blocks.add(
+              x,
+              floorY + 0.111,
+              z + side * (depth / 2 - 0.3),
+              width - 0.4,
+              0.06,
+              0.18,
+              "#637587",
+            );
+            lights.add(
+              x + side * (width / 2 - 0.35),
+              floorY + 0.111,
+              z,
+              0.16,
+              0.06,
+              depth - 1.2,
+              hallColor,
+            );
+          }
+          // Broad suspended panels make unused wings read as shared concourses.
+          if ((column + row) % 2 === 0) {
+            const lightWidth = Math.min(3.8, width - 0.6);
+            blocks.add(x, floorY + 4.45, z, lightWidth, 0.24, 1.5, "#41566a");
+            lights.add(
+              x,
+              floorY + 4.24,
+              z,
+              lightWidth - 0.45,
+              0.16,
+              1.05,
+              "#a5c9cb",
+            );
+            for (const side of [-1, 1])
+              blocks.add(
+                x + side * (lightWidth / 2 - 0.2),
+                floorY + 4.86,
+                z,
+                0.12,
+                0.64,
+                0.12,
+                "#263846",
+              );
+          }
+        }
+    }
+    const foyerLeft = left + 1;
+    const foyerRight = right - (wells.length ? 4.7 : 1);
+    const foyerWidth = foyerRight - foyerLeft;
+    const foyerX = (foyerLeft + foyerRight) / 2;
+    if (foyerWidth > 0) {
+      blocks.add(
+        foyerX,
+        floorY + 0.045,
+        front - 3.4,
+        foyerWidth,
+        0.06,
+        3.8,
+        runnerColor,
+      );
+      for (const side of [-1, 1]) {
+        blocks.add(
+          foyerX,
+          floorY + 0.111,
+          front - 3.4 + side * 1.52,
+          foyerWidth - 0.4,
+          0.06,
+          0.16,
+          "#718396",
+        );
+        lights.add(
+          foyerX,
+          floorY + 0.111,
+          front - 3.4 + side * 1.15,
+          Math.min(4.2, foyerWidth - 0.6),
+          0.06,
+          0.12,
+          hallColor,
+        );
+      }
+      for (let stripe = -1; stripe <= 1; stripe++)
+        blocks.add(
+          foyerX + stripe * 0.5,
+          floorY + 0.111,
+          front - 3.4,
+          0.18,
+          0.06,
+          1.6,
+          "#91a1af",
+        );
+    }
+    for (const well of floor < building.stories - 1 ? wells : []) {
+      const firstLane = floor % 2 === 0;
+      const direction = firstLane ? well.direction : -well.direction;
+      const startZ = firstLane ? well.entryZ : well.exitZ;
+      const flightX = well.x + (firstLane ? -0.8 : 0.8);
+      const markerZ = startZ - direction * 1.3;
+      // A three-step arrow identifies the next flight without labels or props.
+      for (let arrow = 0; arrow < 3; arrow++)
+        lights.add(
+          flightX,
+          floorY + 0.09,
+          markerZ + direction * arrow * 0.28,
+          1.1 - arrow * 0.35,
+          0.08,
+          0.16,
+          hallColor,
+        );
+      blocks.add(
+        openingLeft - 0.4,
+        floorY + 4.3,
+        markerZ,
+        0.16,
+        1.7,
+        0.16,
+        "#263846",
+      );
+      blocks.add(
+        openingLeft - 0.4,
+        floorY + 3.05,
+        markerZ,
+        0.3,
+        0.85,
+        0.5,
+        "#304658",
+      );
+      lights.add(
+        openingLeft - 0.61,
+        floorY + 3.05,
+        markerZ,
+        0.12,
+        0.57,
+        0.28,
+        hallColor,
+      );
+    }
+
     if (floor > 0) {
       floorSlab(left, rear + 0.35, openingLeft, front, floorY);
       floorSlab(openingRight, rear + 0.35, right - 0.35, front, floorY);
@@ -136,6 +378,34 @@ export function furnishBuilding(
       }
     }
   }
+  for (const room of building.rooms) {
+    const towardRoom = room.side === "left" ? -1 : 1;
+    for (const side of [-1, 1]) {
+      const z = room.door.z + side * 2.15;
+      if (z < room.z - room.depth / 2 + 0.45) continue;
+      if (z > room.z + room.depth / 2 - 0.45) continue;
+      blocks.add(
+        room.door.x - towardRoom * 0.23,
+        room.floorY + 2.85,
+        z,
+        0.24,
+        0.95,
+        0.5,
+        "#304454",
+      );
+      lights.add(
+        room.door.x - towardRoom * 0.38,
+        room.floorY + 2.85,
+        z,
+        0.12,
+        0.65,
+        0.27,
+        hallColor,
+      );
+    }
+  }
+  blocks.owner = blockOwner;
+  lights.owner = lightOwner;
   for (const room of building.rooms) {
     const ceiling = roomCeilingHeight(room);
     const theme = roomTheme(room);
