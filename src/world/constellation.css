@@ -1,0 +1,143 @@
+.celestial-ui {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+}
+.celestial-heading {
+  position: absolute;
+  left: 30px;
+  top: 100px;
+  max-width: min(680px, calc(100vw - 60px));
+}
+.celestial-heading nav {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  pointer-events: auto;
+}
+.celestial-heading nav button {
+  color: #91a6c3;
+  font-size: 11px;
+  padding: 5px 8px;
+  border-radius: 4px;
+  background: #101c2caa;
+}
+.celestial-heading nav button:hover,
+.celestial-heading nav button[aria-current="page"] {
+  color: #def5c4;
+  background: #263449;
+}
+.celestial-heading h2 {
+  margin: 15px 0 4px;
+  font:
+    500 27px/1.2 "Space Grotesk Variable",
+    sans-serif;
+  color: #e2eaf8;
+  letter-spacing: -0.5px;
+}
+.celestial-heading p {
+  margin: 0;
+  color: #8194b0;
+  font-size: 11px;
+}
+.celestial-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 6px 8px;
+  pointer-events: auto;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  text-align: center;
+  line-height: 1.4;
+  text-shadow:
+    0 2px 5px #000,
+    0 0 8px #000;
+}
+.celestial-label strong {
+  display: block;
+  color: #d5e0ef;
+  font:
+    500 12px/1.3 "DM Sans Variable",
+    sans-serif;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.celestial-label span {
+  display: block;
+  margin-top: 3px;
+  color: var(--celestial-color);
+  font-size: 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.celestial-label:hover,
+.celestial-label.selected {
+  border-color: var(--celestial-color);
+  background: #18273eee;
+}
+.celestial-tooltip {
+  position: absolute;
+  z-index: 40;
+  pointer-events: none;
+  max-width: 310px;
+  padding: 9px 12px;
+  border: 1px solid #5b718d66;
+  border-radius: 4px;
+  background: #0a1526f5;
+  color: #d3e5ef;
+  font: 11px/1.5 monospace;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 600px) {
+  .celestial-heading {
+    left: 18px;
+    top: 94px;
+  }
+  .celestial-heading h2 {
+    font-size: 20px;
+  }
+}
+.celestial-heading nav button {
+  max-width: 210px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.celestial-label {
+  animation: celestial-arrive 360ms ease-out;
+}
+@keyframes celestial-arrive {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .celestial-label {
+    animation: none;
+  }
+}
+
+.celestial-leaders {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.38;
+  stroke-width: 1;
+}
+.celestial-label {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+}

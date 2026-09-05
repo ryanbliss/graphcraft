@@ -1,0 +1,41 @@
+{
+  "name": "graphcraft",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:architecture": "node scripts/check-architecture.mjs",
+    "doctor": "npm run typecheck && npm run lint && npm run lint:architecture && prettier --check .",
+    "analyze": "tsx scripts/analyze.ts",
+    "test:browser": "playwright test"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.29.8",
+    "@babel/types": "^7.29.8",
+    "@fontsource-variable/dm-sans": "^5.3.0",
+    "@fontsource-variable/space-grotesk": "^5.3.0",
+    "ignore": "^7.0.8",
+    "jsonc-parser": "^3.3.1",
+    "minimatch": "^10.2.6",
+    "three": "^0.185.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.62.1",
+    "@types/node": "^26.4.1",
+    "@types/three": "^0.185.4",
+    "eslint": "^10.10.0",
+    "prettier": "^3.9.6",
+    "tsx": "^4.23.13",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.69.0",
+    "vite": "^8.2.2",
+    "vitest": "^5.0.0"
+  }
+}

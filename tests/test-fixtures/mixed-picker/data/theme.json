@@ -1,0 +1,5 @@
+{
+  "theme": "neon",
+  "defaultWidget": "Sample.Domain.Widget",
+  "entry": "../src/index.ts"
+}

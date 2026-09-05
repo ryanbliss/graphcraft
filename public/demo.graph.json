@@ -1,0 +1,2314 @@
+{
+  "name": "Neon harbor",
+  "nodes": [
+    {
+      "id": "packages/core/src/graph/Edge.ts",
+      "name": "Edge.ts",
+      "packageId": "packages/core",
+      "directory": "packages/core/src/graph",
+      "kind": "module",
+      "lines": 62,
+      "exports": ["Edge"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/core/src/graph/Graph.ts",
+      "name": "Graph.ts",
+      "packageId": "packages/core",
+      "directory": "packages/core/src/graph",
+      "kind": "module",
+      "lines": 23,
+      "exports": ["Graph"],
+      "components": [],
+      "incoming": 6,
+      "outgoing": 2
+    },
+    {
+      "id": "packages/core/src/graph/Index.ts",
+      "name": "Index.ts",
+      "packageId": "packages/core",
+      "directory": "packages/core/src/graph",
+      "kind": "module",
+      "lines": 119,
+      "exports": ["Index"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/core/src/graph/Node.ts",
+      "name": "Node.ts",
+      "packageId": "packages/core",
+      "directory": "packages/core/src/graph",
+      "kind": "module",
+      "lines": 43,
+      "exports": ["Node"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/core/src/graph/Resolver.ts",
+      "name": "Resolver.ts",
+      "packageId": "packages/core",
+      "directory": "packages/core/src/graph",
+      "kind": "module",
+      "lines": 100,
+      "exports": ["Resolver"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/core/src/graph/Traversal.ts",
+      "name": "Traversal.ts",
+      "packageId": "packages/core",
+      "directory": "packages/core/src/graph",
+      "kind": "module",
+      "lines": 81,
+      "exports": ["Traversal"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/core/src/index.ts",
+      "name": "index.ts",
+      "packageId": "packages/core",
+      "directory": "packages/core/src",
+      "kind": "module",
+      "lines": 3,
+      "exports": [],
+      "components": [],
+      "incoming": 70,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/core/src/schema/CacheSchema.ts",
+      "name": "CacheSchema.ts",
+      "packageId": "packages/core",
+      "directory": "packages/core/src/schema",
+      "kind": "schema",
+      "lines": 309,
+      "exports": ["CacheSchema"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/core/src/schema/DirectorySchema.ts",
+      "name": "DirectorySchema.ts",
+      "packageId": "packages/core",
+      "directory": "packages/core/src/schema",
+      "kind": "schema",
+      "lines": 138,
+      "exports": ["DirectorySchema"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/core/src/schema/EdgeTypes.ts",
+      "name": "EdgeTypes.ts",
+      "packageId": "packages/core",
+      "directory": "packages/core/src/schema",
+      "kind": "schema",
+      "lines": 62,
+      "exports": ["EdgeTypes"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/core/src/schema/ExportSchema.ts",
+      "name": "ExportSchema.ts",
+      "packageId": "packages/core",
+      "directory": "packages/core/src/schema",
+      "kind": "schema",
+      "lines": 100,
+      "exports": ["ExportSchema"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/core/src/schema/HistorySchema.ts",
+      "name": "HistorySchema.ts",
+      "packageId": "packages/core",
+      "directory": "packages/core/src/schema",
+      "kind": "schema",
+      "lines": 347,
+      "exports": ["HistorySchema"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/core/src/schema/ImportSchema.ts",
+      "name": "ImportSchema.ts",
+      "packageId": "packages/core",
+      "directory": "packages/core/src/schema",
+      "kind": "schema",
+      "lines": 81,
+      "exports": ["ImportSchema"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/core/src/schema/LayoutSchema.ts",
+      "name": "LayoutSchema.ts",
+      "packageId": "packages/core",
+      "directory": "packages/core/src/schema",
+      "kind": "schema",
+      "lines": 233,
+      "exports": ["LayoutSchema"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/core/src/schema/NodeTypes.ts",
+      "name": "NodeTypes.ts",
+      "packageId": "packages/core",
+      "directory": "packages/core/src/schema",
+      "kind": "schema",
+      "lines": 43,
+      "exports": ["NodeTypes"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/core/src/schema/PackageSchema.ts",
+      "name": "PackageSchema.ts",
+      "packageId": "packages/core",
+      "directory": "packages/core/src/schema",
+      "kind": "schema",
+      "lines": 119,
+      "exports": ["PackageSchema"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/core/src/schema/PaletteSchema.ts",
+      "name": "PaletteSchema.ts",
+      "packageId": "packages/core",
+      "directory": "packages/core/src/schema",
+      "kind": "schema",
+      "lines": 214,
+      "exports": ["PaletteSchema"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/core/src/schema/PositionSchema.ts",
+      "name": "PositionSchema.ts",
+      "packageId": "packages/core",
+      "directory": "packages/core/src/schema",
+      "kind": "schema",
+      "lines": 252,
+      "exports": ["PositionSchema"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/core/src/schema/ProjectSchema.ts",
+      "name": "ProjectSchema.ts",
+      "packageId": "packages/core",
+      "directory": "packages/core/src/schema",
+      "kind": "schema",
+      "lines": 23,
+      "exports": ["ProjectSchema"],
+      "components": [],
+      "incoming": 20,
+      "outgoing": 2
+    },
+    {
+      "id": "packages/core/src/schema/RouteSchema.ts",
+      "name": "RouteSchema.ts",
+      "packageId": "packages/core",
+      "directory": "packages/core/src/schema",
+      "kind": "schema",
+      "lines": 271,
+      "exports": ["RouteSchema"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/core/src/schema/SessionSchema.ts",
+      "name": "SessionSchema.ts",
+      "packageId": "packages/core",
+      "directory": "packages/core/src/schema",
+      "kind": "schema",
+      "lines": 290,
+      "exports": ["SessionSchema"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/core/src/schema/SettingsSchema.ts",
+      "name": "SettingsSchema.ts",
+      "packageId": "packages/core",
+      "directory": "packages/core/src/schema",
+      "kind": "schema",
+      "lines": 385,
+      "exports": ["SettingsSchema"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/core/src/schema/SnapshotSchema.ts",
+      "name": "SnapshotSchema.ts",
+      "packageId": "packages/core",
+      "directory": "packages/core/src/schema",
+      "kind": "schema",
+      "lines": 366,
+      "exports": ["SnapshotSchema"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/core/src/schema/ThemeSchema.ts",
+      "name": "ThemeSchema.ts",
+      "packageId": "packages/core",
+      "directory": "packages/core/src/schema",
+      "kind": "schema",
+      "lines": 195,
+      "exports": ["ThemeSchema"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/core/src/schema/ViewSchema.ts",
+      "name": "ViewSchema.ts",
+      "packageId": "packages/core",
+      "directory": "packages/core/src/schema",
+      "kind": "schema",
+      "lines": 176,
+      "exports": ["ViewSchema"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/core/src/schema/WorkerSchema.ts",
+      "name": "WorkerSchema.ts",
+      "packageId": "packages/core",
+      "directory": "packages/core/src/schema",
+      "kind": "schema",
+      "lines": 328,
+      "exports": ["WorkerSchema"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/core/src/schema/WorkspaceSchema.ts",
+      "name": "WorkspaceSchema.ts",
+      "packageId": "packages/core",
+      "directory": "packages/core/src/schema",
+      "kind": "schema",
+      "lines": 157,
+      "exports": ["WorkspaceSchema"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/core/src/services/CacheService.ts",
+      "name": "CacheService.ts",
+      "packageId": "packages/core",
+      "directory": "packages/core/src/services",
+      "kind": "module",
+      "lines": 62,
+      "exports": ["CacheService"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/core/src/services/EventBus.ts",
+      "name": "EventBus.ts",
+      "packageId": "packages/core",
+      "directory": "packages/core/src/services",
+      "kind": "module",
+      "lines": 81,
+      "exports": ["EventBus"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/core/src/services/ProjectService.ts",
+      "name": "ProjectService.ts",
+      "packageId": "packages/core",
+      "directory": "packages/core/src/services",
+      "kind": "module",
+      "lines": 23,
+      "exports": ["ProjectService"],
+      "components": [],
+      "incoming": 4,
+      "outgoing": 2
+    },
+    {
+      "id": "packages/core/src/services/ScanService.ts",
+      "name": "ScanService.ts",
+      "packageId": "packages/core",
+      "directory": "packages/core/src/services",
+      "kind": "module",
+      "lines": 43,
+      "exports": ["ScanService"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/harbor/src/app/App.tsx",
+      "name": "App.tsx",
+      "packageId": "packages/harbor",
+      "directory": "packages/harbor/src/app",
+      "kind": "component",
+      "lines": 24,
+      "exports": ["App"],
+      "components": ["UiPanel"],
+      "incoming": 4,
+      "outgoing": 4
+    },
+    {
+      "id": "packages/harbor/src/app/Navigation.tsx",
+      "name": "Navigation.tsx",
+      "packageId": "packages/harbor",
+      "directory": "packages/harbor/src/app",
+      "kind": "component",
+      "lines": 82,
+      "exports": ["Navigation"],
+      "components": ["UiPanel"],
+      "incoming": 0,
+      "outgoing": 5
+    },
+    {
+      "id": "packages/harbor/src/app/Router.tsx",
+      "name": "Router.tsx",
+      "packageId": "packages/harbor",
+      "directory": "packages/harbor/src/app",
+      "kind": "component",
+      "lines": 44,
+      "exports": ["Router"],
+      "components": ["UiPanel"],
+      "incoming": 0,
+      "outgoing": 5
+    },
+    {
+      "id": "packages/harbor/src/app/Shell.tsx",
+      "name": "Shell.tsx",
+      "packageId": "packages/harbor",
+      "directory": "packages/harbor/src/app",
+      "kind": "component",
+      "lines": 63,
+      "exports": ["Shell"],
+      "components": ["UiPanel"],
+      "incoming": 0,
+      "outgoing": 5
+    },
+    {
+      "id": "packages/harbor/src/components/Avatar.tsx",
+      "name": "Avatar.tsx",
+      "packageId": "packages/harbor",
+      "directory": "packages/harbor/src/components",
+      "kind": "component",
+      "lines": 120,
+      "exports": ["Avatar"],
+      "components": ["UiPanel"],
+      "incoming": 0,
+      "outgoing": 5
+    },
+    {
+      "id": "packages/harbor/src/components/Button.tsx",
+      "name": "Button.tsx",
+      "packageId": "packages/harbor",
+      "directory": "packages/harbor/src/components",
+      "kind": "component",
+      "lines": 24,
+      "exports": ["Button"],
+      "components": ["UiPanel"],
+      "incoming": 6,
+      "outgoing": 4
+    },
+    {
+      "id": "packages/harbor/src/components/Card.tsx",
+      "name": "Card.tsx",
+      "packageId": "packages/harbor",
+      "directory": "packages/harbor/src/components",
+      "kind": "component",
+      "lines": 63,
+      "exports": ["Card"],
+      "components": ["UiPanel"],
+      "incoming": 0,
+      "outgoing": 5
+    },
+    {
+      "id": "packages/harbor/src/components/Command.tsx",
+      "name": "Command.tsx",
+      "packageId": "packages/harbor",
+      "directory": "packages/harbor/src/components",
+      "kind": "component",
+      "lines": 82,
+      "exports": ["Command"],
+      "components": ["UiPanel"],
+      "incoming": 0,
+      "outgoing": 5
+    },
+    {
+      "id": "packages/harbor/src/components/Dialog.tsx",
+      "name": "Dialog.tsx",
+      "packageId": "packages/harbor",
+      "directory": "packages/harbor/src/components",
+      "kind": "component",
+      "lines": 44,
+      "exports": ["Dialog"],
+      "components": ["UiPanel"],
+      "incoming": 0,
+      "outgoing": 5
+    },
+    {
+      "id": "packages/harbor/src/components/Menu.tsx",
+      "name": "Menu.tsx",
+      "packageId": "packages/harbor",
+      "directory": "packages/harbor/src/components",
+      "kind": "component",
+      "lines": 101,
+      "exports": ["Menu"],
+      "components": ["UiPanel"],
+      "incoming": 0,
+      "outgoing": 5
+    },
+    {
+      "id": "packages/harbor/src/hooks/useProject.ts",
+      "name": "useProject.ts",
+      "packageId": "packages/harbor",
+      "directory": "packages/harbor/src/hooks",
+      "kind": "service",
+      "lines": 24,
+      "exports": ["useProject"],
+      "components": [],
+      "incoming": 4,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/harbor/src/hooks/useSearch.ts",
+      "name": "useSearch.ts",
+      "packageId": "packages/harbor",
+      "directory": "packages/harbor/src/hooks",
+      "kind": "service",
+      "lines": 44,
+      "exports": ["useSearch"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 4
+    },
+    {
+      "id": "packages/harbor/src/hooks/useSession.ts",
+      "name": "useSession.ts",
+      "packageId": "packages/harbor",
+      "directory": "packages/harbor/src/hooks",
+      "kind": "service",
+      "lines": 82,
+      "exports": ["useSession"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 4
+    },
+    {
+      "id": "packages/harbor/src/hooks/useTheme.ts",
+      "name": "useTheme.ts",
+      "packageId": "packages/harbor",
+      "directory": "packages/harbor/src/hooks",
+      "kind": "service",
+      "lines": 63,
+      "exports": ["useTheme"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 4
+    },
+    {
+      "id": "packages/harbor/src/index.ts",
+      "name": "index.ts",
+      "packageId": "packages/harbor",
+      "directory": "packages/harbor/src",
+      "kind": "module",
+      "lines": 4,
+      "exports": [],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 4
+    },
+    {
+      "id": "packages/harbor/src/views/Dashboard.tsx",
+      "name": "Dashboard.tsx",
+      "packageId": "packages/harbor",
+      "directory": "packages/harbor/src/views",
+      "kind": "component",
+      "lines": 24,
+      "exports": ["Dashboard"],
+      "components": ["UiPanel"],
+      "incoming": 4,
+      "outgoing": 4
+    },
+    {
+      "id": "packages/harbor/src/views/Explorer.tsx",
+      "name": "Explorer.tsx",
+      "packageId": "packages/harbor",
+      "directory": "packages/harbor/src/views",
+      "kind": "component",
+      "lines": 44,
+      "exports": ["Explorer"],
+      "components": ["UiPanel"],
+      "incoming": 0,
+      "outgoing": 5
+    },
+    {
+      "id": "packages/harbor/src/views/Settings.tsx",
+      "name": "Settings.tsx",
+      "packageId": "packages/harbor",
+      "directory": "packages/harbor/src/views",
+      "kind": "component",
+      "lines": 63,
+      "exports": ["Settings"],
+      "components": ["UiPanel"],
+      "incoming": 0,
+      "outgoing": 5
+    },
+    {
+      "id": "packages/harbor/src/views/Welcome.tsx",
+      "name": "Welcome.tsx",
+      "packageId": "packages/harbor",
+      "directory": "packages/harbor/src/views",
+      "kind": "component",
+      "lines": 82,
+      "exports": ["Welcome"],
+      "components": ["UiPanel"],
+      "incoming": 0,
+      "outgoing": 5
+    },
+    {
+      "id": "packages/runtime/src/engine/Camera.ts",
+      "name": "Camera.ts",
+      "packageId": "packages/runtime",
+      "directory": "packages/runtime/src/engine",
+      "kind": "module",
+      "lines": 62,
+      "exports": ["Camera"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/runtime/src/engine/Clock.ts",
+      "name": "Clock.ts",
+      "packageId": "packages/runtime",
+      "directory": "packages/runtime/src/engine",
+      "kind": "module",
+      "lines": 81,
+      "exports": ["Clock"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/runtime/src/engine/Engine.ts",
+      "name": "Engine.ts",
+      "packageId": "packages/runtime",
+      "directory": "packages/runtime/src/engine",
+      "kind": "module",
+      "lines": 23,
+      "exports": ["Engine"],
+      "components": [],
+      "incoming": 4,
+      "outgoing": 2
+    },
+    {
+      "id": "packages/runtime/src/engine/Scene.ts",
+      "name": "Scene.ts",
+      "packageId": "packages/runtime",
+      "directory": "packages/runtime/src/engine",
+      "kind": "module",
+      "lines": 43,
+      "exports": ["Scene"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/runtime/src/index.ts",
+      "name": "index.ts",
+      "packageId": "packages/runtime",
+      "directory": "packages/runtime/src",
+      "kind": "module",
+      "lines": 3,
+      "exports": [],
+      "components": [],
+      "incoming": 18,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/runtime/src/systems/Animation.ts",
+      "name": "Animation.ts",
+      "packageId": "packages/runtime",
+      "directory": "packages/runtime/src/systems",
+      "kind": "module",
+      "lines": 62,
+      "exports": ["Animation"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/runtime/src/systems/Audio.ts",
+      "name": "Audio.ts",
+      "packageId": "packages/runtime",
+      "directory": "packages/runtime/src/systems",
+      "kind": "module",
+      "lines": 81,
+      "exports": ["Audio"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/runtime/src/systems/Lighting.ts",
+      "name": "Lighting.ts",
+      "packageId": "packages/runtime",
+      "directory": "packages/runtime/src/systems",
+      "kind": "module",
+      "lines": 43,
+      "exports": ["Lighting"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/runtime/src/systems/Physics.ts",
+      "name": "Physics.ts",
+      "packageId": "packages/runtime",
+      "directory": "packages/runtime/src/systems",
+      "kind": "module",
+      "lines": 23,
+      "exports": ["Physics"],
+      "components": [],
+      "incoming": 4,
+      "outgoing": 2
+    },
+    {
+      "id": "packages/runtime/src/workers/Bundler.ts",
+      "name": "Bundler.ts",
+      "packageId": "packages/runtime",
+      "directory": "packages/runtime/src/workers",
+      "kind": "module",
+      "lines": 62,
+      "exports": ["Bundler"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/runtime/src/workers/Parser.ts",
+      "name": "Parser.ts",
+      "packageId": "packages/runtime",
+      "directory": "packages/runtime/src/workers",
+      "kind": "module",
+      "lines": 23,
+      "exports": ["Parser"],
+      "components": [],
+      "incoming": 3,
+      "outgoing": 2
+    },
+    {
+      "id": "packages/runtime/src/workers/Scanner.ts",
+      "name": "Scanner.ts",
+      "packageId": "packages/runtime",
+      "directory": "packages/runtime/src/workers",
+      "kind": "module",
+      "lines": 43,
+      "exports": ["Scanner"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/ui/src/components/Badge.tsx",
+      "name": "Badge.tsx",
+      "packageId": "packages/ui",
+      "directory": "packages/ui/src/components",
+      "kind": "component",
+      "lines": 99,
+      "exports": ["Badge"],
+      "components": ["UiPanel"],
+      "incoming": 0,
+      "outgoing": 2
+    },
+    {
+      "id": "packages/ui/src/components/Input.tsx",
+      "name": "Input.tsx",
+      "packageId": "packages/ui",
+      "directory": "packages/ui/src/components",
+      "kind": "component",
+      "lines": 80,
+      "exports": ["Input"],
+      "components": ["UiPanel"],
+      "incoming": 0,
+      "outgoing": 2
+    },
+    {
+      "id": "packages/ui/src/components/Panel.tsx",
+      "name": "Panel.tsx",
+      "packageId": "packages/ui",
+      "directory": "packages/ui/src/components",
+      "kind": "component",
+      "lines": 22,
+      "exports": ["Panel"],
+      "components": ["UiPanel"],
+      "incoming": 5,
+      "outgoing": 1
+    },
+    {
+      "id": "packages/ui/src/components/Tabs.tsx",
+      "name": "Tabs.tsx",
+      "packageId": "packages/ui",
+      "directory": "packages/ui/src/components",
+      "kind": "component",
+      "lines": 61,
+      "exports": ["Tabs"],
+      "components": ["UiPanel"],
+      "incoming": 0,
+      "outgoing": 2
+    },
+    {
+      "id": "packages/ui/src/components/Tooltip.tsx",
+      "name": "Tooltip.tsx",
+      "packageId": "packages/ui",
+      "directory": "packages/ui/src/components",
+      "kind": "component",
+      "lines": 42,
+      "exports": ["Tooltip"],
+      "components": ["UiPanel"],
+      "incoming": 0,
+      "outgoing": 2
+    },
+    {
+      "id": "packages/ui/src/index.ts",
+      "name": "index.ts",
+      "packageId": "packages/ui",
+      "directory": "packages/ui/src",
+      "kind": "module",
+      "lines": 3,
+      "exports": [],
+      "components": [],
+      "incoming": 73,
+      "outgoing": 3
+    },
+    {
+      "id": "packages/ui/src/tests/Input.test.ts",
+      "name": "Input.test.ts",
+      "packageId": "packages/ui",
+      "directory": "packages/ui/src/tests",
+      "kind": "test",
+      "lines": 43,
+      "exports": ["Input"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 2
+    },
+    {
+      "id": "packages/ui/src/tests/Panel.test.ts",
+      "name": "Panel.test.ts",
+      "packageId": "packages/ui",
+      "directory": "packages/ui/src/tests",
+      "kind": "test",
+      "lines": 23,
+      "exports": ["Panel"],
+      "components": [],
+      "incoming": 3,
+      "outgoing": 1
+    },
+    {
+      "id": "packages/ui/src/tests/Theme.test.ts",
+      "name": "Theme.test.ts",
+      "packageId": "packages/ui",
+      "directory": "packages/ui/src/tests",
+      "kind": "test",
+      "lines": 62,
+      "exports": ["Theme"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 2
+    },
+    {
+      "id": "packages/ui/src/theme/Colors.ts",
+      "name": "Colors.ts",
+      "packageId": "packages/ui",
+      "directory": "packages/ui/src/theme",
+      "kind": "module",
+      "lines": 22,
+      "exports": ["Colors"],
+      "components": [],
+      "incoming": 3,
+      "outgoing": 1
+    },
+    {
+      "id": "packages/ui/src/theme/Tokens.ts",
+      "name": "Tokens.ts",
+      "packageId": "packages/ui",
+      "directory": "packages/ui/src/theme",
+      "kind": "module",
+      "lines": 42,
+      "exports": ["Tokens"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 2
+    },
+    {
+      "id": "packages/ui/src/theme/Typography.ts",
+      "name": "Typography.ts",
+      "packageId": "packages/ui",
+      "directory": "packages/ui/src/theme",
+      "kind": "module",
+      "lines": 61,
+      "exports": ["Typography"],
+      "components": [],
+      "incoming": 0,
+      "outgoing": 2
+    }
+  ],
+  "edges": [
+    {
+      "source": "packages/core/src/graph/Edge.ts",
+      "target": "packages/core/src/graph/Graph.ts",
+      "kind": "import",
+      "specifier": "./Graph"
+    },
+    {
+      "source": "packages/core/src/graph/Edge.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/core/src/graph/Edge.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/core/src/graph/Graph.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/core/src/graph/Graph.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/core/src/graph/Index.ts",
+      "target": "packages/core/src/graph/Graph.ts",
+      "kind": "import",
+      "specifier": "./Graph"
+    },
+    {
+      "source": "packages/core/src/graph/Index.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/core/src/graph/Index.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/core/src/graph/Node.ts",
+      "target": "packages/core/src/graph/Graph.ts",
+      "kind": "import",
+      "specifier": "./Graph"
+    },
+    {
+      "source": "packages/core/src/graph/Node.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/core/src/graph/Node.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/core/src/graph/Resolver.ts",
+      "target": "packages/core/src/graph/Graph.ts",
+      "kind": "import",
+      "specifier": "./Graph"
+    },
+    {
+      "source": "packages/core/src/graph/Resolver.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/core/src/graph/Resolver.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/core/src/graph/Traversal.ts",
+      "target": "packages/core/src/graph/Graph.ts",
+      "kind": "import",
+      "specifier": "./Graph"
+    },
+    {
+      "source": "packages/core/src/graph/Traversal.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/core/src/graph/Traversal.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/core/src/index.ts",
+      "target": "packages/core/src/graph/Graph.ts",
+      "kind": "reexport",
+      "specifier": "./graph/Graph"
+    },
+    {
+      "source": "packages/core/src/index.ts",
+      "target": "packages/core/src/schema/ProjectSchema.ts",
+      "kind": "reexport",
+      "specifier": "./schema/ProjectSchema"
+    },
+    {
+      "source": "packages/core/src/index.ts",
+      "target": "packages/core/src/services/ProjectService.ts",
+      "kind": "reexport",
+      "specifier": "./services/ProjectService"
+    },
+    {
+      "source": "packages/core/src/schema/CacheSchema.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/core/src/schema/CacheSchema.ts",
+      "target": "packages/core/src/schema/ProjectSchema.ts",
+      "kind": "import",
+      "specifier": "./ProjectSchema"
+    },
+    {
+      "source": "packages/core/src/schema/CacheSchema.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/core/src/schema/DirectorySchema.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/core/src/schema/DirectorySchema.ts",
+      "target": "packages/core/src/schema/ProjectSchema.ts",
+      "kind": "import",
+      "specifier": "./ProjectSchema"
+    },
+    {
+      "source": "packages/core/src/schema/DirectorySchema.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/core/src/schema/EdgeTypes.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/core/src/schema/EdgeTypes.ts",
+      "target": "packages/core/src/schema/ProjectSchema.ts",
+      "kind": "import",
+      "specifier": "./ProjectSchema"
+    },
+    {
+      "source": "packages/core/src/schema/EdgeTypes.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/core/src/schema/ExportSchema.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/core/src/schema/ExportSchema.ts",
+      "target": "packages/core/src/schema/ProjectSchema.ts",
+      "kind": "import",
+      "specifier": "./ProjectSchema"
+    },
+    {
+      "source": "packages/core/src/schema/ExportSchema.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/core/src/schema/HistorySchema.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/core/src/schema/HistorySchema.ts",
+      "target": "packages/core/src/schema/ProjectSchema.ts",
+      "kind": "import",
+      "specifier": "./ProjectSchema"
+    },
+    {
+      "source": "packages/core/src/schema/HistorySchema.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/core/src/schema/ImportSchema.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/core/src/schema/ImportSchema.ts",
+      "target": "packages/core/src/schema/ProjectSchema.ts",
+      "kind": "import",
+      "specifier": "./ProjectSchema"
+    },
+    {
+      "source": "packages/core/src/schema/ImportSchema.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/core/src/schema/LayoutSchema.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/core/src/schema/LayoutSchema.ts",
+      "target": "packages/core/src/schema/ProjectSchema.ts",
+      "kind": "import",
+      "specifier": "./ProjectSchema"
+    },
+    {
+      "source": "packages/core/src/schema/LayoutSchema.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/core/src/schema/NodeTypes.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/core/src/schema/NodeTypes.ts",
+      "target": "packages/core/src/schema/ProjectSchema.ts",
+      "kind": "import",
+      "specifier": "./ProjectSchema"
+    },
+    {
+      "source": "packages/core/src/schema/NodeTypes.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/core/src/schema/PackageSchema.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/core/src/schema/PackageSchema.ts",
+      "target": "packages/core/src/schema/ProjectSchema.ts",
+      "kind": "import",
+      "specifier": "./ProjectSchema"
+    },
+    {
+      "source": "packages/core/src/schema/PackageSchema.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/core/src/schema/PaletteSchema.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/core/src/schema/PaletteSchema.ts",
+      "target": "packages/core/src/schema/ProjectSchema.ts",
+      "kind": "import",
+      "specifier": "./ProjectSchema"
+    },
+    {
+      "source": "packages/core/src/schema/PaletteSchema.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/core/src/schema/PositionSchema.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/core/src/schema/PositionSchema.ts",
+      "target": "packages/core/src/schema/ProjectSchema.ts",
+      "kind": "import",
+      "specifier": "./ProjectSchema"
+    },
+    {
+      "source": "packages/core/src/schema/PositionSchema.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/core/src/schema/ProjectSchema.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/core/src/schema/ProjectSchema.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/core/src/schema/RouteSchema.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/core/src/schema/RouteSchema.ts",
+      "target": "packages/core/src/schema/ProjectSchema.ts",
+      "kind": "import",
+      "specifier": "./ProjectSchema"
+    },
+    {
+      "source": "packages/core/src/schema/RouteSchema.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/core/src/schema/SessionSchema.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/core/src/schema/SessionSchema.ts",
+      "target": "packages/core/src/schema/ProjectSchema.ts",
+      "kind": "import",
+      "specifier": "./ProjectSchema"
+    },
+    {
+      "source": "packages/core/src/schema/SessionSchema.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/core/src/schema/SettingsSchema.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/core/src/schema/SettingsSchema.ts",
+      "target": "packages/core/src/schema/ProjectSchema.ts",
+      "kind": "import",
+      "specifier": "./ProjectSchema"
+    },
+    {
+      "source": "packages/core/src/schema/SettingsSchema.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/core/src/schema/SnapshotSchema.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/core/src/schema/SnapshotSchema.ts",
+      "target": "packages/core/src/schema/ProjectSchema.ts",
+      "kind": "import",
+      "specifier": "./ProjectSchema"
+    },
+    {
+      "source": "packages/core/src/schema/SnapshotSchema.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/core/src/schema/ThemeSchema.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/core/src/schema/ThemeSchema.ts",
+      "target": "packages/core/src/schema/ProjectSchema.ts",
+      "kind": "import",
+      "specifier": "./ProjectSchema"
+    },
+    {
+      "source": "packages/core/src/schema/ThemeSchema.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/core/src/schema/ViewSchema.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/core/src/schema/ViewSchema.ts",
+      "target": "packages/core/src/schema/ProjectSchema.ts",
+      "kind": "import",
+      "specifier": "./ProjectSchema"
+    },
+    {
+      "source": "packages/core/src/schema/ViewSchema.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/core/src/schema/WorkerSchema.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/core/src/schema/WorkerSchema.ts",
+      "target": "packages/core/src/schema/ProjectSchema.ts",
+      "kind": "import",
+      "specifier": "./ProjectSchema"
+    },
+    {
+      "source": "packages/core/src/schema/WorkerSchema.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/core/src/schema/WorkspaceSchema.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/core/src/schema/WorkspaceSchema.ts",
+      "target": "packages/core/src/schema/ProjectSchema.ts",
+      "kind": "import",
+      "specifier": "./ProjectSchema"
+    },
+    {
+      "source": "packages/core/src/schema/WorkspaceSchema.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/core/src/services/CacheService.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/core/src/services/CacheService.ts",
+      "target": "packages/core/src/services/ProjectService.ts",
+      "kind": "import",
+      "specifier": "./ProjectService"
+    },
+    {
+      "source": "packages/core/src/services/CacheService.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/core/src/services/EventBus.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/core/src/services/EventBus.ts",
+      "target": "packages/core/src/services/ProjectService.ts",
+      "kind": "import",
+      "specifier": "./ProjectService"
+    },
+    {
+      "source": "packages/core/src/services/EventBus.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/core/src/services/ProjectService.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/core/src/services/ProjectService.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/core/src/services/ScanService.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/core/src/services/ScanService.ts",
+      "target": "packages/core/src/services/ProjectService.ts",
+      "kind": "import",
+      "specifier": "./ProjectService"
+    },
+    {
+      "source": "packages/core/src/services/ScanService.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/harbor/src/app/App.tsx",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/harbor/src/app/App.tsx",
+      "target": "packages/runtime/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/runtime"
+    },
+    {
+      "source": "packages/harbor/src/app/App.tsx",
+      "target": "packages/ui/src/index.ts",
+      "kind": "component",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/harbor/src/app/App.tsx",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/harbor/src/app/Navigation.tsx",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/harbor/src/app/Navigation.tsx",
+      "target": "packages/harbor/src/app/App.tsx",
+      "kind": "import",
+      "specifier": "./App"
+    },
+    {
+      "source": "packages/harbor/src/app/Navigation.tsx",
+      "target": "packages/runtime/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/runtime"
+    },
+    {
+      "source": "packages/harbor/src/app/Navigation.tsx",
+      "target": "packages/ui/src/index.ts",
+      "kind": "component",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/harbor/src/app/Navigation.tsx",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/harbor/src/app/Router.tsx",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/harbor/src/app/Router.tsx",
+      "target": "packages/harbor/src/app/App.tsx",
+      "kind": "import",
+      "specifier": "./App"
+    },
+    {
+      "source": "packages/harbor/src/app/Router.tsx",
+      "target": "packages/runtime/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/runtime"
+    },
+    {
+      "source": "packages/harbor/src/app/Router.tsx",
+      "target": "packages/ui/src/index.ts",
+      "kind": "component",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/harbor/src/app/Router.tsx",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/harbor/src/app/Shell.tsx",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/harbor/src/app/Shell.tsx",
+      "target": "packages/harbor/src/app/App.tsx",
+      "kind": "import",
+      "specifier": "./App"
+    },
+    {
+      "source": "packages/harbor/src/app/Shell.tsx",
+      "target": "packages/runtime/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/runtime"
+    },
+    {
+      "source": "packages/harbor/src/app/Shell.tsx",
+      "target": "packages/ui/src/index.ts",
+      "kind": "component",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/harbor/src/app/Shell.tsx",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/harbor/src/components/Avatar.tsx",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/harbor/src/components/Avatar.tsx",
+      "target": "packages/harbor/src/components/Button.tsx",
+      "kind": "import",
+      "specifier": "./Button"
+    },
+    {
+      "source": "packages/harbor/src/components/Avatar.tsx",
+      "target": "packages/runtime/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/runtime"
+    },
+    {
+      "source": "packages/harbor/src/components/Avatar.tsx",
+      "target": "packages/ui/src/index.ts",
+      "kind": "component",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/harbor/src/components/Avatar.tsx",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/harbor/src/components/Button.tsx",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/harbor/src/components/Button.tsx",
+      "target": "packages/runtime/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/runtime"
+    },
+    {
+      "source": "packages/harbor/src/components/Button.tsx",
+      "target": "packages/ui/src/index.ts",
+      "kind": "component",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/harbor/src/components/Button.tsx",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/harbor/src/components/Card.tsx",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/harbor/src/components/Card.tsx",
+      "target": "packages/harbor/src/components/Button.tsx",
+      "kind": "import",
+      "specifier": "./Button"
+    },
+    {
+      "source": "packages/harbor/src/components/Card.tsx",
+      "target": "packages/runtime/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/runtime"
+    },
+    {
+      "source": "packages/harbor/src/components/Card.tsx",
+      "target": "packages/ui/src/index.ts",
+      "kind": "component",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/harbor/src/components/Card.tsx",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/harbor/src/components/Command.tsx",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/harbor/src/components/Command.tsx",
+      "target": "packages/harbor/src/components/Button.tsx",
+      "kind": "import",
+      "specifier": "./Button"
+    },
+    {
+      "source": "packages/harbor/src/components/Command.tsx",
+      "target": "packages/runtime/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/runtime"
+    },
+    {
+      "source": "packages/harbor/src/components/Command.tsx",
+      "target": "packages/ui/src/index.ts",
+      "kind": "component",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/harbor/src/components/Command.tsx",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/harbor/src/components/Dialog.tsx",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/harbor/src/components/Dialog.tsx",
+      "target": "packages/harbor/src/components/Button.tsx",
+      "kind": "import",
+      "specifier": "./Button"
+    },
+    {
+      "source": "packages/harbor/src/components/Dialog.tsx",
+      "target": "packages/runtime/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/runtime"
+    },
+    {
+      "source": "packages/harbor/src/components/Dialog.tsx",
+      "target": "packages/ui/src/index.ts",
+      "kind": "component",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/harbor/src/components/Dialog.tsx",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/harbor/src/components/Menu.tsx",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/harbor/src/components/Menu.tsx",
+      "target": "packages/harbor/src/components/Button.tsx",
+      "kind": "import",
+      "specifier": "./Button"
+    },
+    {
+      "source": "packages/harbor/src/components/Menu.tsx",
+      "target": "packages/runtime/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/runtime"
+    },
+    {
+      "source": "packages/harbor/src/components/Menu.tsx",
+      "target": "packages/ui/src/index.ts",
+      "kind": "component",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/harbor/src/components/Menu.tsx",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/harbor/src/hooks/useProject.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/harbor/src/hooks/useProject.ts",
+      "target": "packages/runtime/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/runtime"
+    },
+    {
+      "source": "packages/harbor/src/hooks/useProject.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/harbor/src/hooks/useSearch.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/harbor/src/hooks/useSearch.ts",
+      "target": "packages/harbor/src/hooks/useProject.ts",
+      "kind": "import",
+      "specifier": "./useProject"
+    },
+    {
+      "source": "packages/harbor/src/hooks/useSearch.ts",
+      "target": "packages/runtime/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/runtime"
+    },
+    {
+      "source": "packages/harbor/src/hooks/useSearch.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/harbor/src/hooks/useSession.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/harbor/src/hooks/useSession.ts",
+      "target": "packages/harbor/src/hooks/useProject.ts",
+      "kind": "import",
+      "specifier": "./useProject"
+    },
+    {
+      "source": "packages/harbor/src/hooks/useSession.ts",
+      "target": "packages/runtime/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/runtime"
+    },
+    {
+      "source": "packages/harbor/src/hooks/useSession.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/harbor/src/hooks/useTheme.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/harbor/src/hooks/useTheme.ts",
+      "target": "packages/harbor/src/hooks/useProject.ts",
+      "kind": "import",
+      "specifier": "./useProject"
+    },
+    {
+      "source": "packages/harbor/src/hooks/useTheme.ts",
+      "target": "packages/runtime/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/runtime"
+    },
+    {
+      "source": "packages/harbor/src/hooks/useTheme.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/harbor/src/index.ts",
+      "target": "packages/harbor/src/app/App.tsx",
+      "kind": "reexport",
+      "specifier": "./app/App"
+    },
+    {
+      "source": "packages/harbor/src/index.ts",
+      "target": "packages/harbor/src/components/Button.tsx",
+      "kind": "reexport",
+      "specifier": "./components/Button"
+    },
+    {
+      "source": "packages/harbor/src/index.ts",
+      "target": "packages/harbor/src/hooks/useProject.ts",
+      "kind": "reexport",
+      "specifier": "./hooks/useProject"
+    },
+    {
+      "source": "packages/harbor/src/index.ts",
+      "target": "packages/harbor/src/views/Dashboard.tsx",
+      "kind": "reexport",
+      "specifier": "./views/Dashboard"
+    },
+    {
+      "source": "packages/harbor/src/views/Dashboard.tsx",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/harbor/src/views/Dashboard.tsx",
+      "target": "packages/runtime/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/runtime"
+    },
+    {
+      "source": "packages/harbor/src/views/Dashboard.tsx",
+      "target": "packages/ui/src/index.ts",
+      "kind": "component",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/harbor/src/views/Dashboard.tsx",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/harbor/src/views/Explorer.tsx",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/harbor/src/views/Explorer.tsx",
+      "target": "packages/harbor/src/views/Dashboard.tsx",
+      "kind": "import",
+      "specifier": "./Dashboard"
+    },
+    {
+      "source": "packages/harbor/src/views/Explorer.tsx",
+      "target": "packages/runtime/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/runtime"
+    },
+    {
+      "source": "packages/harbor/src/views/Explorer.tsx",
+      "target": "packages/ui/src/index.ts",
+      "kind": "component",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/harbor/src/views/Explorer.tsx",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/harbor/src/views/Settings.tsx",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/harbor/src/views/Settings.tsx",
+      "target": "packages/harbor/src/views/Dashboard.tsx",
+      "kind": "import",
+      "specifier": "./Dashboard"
+    },
+    {
+      "source": "packages/harbor/src/views/Settings.tsx",
+      "target": "packages/runtime/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/runtime"
+    },
+    {
+      "source": "packages/harbor/src/views/Settings.tsx",
+      "target": "packages/ui/src/index.ts",
+      "kind": "component",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/harbor/src/views/Settings.tsx",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/harbor/src/views/Welcome.tsx",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/harbor/src/views/Welcome.tsx",
+      "target": "packages/harbor/src/views/Dashboard.tsx",
+      "kind": "import",
+      "specifier": "./Dashboard"
+    },
+    {
+      "source": "packages/harbor/src/views/Welcome.tsx",
+      "target": "packages/runtime/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/runtime"
+    },
+    {
+      "source": "packages/harbor/src/views/Welcome.tsx",
+      "target": "packages/ui/src/index.ts",
+      "kind": "component",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/harbor/src/views/Welcome.tsx",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/runtime/src/engine/Camera.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/runtime/src/engine/Camera.ts",
+      "target": "packages/runtime/src/engine/Engine.ts",
+      "kind": "import",
+      "specifier": "./Engine"
+    },
+    {
+      "source": "packages/runtime/src/engine/Camera.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/runtime/src/engine/Clock.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/runtime/src/engine/Clock.ts",
+      "target": "packages/runtime/src/engine/Engine.ts",
+      "kind": "import",
+      "specifier": "./Engine"
+    },
+    {
+      "source": "packages/runtime/src/engine/Clock.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/runtime/src/engine/Engine.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/runtime/src/engine/Engine.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/runtime/src/engine/Scene.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/runtime/src/engine/Scene.ts",
+      "target": "packages/runtime/src/engine/Engine.ts",
+      "kind": "import",
+      "specifier": "./Engine"
+    },
+    {
+      "source": "packages/runtime/src/engine/Scene.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/runtime/src/index.ts",
+      "target": "packages/runtime/src/engine/Engine.ts",
+      "kind": "reexport",
+      "specifier": "./engine/Engine"
+    },
+    {
+      "source": "packages/runtime/src/index.ts",
+      "target": "packages/runtime/src/systems/Physics.ts",
+      "kind": "reexport",
+      "specifier": "./systems/Physics"
+    },
+    {
+      "source": "packages/runtime/src/index.ts",
+      "target": "packages/runtime/src/workers/Parser.ts",
+      "kind": "reexport",
+      "specifier": "./workers/Parser"
+    },
+    {
+      "source": "packages/runtime/src/systems/Animation.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/runtime/src/systems/Animation.ts",
+      "target": "packages/runtime/src/systems/Physics.ts",
+      "kind": "import",
+      "specifier": "./Physics"
+    },
+    {
+      "source": "packages/runtime/src/systems/Animation.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/runtime/src/systems/Audio.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/runtime/src/systems/Audio.ts",
+      "target": "packages/runtime/src/systems/Physics.ts",
+      "kind": "import",
+      "specifier": "./Physics"
+    },
+    {
+      "source": "packages/runtime/src/systems/Audio.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/runtime/src/systems/Lighting.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/runtime/src/systems/Lighting.ts",
+      "target": "packages/runtime/src/systems/Physics.ts",
+      "kind": "import",
+      "specifier": "./Physics"
+    },
+    {
+      "source": "packages/runtime/src/systems/Lighting.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/runtime/src/systems/Physics.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/runtime/src/systems/Physics.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/runtime/src/workers/Bundler.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/runtime/src/workers/Bundler.ts",
+      "target": "packages/runtime/src/workers/Parser.ts",
+      "kind": "import",
+      "specifier": "./Parser"
+    },
+    {
+      "source": "packages/runtime/src/workers/Bundler.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/runtime/src/workers/Parser.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/runtime/src/workers/Parser.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/runtime/src/workers/Scanner.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/runtime/src/workers/Scanner.ts",
+      "target": "packages/runtime/src/workers/Parser.ts",
+      "kind": "import",
+      "specifier": "./Parser"
+    },
+    {
+      "source": "packages/runtime/src/workers/Scanner.ts",
+      "target": "packages/ui/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/ui"
+    },
+    {
+      "source": "packages/ui/src/components/Badge.tsx",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/ui/src/components/Badge.tsx",
+      "target": "packages/ui/src/components/Panel.tsx",
+      "kind": "import",
+      "specifier": "./Panel"
+    },
+    {
+      "source": "packages/ui/src/components/Input.tsx",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/ui/src/components/Input.tsx",
+      "target": "packages/ui/src/components/Panel.tsx",
+      "kind": "import",
+      "specifier": "./Panel"
+    },
+    {
+      "source": "packages/ui/src/components/Panel.tsx",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/ui/src/components/Tabs.tsx",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/ui/src/components/Tabs.tsx",
+      "target": "packages/ui/src/components/Panel.tsx",
+      "kind": "import",
+      "specifier": "./Panel"
+    },
+    {
+      "source": "packages/ui/src/components/Tooltip.tsx",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/ui/src/components/Tooltip.tsx",
+      "target": "packages/ui/src/components/Panel.tsx",
+      "kind": "import",
+      "specifier": "./Panel"
+    },
+    {
+      "source": "packages/ui/src/index.ts",
+      "target": "packages/ui/src/components/Panel.tsx",
+      "kind": "reexport",
+      "specifier": "./components/Panel"
+    },
+    {
+      "source": "packages/ui/src/index.ts",
+      "target": "packages/ui/src/tests/Panel.test.ts",
+      "kind": "reexport",
+      "specifier": "./tests/Panel.test"
+    },
+    {
+      "source": "packages/ui/src/index.ts",
+      "target": "packages/ui/src/theme/Colors.ts",
+      "kind": "reexport",
+      "specifier": "./theme/Colors"
+    },
+    {
+      "source": "packages/ui/src/tests/Input.test.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/ui/src/tests/Input.test.ts",
+      "target": "packages/ui/src/tests/Panel.test.ts",
+      "kind": "import",
+      "specifier": "./Panel.test"
+    },
+    {
+      "source": "packages/ui/src/tests/Panel.test.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/ui/src/tests/Theme.test.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/ui/src/tests/Theme.test.ts",
+      "target": "packages/ui/src/tests/Panel.test.ts",
+      "kind": "import",
+      "specifier": "./Panel.test"
+    },
+    {
+      "source": "packages/ui/src/theme/Colors.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/ui/src/theme/Tokens.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/ui/src/theme/Tokens.ts",
+      "target": "packages/ui/src/theme/Colors.ts",
+      "kind": "import",
+      "specifier": "./Colors"
+    },
+    {
+      "source": "packages/ui/src/theme/Typography.ts",
+      "target": "packages/core/src/index.ts",
+      "kind": "import",
+      "specifier": "@harbor/core"
+    },
+    {
+      "source": "packages/ui/src/theme/Typography.ts",
+      "target": "packages/ui/src/theme/Colors.ts",
+      "kind": "import",
+      "specifier": "./Colors"
+    }
+  ],
+  "packages": [
+    { "id": ".", "directory": "", "name": "Neon harbor" },
+    {
+      "id": "packages/core",
+      "directory": "packages/core",
+      "name": "@harbor/core"
+    },
+    {
+      "id": "packages/harbor",
+      "directory": "packages/harbor",
+      "name": "@harbor/harbor"
+    },
+    {
+      "id": "packages/runtime",
+      "directory": "packages/runtime",
+      "name": "@harbor/runtime"
+    },
+    { "id": "packages/ui", "directory": "packages/ui", "name": "@harbor/ui" }
+  ],
+  "diagnostics": [],
+  "cycles": [
+    [
+      "packages/core/src/graph/Graph.ts",
+      "packages/core/src/index.ts",
+      "packages/core/src/schema/ProjectSchema.ts",
+      "packages/core/src/services/ProjectService.ts",
+      "packages/ui/src/components/Panel.tsx",
+      "packages/ui/src/index.ts",
+      "packages/ui/src/tests/Panel.test.ts",
+      "packages/ui/src/theme/Colors.ts"
+    ]
+  ],
+  "seed": 216339915
+}
