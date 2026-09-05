@@ -24,12 +24,15 @@ landscape end-card hierarchy. It flagged the room arrival's blank wall and
 clipped display; the camera now faces the WikiPageEditor artifact directly. Astra accepted the
 corrected shot and confirmed that the enlarged portrait credits are readable.
 
+The added cursor arrows and click rings were removed after Ryan found their
+placement and timing distracting. Selection is unchanged. The preflight shot
+now makes a short, eased camera arc around the ship instead of holding still.
+
 ## Capture and verification
 
 Footage is captured from the real local neo-compose graph at 2560 × 1440 and
 30 fps. Portrait is a 1080 × 1920 framed adaptation of the same footage.
-The graph remains in ignored artifacts. Camera cuts and pointer rings are
-editorial choices; staircase motion, flight, bailout, and constellation
+The graph remains in ignored artifacts. Camera cuts are editorial choices; staircase motion, flight, bailout, and constellation
 selection use the application's implementations.
 
 All 77 unit tests and doctor checks pass. The added regression checks split-room

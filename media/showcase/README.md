@@ -63,8 +63,8 @@ Sans on Linux. Set `SHOWCASE_FONT` to another installed TrueType font.
 
 ## Editing the tour
 
-- `scripts/showcase/tour.js`: camera poses, shot timings, movement and cursor
-  emphasis and the flickering neon end card. The staircase uses production collision physics. Constellation
+- `scripts/showcase/tour.js`: camera poses, shot timings, movement,
+  and the flickering neon end card. The staircase uses production collision physics. Constellation
   zooms use production selection handlers, followed by an editorial room cut.
   The first shuttle flies inward from the CLI port to the main district in four
   seconds and completes its landing. The second ride begins 1.9 seconds into
@@ -78,7 +78,7 @@ Sans on Linux. Set `SHOWCASE_FONT` to another installed TrueType font.
 The capture intercepts `main.ts` only within its own browser session to access
 camera controls. It changes no application source or public runtime API. Cuts
 between locations are editorial cuts. The automated route is staged, not an
-uninterrupted play session. Pointer rings are editorial emphasis. Some HUD
+uninterrupted play session. The capture adds no cursor or click rings. Some HUD
 controls are hidden during capture, and walking shots use a wider camera lens.
 
 The saved graph and fixed browser clock keep locations and timing repeatable.

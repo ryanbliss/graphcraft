@@ -5,3 +5,9 @@ test-results/
 playwright-report/
 *.local
 .DS_Store
+
+# Local capture, debugging, and scratch output
+.playwright-cli/
+*.log
+/scratch/
+/tmp/

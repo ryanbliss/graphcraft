@@ -21,8 +21,7 @@
     core;
   const done = new Set();
   let shot = -1,
-    time = 0,
-    pulse = -10;
+    time = 0;
   const segments = [
     { start: 0, shot: 0 },
     { start: 2, shot: 1 },
@@ -38,22 +37,6 @@
     { start: 22, shot: 11 },
     { start: 26, shot: 12 },
   ];
-  const cursor = document.createElement("div");
-  cursor.innerHTML =
-    '<svg width="26" height="32" viewBox="0 0 26 32"><path d="M3 2 L3 25 L9 20 L14 30 L19 27 L14 18 L23 17 Z" fill="white" stroke="#0a2439" stroke-width="2"/></svg>';
-  cursor.style.cssText =
-    "position:fixed;z-index:150;pointer-events:none;display:none;filter:drop-shadow(0 0 5px #5bdbff)";
-  const ring = document.createElement("div");
-  ring.style.cssText =
-    "position:fixed;z-index:149;pointer-events:none;border:2px solid #73edff;border-radius:50%;display:none";
-  document.body.append(cursor, ring);
-  let pointer = { x: 640, y: 360 };
-  function point(x, y, click = false) {
-    pointer = { x, y };
-    cursor.style.left = x + "px";
-    cursor.style.top = y + "px";
-    if (click) pulse = time;
-  }
   function once(id, at, fn) {
     if (time >= at && !done.has(id)) {
       done.add(id);
@@ -83,12 +66,6 @@
       e.constellation.model.sources.get(source) ||
       e.constellation.model.items.get(source);
     if (!item) throw new Error("Missing celestial source " + source);
-    const body = e.constellation.places.get(item.id);
-    if (body) {
-      const p = body.point.clone();
-      p.project(e.camera);
-      point((p.x + 1) * 640, (1 - p.y) * 360, true);
-    }
     e.constellation.select(item.id);
     if (e.cameraFlight) e.cameraFlight.duration = 350;
   }
@@ -146,9 +123,9 @@
       }
       if (shot === 9) {
         const ship = e.city.shuttles.get("cli") || e.city.shuttles.get(".");
+        c.boardingShip = ship;
         walk(ship.position.x + 9, ship.position.z + 10);
         look(ship.position.x, 2, ship.position.z);
-        point(640, 360, true);
       }
       if (shot === 10) {
         const target = e.layout.regions.find(
@@ -196,10 +173,18 @@
       e.eyeHeight.reset(floor + 2.7);
       look(title.x - 35 + (t - 8.5) * 45, title.titleHeight * 0.65, title.z);
     }
+    if (shot === 9) {
+      const p = c.boardingShip.position;
+      const progress = Math.min(1, t - 10.5);
+      const arc = progress * progress * (3 - 2 * progress);
+      const angle = Math.atan2(9, 10) + arc * 0.23;
+      e.player.position.x = p.x + Math.sin(angle) * Math.hypot(9, 10);
+      e.player.position.z = p.z + Math.cos(angle) * Math.hypot(9, 10);
+      look(p.x, 2, p.z);
+    }
     if (shot === 6) {
       const p = c.star.position;
       look(p.x, p.y, p.z);
-      point(640, 360, t > 16.8 && pulse < 16);
     }
     once("galaxy", 17.25, () => {
       celestial("galaxy:.");
@@ -226,16 +211,6 @@
         r.leader.style.visibility = visible ? "visible" : "hidden";
       }
     }
-    cursor.style.display =
-      shot === 6 || shot === 7 || shot === 9 ? "block" : "none";
-    const age = t - pulse;
-    ring.style.display = age >= 0 && age < 0.45 ? "block" : "none";
-    const size = 12 + age * 70;
-    ring.style.width = size + "px";
-    ring.style.height = size + "px";
-    ring.style.left = pointer.x - size / 2 + "px";
-    ring.style.top = pointer.y - size / 2 + "px";
-    ring.style.opacity = String(1 - age / 0.45);
     if (shot === 7 && e.mode !== "constellation")
       throw new Error("Constellation film shot left space mode");
   };

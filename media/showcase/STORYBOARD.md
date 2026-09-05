@@ -13,7 +13,7 @@ safe areas. The timing below is an editorial choice for this product.
 | 5.5–6.85  | Populated upper room | Show the furnished interior before the climb.                        |
 | 6.85–8.5  | Convex staircase     | Climb without pausing at the landing.                                |
 | 8.5–10.5  | High window          | Sweep across the neo-compose neon sign and city.                     |
-| 10.5–11.5 | Shuttle              | Show the craft before boarding.                                      |
+| 10.5–11.5 | Shuttle              | Arc around the craft before boarding.                                |
 | 11.5–16   | Inward shuttle ride  | Complete a four-second flight and landing.                           |
 | 16–17     | Sky                  | Frame a building corner beneath the selected galaxy.                 |
 | 17–20.5   | Constellation zooms  | Move from galaxy to building and room, separating the two flights.   |
