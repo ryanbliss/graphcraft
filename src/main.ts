@@ -53,7 +53,7 @@ app.innerHTML = `
   <dialog id="diagnostics-dialog" class="panel diagnostics-dialog"><button class="icon-button dialog-close" aria-label="Close diagnostics">${icon("close")}</button><div class="eyebrow">PROJECT ANALYSIS</div><h2>Some connections need a closer look.</h2><div id="diagnostics-list"></div></dialog>
   <button id="diagnostics" hidden>Analysis notes</button>
   <div id="hover" class="hover-label" hidden></div><div id="toast" class="toast" role="status" hidden></div>
-  <div id="loading" class="loading" hidden><div class="loading-inner">${icon("cube")}<h2>Shaping your world.</h2><p id="loading-message">Tracing connections</p><div class="loading-track"></div></div></div>
+  <div id="loading" class="loading" hidden><div class="loading-inner">${icon("cube")}<h2>Shaping your world.</h2><p id="loading-message" role="status" aria-live="polite">Tracing connections</p><div class="loading-track"></div></div></div>
   <dialog id="project-dialog" class="panel project-dialog"><button class="icon-button dialog-close" aria-label="Close project picker">${icon("close")}</button><div class="eyebrow">YOUR NEXT WORLD</div><h2>Open a project.</h2><p>Choose a project directory, including mixed-language monorepos.</p><p id="project-error" class="project-error" role="alert" hidden></p><button id="native-picker" class="primary">${icon("folder")}Choose directory ${icon("arrow")}</button><button id="compatible-picker" class="compatible-picker">Use compatible directory picker</button>${import.meta.env.DEV ? '<div class="path-divider">Or enter a local path</div><form id="path-form"><input id="project-path" placeholder="/Users/you/projects/my-app" aria-label="Local project directory" autocomplete="off"/><button class="path-submit" type="submit" aria-label="Open local directory">→</button></form>' : ""}<div class="recent-projects" hidden></div><p class="fine-print">Files are read locally. Your project is never uploaded.</p></dialog>
   <input id="directory-input" type="file" webkitdirectory multiple hidden />
 `;
@@ -132,12 +132,23 @@ function setGraph(next: ProjectGraph, enter = true) {
 async function loadProject(loader: () => Promise<ProjectGraph | undefined>) {
   if (busy) return;
   busy = true;
+  const dialog = get<HTMLDialogElement>("#project-dialog");
+  const restorePicker = dialog.open;
+  dialog.close();
+  progress("Reading your project");
+  get("#loading").hidden = false;
   try {
     const pending = loader();
-    get("#loading").hidden = false;
     const next = await pending;
-    if (next) setGraph(next);
+    if (next) {
+      progress("Building your world");
+      await new Promise<void>((resolve) =>
+        requestAnimationFrame(() => setTimeout(resolve, 0)),
+      );
+      setGraph(next);
+    } else if (restorePicker) dialog.showModal();
   } catch (error) {
+    if (restorePicker && !dialog.open) dialog.showModal();
     if (!(error instanceof DOMException && error.name === "AbortError"))
       toast(error instanceof Error ? error.message : String(error));
   } finally {

@@ -84,7 +84,8 @@ export async function scanDirectory(
       }
       const file = await entry.getFile();
       await scan.accept(path, file.size, () => file.text());
-      if (scan.files.length % 100 === 0) onProgress(`Reading ${path}`);
+      if (scan.files.length % 100 === 0)
+        onProgress(`Read ${scan.files.length} files · ${path}`);
     }
   }
   onProgress(`Reading ${root.name}`);
@@ -115,8 +116,12 @@ export async function fromFileList(
     if (!isScanMetadata(path) || file.size > 4 * 1024 * 1024) continue;
     scan.filter.addMetadata({ path, content: await file.text() });
   }
-  for (const file of selectedFiles)
+  onProgress(`Reading ${name}`);
+  for (const [index, file] of selectedFiles.entries()) {
     await scan.accept(pathOf(file), file.size, () => file.text());
+    if ((index + 1) % 100 === 0 || index === selectedFiles.length - 1)
+      onProgress(`Read ${index + 1} of ${selectedFiles.length} files`);
+  }
   return parseFiles(
     scan.files,
     name,
