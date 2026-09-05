@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("preserves thin city surfaces at Neo survey distance through postprocessing", async ({
+test("preserves separated surfaces and shared roads through postprocessing at Neo distances", async ({
   page,
 }) => {
   const errors: string[] = [];

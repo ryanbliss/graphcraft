@@ -12,7 +12,7 @@ export interface StreetNetwork {
   nodes: StreetNode[];
 }
 
-/** Bound intersection work even for very large source graphs. */
+/** Retain neighborhood roads while limiting intersection checks to shared spatial cells. */
 export function streetNetwork(layout: WorldLayout): StreetNetwork {
   const segments: { a: Point; b: Point; length: number; splits: Point[] }[] =
     [];
@@ -41,29 +41,73 @@ export function streetNetwork(layout: WorldLayout): StreetNetwork {
       if (length >= 8 && (a.x === b.x || a.z === b.z))
         segments.push({ a, b, length, splits: [a, b] });
     }
-  segments.sort((a, b) => b.length - a.length);
-  segments.length = Math.min(96, segments.length);
-  const contains = (s: (typeof segments)[number], p: Point) =>
-    p.x >= Math.min(s.a.x, s.b.x) &&
-    p.x <= Math.max(s.a.x, s.b.x) &&
-    p.z >= Math.min(s.a.z, s.b.z) &&
-    p.z <= Math.max(s.a.z, s.b.z);
-  for (let i = 0; i < segments.length; i++)
-    for (let j = i + 1; j < segments.length; j++) {
-      const a = segments[i],
-        b = segments[j];
-      if ((a.a.x === a.b.x) !== (b.a.x === b.b.x)) {
-        const p =
-          a.a.x === a.b.x ? { x: a.a.x, z: b.a.z } : { x: b.a.x, z: a.a.z };
-        if (contains(a, p) && contains(b, p)) {
-          a.splits.push(p);
-          b.splits.push(p);
-        }
+  // Merge shared road runs before spatially indexing crossings.
+  const lines = new Map<string, typeof segments>();
+  for (const segment of segments) {
+    const vertical = segment.a.x === segment.b.x;
+    const coordinate = vertical ? "z" : "x";
+    if (segment.a[coordinate] > segment.b[coordinate])
+      [segment.a, segment.b] = [segment.b, segment.a];
+    const key = vertical ? `x:${segment.a.x}` : `z:${segment.a.z}`;
+    const line = lines.get(key);
+    if (line) line.push(segment);
+    else lines.set(key, [segment]);
+  }
+  segments.length = 0;
+  for (const line of lines.values()) {
+    const coordinate = line[0].a.x === line[0].b.x ? "z" : "x";
+    line.sort((a, b) => a.a[coordinate] - b.a[coordinate]);
+    let previous: (typeof line)[number] | undefined;
+    for (const segment of line) {
+      if (previous && segment.a[coordinate] <= previous.b[coordinate]) {
+        previous.b[coordinate] = Math.max(
+          previous.b[coordinate],
+          segment.b[coordinate],
+        );
+        previous.length = previous.b[coordinate] - previous.a[coordinate];
+        previous.splits = [previous.a, previous.b];
       } else {
-        for (const p of [a.a, a.b]) if (contains(b, p)) b.splits.push(p);
-        for (const p of [b.a, b.b]) if (contains(a, p)) a.splits.push(p);
+        segments.push(segment);
+        previous = segment;
       }
     }
+  }
+  const cells = new Map<string, number[]>();
+  for (let i = 0; i < segments.length; i++) {
+    const a = segments[i],
+      candidates = new Set<number>();
+    for (let x = Math.floor(a.a.x / 64); x <= Math.floor(a.b.x / 64); x++)
+      for (let z = Math.floor(a.a.z / 64); z <= Math.floor(a.b.z / 64); z++) {
+        const key = `${x}:${z}`,
+          cell = cells.get(key);
+        if (cell) {
+          for (const j of cell) candidates.add(j);
+          cell.push(i);
+        } else cells.set(key, [i]);
+      }
+    for (const j of candidates) {
+      const b = segments[j];
+      if ((a.a.x === a.b.x) === (b.a.x === b.b.x)) continue;
+      const point =
+        a.a.x === a.b.x ? { x: a.a.x, z: b.a.z } : { x: b.a.x, z: a.a.z };
+      if (
+        point.x < Math.min(a.a.x, a.b.x) ||
+        point.x > Math.max(a.a.x, a.b.x) ||
+        point.z < Math.min(a.a.z, a.b.z) ||
+        point.z > Math.max(a.a.z, a.b.z)
+      )
+        continue;
+      if (
+        point.x < Math.min(b.a.x, b.b.x) ||
+        point.x > Math.max(b.a.x, b.b.x) ||
+        point.z < Math.min(b.a.z, b.b.z) ||
+        point.z > Math.max(b.a.z, b.b.z)
+      )
+        continue;
+      a.splits.push(point);
+      b.splits.push(point);
+    }
+  }
   const nodes: StreetNode[] = [],
     indices = new Map<string, number>();
   const index = (p: Point) => {
@@ -130,6 +174,8 @@ interface Car {
   to: number;
   progress: number;
   speed: number;
+  opacity: number;
+  materials: THREE.Material[];
 }
 interface Signal {
   axis: "x" | "z";
@@ -151,6 +197,11 @@ export class StreetTraffic {
   >();
   private readonly desiredPosition = new THREE.Vector3();
   private readonly junctionGroups: number[];
+  private readonly edges: [number, number][];
+  private distributionDelay = 0;
+  private readonly view = new THREE.Frustum();
+  private readonly viewMatrix = new THREE.Matrix4();
+  private readonly bounds = new THREE.Sphere(new THREE.Vector3(), 3);
 
   constructor(layout: WorldLayout, scene: THREE.Scene) {
     this.group.name = "street-traffic";
@@ -191,6 +242,7 @@ export class StreetTraffic {
         )
           edges.push([from, to]);
     });
+    this.edges = edges.slice();
     const spawnProgress = ([from, to]: [number, number]) => {
       const a = nodes[from],
         b = nodes[to],
@@ -227,8 +279,21 @@ export class StreetTraffic {
     for (const [from, to] of edges.slice(0, 8)) {
       const mesh = this.car();
       mesh.name = `courier-car-${this.cars.length}`;
+      const materials: THREE.Material[] = [];
+      mesh.traverse((object) => {
+        if (object instanceof THREE.Mesh) {
+          for (const material of Array.isArray(object.material)
+            ? object.material
+            : [object.material]) {
+            material.transparent = true;
+            materials.push(material);
+          }
+        }
+      });
       this.cars.push({
         mesh,
+        opacity: 1,
+        materials,
         from,
         to,
         progress:
@@ -363,9 +428,122 @@ export class StreetTraffic {
     }));
   }
 
-  update(dt: number, people: readonly Vec3[] = [], player?: Vec3) {
+  private populateNearby(
+    player: Vec3,
+    people: readonly Vec3[],
+    camera: THREE.Camera,
+  ) {
+    camera.updateMatrixWorld();
+    this.view.setFromProjectionMatrix(
+      this.viewMatrix.multiplyMatrices(
+        camera.projectionMatrix,
+        camera.matrixWorldInverse,
+      ),
+    );
+    const distance = (point: Vec3) =>
+      Math.hypot(point.x - player.x, point.z - player.z);
+    let nearby = this.cars.filter(
+      (car) => distance(car.mesh.position) < 90,
+    ).length;
+    if (nearby >= 3) return;
+    const { nodes } = this.network;
+    for (const car of this.cars) {
+      if (nearby >= 3) break;
+      if (
+        distance(car.mesh.position) < 120 ||
+        (car.mesh.visible &&
+          this.view.intersectsSphere(this.bounds.set(car.mesh.position, 3)))
+      )
+        continue;
+      let best:
+        | {
+            from: number;
+            to: number;
+            progress: number;
+            position: THREE.Vector3;
+            score: number;
+          }
+        | undefined;
+      for (const [from, to] of this.edges) {
+        const a = nodes[from],
+          b = nodes[to],
+          dx = b.x - a.x,
+          dz = b.z - a.z,
+          length = Math.hypot(dx, dz);
+        const projection =
+          ((player.x - a.x) * dx + (player.z - a.z) * dz) / (length * length);
+        for (const offset of [-35, 0, 35]) {
+          const progress = THREE.MathUtils.clamp(
+            projection + offset / length,
+            3 / length,
+            1 - 3 / length,
+          );
+          const position = new THREE.Vector3(
+            a.x + dx * progress + (dz / length) * 0.6,
+            0,
+            a.z + dz * progress - (dx / length) * 0.6,
+          );
+          const separation = distance(position);
+          if (
+            separation < 25 ||
+            separation > 75 ||
+            this.view.intersectsSphere(this.bounds.set(position, 3))
+          )
+            continue;
+          if (
+            this.cars.some(
+              (other) =>
+                other !== car &&
+                other.mesh.position.distanceToSquared(position) < 144,
+            )
+          )
+            continue;
+          if (
+            people.some(
+              (person) =>
+                Math.hypot(person.x - position.x, person.z - position.z) < 4,
+            )
+          )
+            continue;
+          const score = Math.abs(separation - 35);
+          if (!best || score < best.score)
+            best = { from, to, progress, position, score };
+        }
+      }
+      if (!best) break;
+      for (const [junction, reservation] of this.reservations)
+        if (reservation.car === car) this.reservations.delete(junction);
+      car.from = best.from;
+      car.to = best.to;
+      car.progress = best.progress;
+      car.speed = 0;
+      car.opacity = 1;
+      car.mesh.visible = true;
+      for (const material of car.materials) {
+        material.opacity = 1;
+        material.depthWrite = true;
+      }
+      car.mesh.position.copy(best.position);
+      const a = nodes[car.from],
+        b = nodes[car.to];
+      car.mesh.rotation.y = Math.atan2(b.x - a.x, b.z - a.z);
+      nearby++;
+    }
+  }
+
+  update(
+    dt: number,
+    people: readonly Vec3[] = [],
+    player?: Vec3,
+    camera?: THREE.Camera,
+  ) {
     const step = Number.isFinite(dt) ? Math.max(0, Math.min(dt, 0.1)) : 0;
     this.time += step;
+    this.distributionDelay -= step;
+    if (player && camera && player.y < 4 && this.distributionDelay <= 0) {
+      this.distributionDelay = 2;
+      this.populateNearby(player, people, camera);
+    }
     const { nodes } = this.network;
     const obstacles = player ? [...people, player] : people;
     for (const signal of this.signals) {
@@ -373,7 +551,41 @@ export class StreetTraffic {
       signal.red.color.set(green ? "#35121c" : "#ff345c");
       signal.green.color.set(green ? "#46ffd3" : "#10372d");
     }
+    const needLocal =
+      player &&
+      camera &&
+      player.y < 4 &&
+      this.cars.filter(
+        (car) =>
+          Math.hypot(
+            car.mesh.position.x - player.x,
+            car.mesh.position.z - player.z,
+          ) < 90,
+      ).length < 3;
     for (const car of this.cars) {
+      const distant =
+        player &&
+        Math.hypot(
+          car.mesh.position.x - player.x,
+          car.mesh.position.z - player.z,
+        ) > 140;
+      const desiredOpacity = needLocal && distant ? 0 : 1;
+      car.opacity = THREE.MathUtils.clamp(
+        car.opacity + (desiredOpacity === 0 ? -1 : 1) * step * 0.8,
+        0,
+        1,
+      );
+      car.mesh.visible = car.opacity > 0;
+      for (const material of car.materials) {
+        material.opacity = car.opacity;
+        material.depthWrite = car.opacity === 1;
+      }
+      if (!car.mesh.visible) {
+        car.speed = 0;
+        for (const [junction, reservation] of this.reservations)
+          if (reservation.car === car) this.reservations.delete(junction);
+        continue;
+      }
       const a = nodes[car.from],
         b = nodes[car.to];
       const dx = b.x - a.x,
@@ -397,6 +609,7 @@ export class StreetTraffic {
       for (const other of this.cars) {
         if (
           other !== car &&
+          other.mesh.visible &&
           other.from === car.from &&
           other.to === car.to &&
           other.progress > car.progress
@@ -406,7 +619,12 @@ export class StreetTraffic {
             Math.max(0, (other.progress - car.progress) * length - 3.2),
           );
         // Keep the same following distance when a leader has just rounded a corner.
-        if (other !== car && other.from === car.to && other.to !== car.from) {
+        if (
+          other !== car &&
+          other.mesh.visible &&
+          other.from === car.to &&
+          other.to !== car.from
+        ) {
           const end = nodes[other.to];
           const ahead = other.progress * Math.hypot(end.x - b.x, end.z - b.z);
           clearance = Math.min(clearance, Math.max(0, remaining + ahead - 3.2));

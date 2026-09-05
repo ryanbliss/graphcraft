@@ -1,3 +1,4 @@
+import { unionSurfaces, type SurfaceRect } from "./road-surfaces.ts";
 import * as THREE from "three";
 import { CollisionWorld } from "./physics.ts";
 import { hash } from "../graph/types.ts";
@@ -138,18 +139,23 @@ export class Pedestrians {
     const routes = sidewalkRoutes(layout, colliders);
     let totalLength = 0;
     const pavement = new VoxelBatch();
+    const surfaces: SurfaceRect[] = [];
     for (const route of routes) {
       totalLength += route.length;
-      const alongX = route.from.z === route.to.z;
-      pavement.add(
-        (route.from.x + route.to.x) / 2,
-        0.012,
-        (route.from.z + route.to.z) / 2,
-        alongX ? route.length : 0.9,
-        0.024,
-        alongX ? 0.9 : route.length,
-        "#25333e",
-      );
+      surfaces.push({
+        minX:
+          Math.min(route.from.x, route.to.x) -
+          (route.from.x === route.to.x ? 0.45 : 0),
+        maxX:
+          Math.max(route.from.x, route.to.x) +
+          (route.from.x === route.to.x ? 0.45 : 0),
+        minZ:
+          Math.min(route.from.z, route.to.z) -
+          (route.from.z === route.to.z ? 0.45 : 0),
+        maxZ:
+          Math.max(route.from.z, route.to.z) +
+          (route.from.z === route.to.z ? 0.45 : 0),
+      });
       const steps = Math.ceil(route.length / 32);
       let previousCell = "";
       for (let step = 0; step <= steps; step++) {
@@ -164,6 +170,16 @@ export class Pedestrians {
         else this.pathsByCell.set(key, [route]);
       }
     }
+    for (const r of unionSurfaces(surfaces))
+      pavement.add(
+        (r.minX + r.maxX) / 2,
+        0.012,
+        (r.minZ + r.maxZ) / 2,
+        r.maxX - r.minX,
+        0.024,
+        r.maxZ - r.minZ,
+        "#25333e",
+      );
     this.sidewalks.name = "Sidewalks";
     pavement.build(this.sidewalks);
     scene.add(this.sidewalks);

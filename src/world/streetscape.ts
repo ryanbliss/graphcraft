@@ -286,10 +286,20 @@ export function buildStreetscape(
   }
   const water = new THREE.ShaderMaterial({
     uniforms: { time: { value: 0 } },
-    vertexShader: `varying vec2 location;
-      void main(){ location=position.xz; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
-    fragmentShader: `uniform float time; varying vec2 location;
+    vertexShader: `
+      #include <common>
+      #include <logdepthbuf_pars_vertex>
+      varying vec2 location;
       void main(){
+        location=position.xz;
+        gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);
+        #include <logdepthbuf_vertex>
+      }`,
+    fragmentShader: `
+      #include <logdepthbuf_pars_fragment>
+      uniform float time; varying vec2 location;
+      void main(){
+        #include <logdepthbuf_fragment>
         float wave=sin(location.x*.65+sin(location.y*.35+time)*2.0-time*1.3);
         float ripple=pow(max(0.0,wave),18.0);
         vec3 color=mix(vec3(.015,.20,.28),vec3(.08,.65,.72),ripple*.55);

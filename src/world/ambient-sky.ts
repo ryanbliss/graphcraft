@@ -71,6 +71,8 @@ export class AmbientSky {
       depthWrite: false,
       blending: THREE.AdditiveBlending,
       vertexShader: `
+        #include <common>
+        #include <logdepthbuf_pars_vertex>
         attribute float variation;
         uniform float time;
         varying vec3 tint;
@@ -80,12 +82,15 @@ export class AmbientSky {
           brightness = 0.46 + 0.16 * sin(time * (0.35 + variation * 0.45) + variation * 80.0);
           gl_PointSize = 1.8 + variation * 2.1;
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          #include <logdepthbuf_vertex>
         }
       `,
       fragmentShader: `
+        #include <logdepthbuf_pars_fragment>
         varying vec3 tint;
         varying float brightness;
         void main() {
+          #include <logdepthbuf_fragment>
           vec2 p = gl_PointCoord - 0.5;
           float core = 1.0 - smoothstep(0.07, 0.28, length(p));
           float halo = (1.0 - smoothstep(0.0, 0.5, length(p))) * 0.22;

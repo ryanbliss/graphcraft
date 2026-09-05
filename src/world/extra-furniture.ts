@@ -206,7 +206,7 @@ export function furnishExtraArtifact(
       plinth(1.7, 1.7, 0.3);
       if (variant === 0) {
         for (const x of [-0.24, 0.24]) {
-          body(x, 0.69, 0, 0.25, 0.72, 0.3, metal);
+          body(x, 0.77, 0, 0.25, 0.56, 0.3, metal);
           body(x, 0.41, 0.15, 0.3, 0.16, 0.48, porcelain);
           body(x * 2.1, 1.37, 0, 0.16, 0.7, 0.18, porcelain);
         }

@@ -233,14 +233,50 @@ describe("spatial directory hierarchy", () => {
     );
     expect(layout.positions.size).toBe(graph().nodes.length);
   });
+  it("continues single-building entrance paths straight through padded regions to the road", () => {
+    const files = Array.from({ length: 8 }, (_, directory) =>
+      Array.from({ length: 12 }, (_, file) => ({
+        path: `src/components/${directory === 0 ? "flex" : `group${directory}`}/file${file}.ts`,
+        content: "export const item = 1",
+      })),
+    ).flat();
+    const layout = layoutWorld(analyzeProject(files, "neo-compose"));
+    const building = layout.buildings.find((item) => item.name === "flex")!;
+    const driveway = layout.paths.find((path) => path.source === building.id)!;
+    const road = layout.paths.find((path) => path.source === driveway.target)!;
+    const region = layout.regions.find((item) => item.id === driveway.target)!;
+    // Reproduce the padding offset without moving the region or building.
+    expect(region.x - building.x).toBe(3);
+    expect(driveway.points).toEqual([
+      { x: building.x, z: building.z + building.depth / 2 },
+      { x: building.x, z: region.z + region.depth / 2 },
+    ]);
+    expect(road.points[0]).toEqual(driveway.points[1]);
+    expect(road.points[1].x).toBe(building.x);
+    expect(road.points[1].z).toBeGreaterThan(road.points[0].z);
+    for (const district of layout.districts) {
+      const root = layout.regions.find(
+        (item) => item.packageId === district.id && !item.parentId,
+      )!;
+      const gate = layout.paths.find((path) => path.source === root.id)!;
+      expect(gate.points[0]).toEqual({
+        x: district.x,
+        z: district.z + district.depth / 2,
+      });
+    }
+  });
   it("connects only known entrances and keeps navigation paths outside building interiors", () => {
     const layout = layoutWorld(graph()),
       entrances = new Map(
-        [...layout.buildings, ...layout.regions].map((item) => [
+        layout.buildings.map((item) => [
           item.id,
           { x: item.x, z: item.z + item.depth / 2 },
         ]),
       );
+    for (const region of layout.regions) {
+      const outgoing = layout.paths.find((path) => path.source === region.id)!;
+      entrances.set(region.id, outgoing.points[0]);
+    }
     entrances.set("city:entrance", { x: 0, z: layout.depth / 2 });
     for (const path of layout.paths) {
       const source = entrances.get(path.source)!,

@@ -288,6 +288,13 @@ function identity(path: string, packageId: string) {
     graph.packages.find((pkg) => pkg.id === packageId)?.name ?? packageId;
   return `<p class="identity-package">${esc(packageName)}</p><p class="file-path" aria-label="Full path">${esc(path || ".")}</p>`;
 }
+function dismissSelection() {
+  const panel = get("#inspector");
+  if (panel.hidden) return false;
+  panel.hidden = true;
+  engine.clearHighlight();
+  return true;
+}
 function select(id: string) {
   if (id.startsWith("transit:")) {
     travel.open(id);
@@ -372,17 +379,15 @@ function select(id: string) {
       .querySelector(".eyebrow")
       ?.insertAdjacentHTML("beforebegin", breadcrumb);
   panel.querySelector("#survey-world")?.addEventListener("click", () => {
-    panel.hidden = true;
-    engine.clearHighlight();
+    dismissSelection();
     engine.setMode("survey");
   });
-  panel.querySelector(".inspector-close")?.addEventListener("click", () => {
-    panel.hidden = true;
-    engine.clearHighlight();
-  });
+  panel
+    .querySelector(".inspector-close")
+    ?.addEventListener("click", dismissSelection);
   panel.querySelector("#visit")?.addEventListener("click", () => {
+    dismissSelection();
     engine.focus(id, true);
-    panel.hidden = true;
   });
   panel.querySelectorAll<HTMLButtonElement>("[data-select]").forEach(
     (button) =>
@@ -580,6 +585,11 @@ document.addEventListener("keydown", (event) => {
     !document.body.classList.contains("playing")
   )
     return;
+  if (event.key === "Escape" && dismissSelection()) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    return;
+  }
   const actions: Record<string, () => void> = {
     "/": search,
     t: () => travel.open(),
@@ -599,9 +609,11 @@ window.addEventListener("storage", renderRecents);
 try {
   engine = new WorldEngine(get("#world"), {
     select,
+    dismissSelection,
     hover,
     mode: setMode,
     lock: (locked) => {
+      if (locked) dismissSelection();
       get(".walk-prompt").hidden = locked || engine.mode !== "walk";
       get(".crosshair").hidden = !locked;
     },

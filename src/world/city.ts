@@ -1,3 +1,4 @@
+import { buildRoadSurfaces } from "./road-surfaces.ts";
 import { buildStreetscape } from "./streetscape.ts";
 import * as THREE from "three";
 import { hash, type ProjectGraph } from "../graph/types.ts";
@@ -113,61 +114,7 @@ export function buildCity(graph: ProjectGraph, layout: WorldLayout): City {
       }
     }
   }
-  for (const path of layout.paths)
-    for (let i = 1; i < path.points.length; i++) {
-      const a = path.points[i - 1],
-        b = path.points[i];
-      if (a.x === b.x && a.z === b.z) continue;
-      blocks.add(
-        (a.x + b.x) / 2,
-        0.035,
-        (a.z + b.z) / 2,
-        Math.max(2.4, Math.abs(a.x - b.x)),
-        0.04,
-        Math.max(2.4, Math.abs(a.z - b.z)),
-        "#354650",
-      );
-      const alongX = a.z === b.z;
-      const length = Math.abs(a.x - b.x) + Math.abs(a.z - b.z);
-      const centerX = (a.x + b.x) / 2;
-      const centerZ = (a.z + b.z) / 2;
-      for (const side of [-1, 1]) {
-        blocks.add(
-          centerX + (alongX ? 0 : side * 0.97),
-          0.08,
-          centerZ + (alongX ? side * 0.97 : 0),
-          alongX ? length : 0.16,
-          0.04,
-          alongX ? 0.16 : length,
-          "#647783",
-        );
-      }
-      const panels = Math.min(96, Math.floor(length / 3.8));
-      for (let panel = 0; panel < panels; panel++) {
-        const fraction = (panel + 0.5) / panels;
-        const px = a.x + (b.x - a.x) * fraction;
-        const pz = a.z + (b.z - a.z) * fraction;
-        blocks.add(
-          px,
-          0.079,
-          pz,
-          alongX ? 2.8 : 1.55,
-          0.035,
-          alongX ? 1.55 : 2.8,
-          panel % 3 === 0 ? "#445e6a" : "#3b505e",
-        );
-        if (panel % 3 === 0)
-          lights.add(
-            px,
-            0.117,
-            pz,
-            alongX ? 0.18 : 0.7,
-            0.04,
-            alongX ? 0.7 : 0.18,
-            hash(path.target) % 2 === 0 ? "#ff67c1" : "#65ddeb",
-          );
-      }
-    }
+  buildRoadSurfaces(layout.paths, blocks, lights);
   function building(b: Building) {
     blocks.owner = b.id;
     lights.owner = b.id;
@@ -175,9 +122,42 @@ export function buildCity(graph: ProjectGraph, layout: WorldLayout): City {
     const neonStyle = hash(`${b.id}:neon`) % 4;
     const color = ["#ff42b3", "#59eadc", "#fd70d3", "#69cfff"][neonStyle];
     const accent = neonStyle % 2 === 0 ? "#61e8ff" : "#ff59bf";
-    solid(blocks, colliders, x, 1.3, z - d / 2, w, 2.6, 0.6, "#283948", b.id);
-    solid(blocks, colliders, x - w / 2, 1.3, z, 0.6, 2.6, d, "#263744", b.id);
-    solid(blocks, colliders, x + w / 2, 1.3, z, 0.6, 2.6, d, "#263744", b.id);
+    solid(
+      blocks,
+      colliders,
+      x,
+      1.3,
+      z - d / 2,
+      w + 0.6,
+      2.6,
+      0.6,
+      "#283948",
+      b.id,
+    );
+    solid(
+      blocks,
+      colliders,
+      x - w / 2,
+      1.3,
+      z + 0.15,
+      0.6,
+      2.6,
+      d - 0.3,
+      "#263744",
+      b.id,
+    );
+    solid(
+      blocks,
+      colliders,
+      x + w / 2,
+      1.3,
+      z + 0.15,
+      0.6,
+      2.6,
+      d - 0.3,
+      "#263744",
+      b.id,
+    );
     const wing = (w - 4.5) / 2;
     for (const side of [-1, 1]) {
       solid(
@@ -214,7 +194,7 @@ export function buildCity(graph: ProjectGraph, layout: WorldLayout): City {
       );
       lights.add(x + side * 2.3, 2.1, z + d / 2 + 0.5, 0.1, 4.2, 0.08, color);
     }
-    solid(blocks, colliders, x, 4.9, z + d / 2, 5, 0.6, 1.1, "#3d505a", b.id);
+    solid(blocks, colliders, x, 4.9, z + d / 2, 5, 0.6, 1.2, "#3d505a", b.id);
     lights.add(x, 4.86, z + d / 2 + 0.6, 3.8, 0.24, 0.12, color);
     for (const sx of [-1, 1])
       for (const sz of [-1, 1]) {
@@ -244,9 +224,17 @@ export function buildCity(graph: ProjectGraph, layout: WorldLayout): City {
             accent,
           );
       }
-    lights.add(x, 2.68, z - d / 2, w, 0.08, 0.72, color);
+    lights.add(x, 2.68, z - d / 2, w + 0.72, 0.08, 0.72, color);
     for (const side of [-1, 1])
-      lights.add(x + (side * w) / 2, 2.68, z, 0.72, 0.08, d, color);
+      lights.add(
+        x + (side * w) / 2,
+        2.68,
+        z + 0.18,
+        0.72,
+        0.08,
+        d - 0.36,
+        color,
+      );
     const facade =
       b.kind === "module" || b.kind === "schema" ? "#735b54" : "#344b58";
     for (let floor = 0; floor < b.stories; floor++) {
@@ -325,7 +313,7 @@ export function buildCity(graph: ProjectGraph, layout: WorldLayout): City {
             z,
             0.5,
             1.1,
-            d,
+            d - 0.5,
             facade,
           );
           solid(
@@ -334,7 +322,7 @@ export function buildCity(graph: ProjectGraph, layout: WorldLayout): City {
             x,
             floorY + 0.55,
             z + (side * d) / 2,
-            w,
+            w + 0.5,
             1.1,
             0.5,
             facade,
@@ -348,7 +336,7 @@ export function buildCity(graph: ProjectGraph, layout: WorldLayout): City {
           z,
           1.1,
           0.45,
-          d + 1,
+          d - 1.1,
           "#62717a",
         );
         solid(
@@ -357,7 +345,7 @@ export function buildCity(graph: ProjectGraph, layout: WorldLayout): City {
           x,
           floorY + 4.95,
           z + (side * d) / 2,
-          w + 1,
+          w + 1.1,
           0.45,
           1.1,
           "#62717a",
@@ -541,13 +529,13 @@ export function buildCity(graph: ProjectGraph, layout: WorldLayout): City {
           0,
           0.09,
           glassHeight,
-          lanternDepth,
+          lanternDepth - 0.09,
         );
         glass(
           0,
           top + 0.25 + glassHeight / 2,
           (side * lanternDepth) / 2,
-          lanternWidth,
+          lanternWidth + 0.09,
           glassHeight,
           0.09,
         );
@@ -585,7 +573,7 @@ export function buildCity(graph: ProjectGraph, layout: WorldLayout): City {
           0,
           top + rise + 0.02,
           dz,
-          lanternWidth + 0.3,
+          lanternWidth - 0.3,
           0.18,
           0.2,
           "#91a299",
@@ -596,7 +584,7 @@ export function buildCity(graph: ProjectGraph, layout: WorldLayout): City {
             top + 0.25 + glassHeight / 2,
             dz,
             0.18,
-            glassHeight,
+            glassHeight + 0.06,
             0.2,
             "#708d85",
           );
@@ -706,12 +694,13 @@ export function buildCity(graph: ProjectGraph, layout: WorldLayout): City {
           depth * 0.51,
           cladding,
         );
+        // Seat the lower crown on the deck, below the adjoining crown underside.
         panel(
           width * 0.17,
-          crownY + rise * 0.2,
+          crownY + rise * 0.2 - 0.1125,
           depth * 0.19,
           width * 0.53,
-          rise * 0.4,
+          rise * 0.4 + 0.225,
           depth * 0.37,
           "#425a69",
         );
@@ -792,7 +781,7 @@ export function buildCity(graph: ProjectGraph, layout: WorldLayout): City {
       for (const side of [-1, 1]) {
         panel(
           side * (width / 2 - 0.2),
-          top + 0.47,
+          top + 0.495,
           0,
           0.4,
           0.54,
@@ -801,7 +790,7 @@ export function buildCity(graph: ProjectGraph, layout: WorldLayout): City {
         );
         glow(
           side * (width / 2 - 0.2),
-          top + 0.79,
+          top + 0.815,
           -depth * 0.2,
           0.22,
           0.1,

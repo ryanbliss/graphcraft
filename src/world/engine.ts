@@ -30,6 +30,7 @@ export interface EngineHooks {
   mode: (mode: ViewMode) => void;
   lock: (locked: boolean) => void;
   error: (message: string) => void;
+  dismissSelection?: () => boolean;
   cinemaBlocked?: () => boolean;
   cinema?: (state: CinemaState) => void;
 }
@@ -140,7 +141,12 @@ export class WorldEngine {
       if (this.mode === "constellation" && !this.cameraFlight)
         this.constellation?.followCamera(this.camera, this.controls.target);
     });
-    this.composer = new EffectComposer(this.renderer);
+    // Canvas antialiasing does not cover the offscreen scene used for bloom.
+    const sceneTarget = new THREE.WebGLRenderTarget(1, 1, {
+      type: THREE.HalfFloatType,
+      samples: Math.min(4, this.renderer.capabilities.maxSamples),
+    });
+    this.composer = new EffectComposer(this.renderer, sceneTarget);
     this.worldPass = new RenderPass(this.scene, this.camera);
     this.composer.addPass(this.worldPass);
     this.composer.addPass(
@@ -238,6 +244,10 @@ export class WorldEngine {
           ) > 5
         )
           return;
+        if (this.mode === "walk" && this.hooks.dismissSelection?.()) {
+          this.captureMouse();
+          return;
+        }
         if (
           this.mode === "walk" &&
           !document.pointerLockElement &&
@@ -976,6 +986,7 @@ export class WorldEngine {
       this.mode === "walk" && !this.flight.active
         ? this.player.position
         : undefined,
+      this.camera,
     );
     this.pets?.update(dt, this.camera.position, {
       position: this.player.position,

@@ -73,7 +73,7 @@ it("keeps each distinct shape within its placement bounds in every orientation",
   expect(shapes.size).toBe(exteriorAssets.length);
 });
 
-it("avoids coplanar overlapping faces between different finishes", () => {
+it("avoids exposed coplanar faces and duplicate boxes even with matching finishes", () => {
   interface Part {
     bounds: [[number, number], [number, number], [number, number]];
     color: string;
@@ -117,7 +117,6 @@ it("avoids coplanar overlapping faces between different finishes", () => {
       for (let b = a + 1; b < parts.length; b++) {
         const first = parts[a],
           second = parts[b];
-        if (first.color === second.color) continue;
         for (let axis = 0; axis < 3; axis++) {
           for (const face of [0, 1]) {
             if (
@@ -126,16 +125,31 @@ it("avoids coplanar overlapping faces between different finishes", () => {
             )
               continue;
             const otherAxes = [0, 1, 2].filter((other) => other !== axis);
-            if (
-              otherAxes.every(
-                (other) =>
-                  Math.min(first.bounds[other][1], second.bounds[other][1]) -
-                    Math.max(first.bounds[other][0], second.bounds[other][0]) >
-                  0.000001,
-              )
-            )
+            const intersection = otherAxes.map((other) => [
+              Math.max(first.bounds[other][0], second.bounds[other][0]),
+              Math.min(first.bounds[other][1], second.bounds[other][1]),
+            ]);
+            if (intersection.some(([min, max]) => max - min <= 0.000001))
+              continue;
+            // Branches may meet inside a trunk; only exposed intersections can shimmer.
+            const outward =
+              first.bounds[axis][face] + (face === 0 ? -0.00001 : 0.00001);
+            const buried = parts.some(
+              (part, index) =>
+                index !== a &&
+                index !== b &&
+                part.bounds[axis][0] < outward &&
+                part.bounds[axis][1] > outward &&
+                otherAxes.every(
+                  (other, index) =>
+                    part.bounds[other][0] <=
+                      intersection[index][0] + 0.000001 &&
+                    part.bounds[other][1] >= intersection[index][1] - 0.000001,
+                ),
+            );
+            if (!buried)
               overlaps.push(
-                `${asset.id}: parts ${a}/${b}, axis ${axis}, face ${face}`,
+                `${asset.id}: parts ${a}/${b} (${first.color}/${second.color}), axis ${axis}, face ${face}`,
               );
           }
         }

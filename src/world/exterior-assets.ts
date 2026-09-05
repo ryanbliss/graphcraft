@@ -537,7 +537,10 @@ export function buildExteriorAsset(
       break;
     }
     case "bench": {
-      for (const side of [-1, 1]) box(side * 1.4, 0.4, 0, 0.4, 0.8, 1.1, metal);
+      for (const side of [-1, 1]) {
+        const height = v === 2 && side > 0 ? 0.3 : 0.8;
+        box(side * 1.4, height / 2, 0, 0.4, height, 1.1, metal);
+      }
       box(0, 0.95, 0, 3.6, 0.3, 1.3, pale);
       glow(0, 0.66, 0.6, 3, 0.16, 0.18);
       if (v === 0) {
@@ -554,8 +557,8 @@ export function buildExteriorAsset(
         glow(1.6, 2.22, 0, 0.5, 0.15, 1);
       }
       if (v === 3) {
-        box(-1.45, 0.95, 0.7, 0.7, 0.3, 2.2, pale);
-        box(0, 1.57, -0.6, 3.6, 0.9, 0.25, metal);
+        box(-1.45, 0.95, 1.225, 0.7, 0.3, 1.15, pale);
+        box(0, 1.57, -0.65, 3.6, 0.9, 0.3, metal);
         box(-1.85, 1.57, 0.65, 0.25, 0.9, 2.3, metal);
       }
       break;
@@ -593,7 +596,7 @@ export function buildExteriorAsset(
     }
     case "arch": {
       if (v === 0) {
-        box(-2, 2.9, 0, 0.65, 5.8, 0.8, pale);
+        box(-2, 2.65, 0, 0.65, 5.3, 0.8, pale);
         box(1.4, 2.3, 0, 0.65, 4.6, 0.8, metal);
         box(-0.3, 5.6, 0, 4.7, 0.6, 0.8, pale);
         glow(-0.3, 5.18, 0, 3.6, 0.2, 0.5);
@@ -677,7 +680,7 @@ export function buildExteriorAsset(
         }
       if (v === 3) {
         for (const side of [-1, 1]) box(side * 0.8, 4.8, 0, 0.2, 2, 0.7, pale);
-        box(0, 5.9, 0, 1.8, 0.25, 0.7, pale);
+        box(0, 5.925, 0, 1.8, 0.25, 0.7, pale);
         glow(0, 4.8, 0, 0.6, 1.6, 0.5);
       }
       break;

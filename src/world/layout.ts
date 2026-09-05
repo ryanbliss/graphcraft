@@ -542,6 +542,9 @@ export function layoutWorld(graph: ProjectGraph): WorldLayout {
           id,
           level + 1,
         );
+      // A single-child region continues its doorway line instead of jogging to
+      // the padded rectangle's center. District gates keep their fixed center.
+      if (parentId && tree.placements.length === 1) entry.x = childEntry.x;
       connect(
         childEntry,
         entry,

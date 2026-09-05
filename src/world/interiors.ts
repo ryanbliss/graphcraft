@@ -335,7 +335,7 @@ export function furnishBuilding(
             "#a6bbc0",
           );
           for (const railZ of [well.rear + 0.2, well.front - 0.2])
-            structure(railX, floorY + 0.5, railZ, 0.12, 1, 0.12);
+            structure(railX, floorY + 0.445, railZ, 0.12, 0.89, 0.12);
         }
       }
       floorSlab(openingLeft, slabRear, openingRight, front, floorY);
@@ -361,7 +361,7 @@ export function furnishBuilding(
             building.id,
           );
           for (const side of [-1, 1]) {
-            structure(flightX + side * 0.73, top - 0.18, z, 0.12, 0.42, 0.55);
+            structure(flightX + side * 0.73, top - 0.18, z, 0.06, 0.42, 0.5);
             structure(
               flightX + side * 0.73,
               top + 0.95,
@@ -372,7 +372,14 @@ export function furnishBuilding(
               "#b7c6c5",
             );
             if (step % 6 === 0)
-              structure(flightX + side * 0.73, top + 0.45, z, 0.08, 1, 0.08);
+              structure(
+                flightX + side * 0.73,
+                top + 0.425,
+                z,
+                0.08,
+                0.95,
+                0.08,
+              );
           }
         }
       }
@@ -436,14 +443,14 @@ export function furnishBuilding(
         color,
         room.id,
       );
-    part(0, 2.3, -halfDepth, room.width, 4.6, 0.22, wall);
-    part(outer, 2.3, 0, 0.22, 4.6, room.depth, accentWall);
+    part(0, 2.3, -halfDepth, room.width + 0.22, 4.6, 0.22, wall);
+    part(outer, 2.3, 0, 0.22, 4.6, room.depth - 0.22, accentWall);
     // A broad internal window gives work rooms a view into their hallway.
     if (theme === "studio" || theme === "workshop") {
-      part(0, 0.65, halfDepth, room.width, 1.3, 0.22, wall);
-      part(0, 4.15, halfDepth, room.width, 0.9, 0.22, wall);
+      part(0, 0.65, halfDepth, room.width + 0.22, 1.3, 0.22, wall);
+      part(0, 4.15, halfDepth, room.width + 0.22, 0.9, 0.22, wall);
       for (const side of [-1, 1]) {
-        part(side * (halfWidth - 0.65), 2.4, halfDepth, 1.3, 2.2, 0.22, wall);
+        part(side * (halfWidth - 0.595), 2.4, halfDepth, 1.41, 2.2, 0.22, wall);
       }
       for (let x = -halfWidth + 1.4; x <= halfWidth - 1.3; x += 2.4)
         part(x, 2.5, halfDepth, 0.08, 2.5, 0.26, trim);
@@ -457,11 +464,11 @@ export function furnishBuilding(
         maxZ: room.z + halfDepth + 0.11,
       });
     } else {
-      part(0, 2.3, halfDepth, room.width, 4.6, 0.22, wall);
+      part(0, 2.3, halfDepth, room.width + 0.22, 4.6, 0.22, wall);
     }
     const doorZ = room.door.z - room.z;
-    const wallRear = -halfDepth;
-    const wallFront = halfDepth;
+    const wallRear = -halfDepth + 0.11;
+    const wallFront = halfDepth - 0.11;
     const doorRear = doorZ - 1.5;
     const doorFront = doorZ + 1.5;
     part(
@@ -495,9 +502,9 @@ export function furnishBuilding(
     );
     for (const sign of [-1, 1]) {
       part(inner, 1.7, doorZ + sign * 1.5, 0.34, 3.4, 0.12, trim);
-      part(0, 0.12, sign * halfDepth, room.width, 0.24, 0.28, trim);
+      part(0, 0.12, sign * halfDepth, room.width - 0.22, 0.24, 0.28, trim);
     }
-    part(outer, 0.12, 0, 0.28, 0.24, room.depth, trim);
+    part(outer, 0.12, 0, 0.28, 0.24, room.depth - 0.28, trim);
     blocks.add(
       room.x,
       room.floorY + 0.012,
@@ -508,8 +515,10 @@ export function furnishBuilding(
       floor,
       room.id,
     );
-    // Recessed floor joints and wall service bands belong to the directory.
-    for (let x = -halfWidth + 0.3; x < halfWidth; x += 2.2)
+    // Horizontal joints stop at the vertical joints instead of doubling their top faces.
+    const jointXs: number[] = [];
+    for (let x = -halfWidth + 0.3; x < halfWidth; x += 2.2) {
+      jointXs.push(x);
       blocks.add(
         room.x + x,
         room.floorY + 0.029,
@@ -520,17 +529,25 @@ export function furnishBuilding(
         "#14232d",
         room.id,
       );
-    for (let z = -halfDepth + 0.3; z < halfDepth; z += 3.2)
-      blocks.add(
-        room.x,
-        room.floorY + 0.029,
-        room.z + z,
-        room.width - 0.4,
-        0.012,
-        0.035,
-        "#14232d",
-        room.id,
-      );
+    }
+    for (let z = -halfDepth + 0.3; z < halfDepth; z += 3.2) {
+      let from = -halfWidth + 0.2;
+      for (const x of [...jointXs, halfWidth + 0.2]) {
+        const to = Math.min(x - 0.0175, halfWidth - 0.2);
+        if (to > from)
+          blocks.add(
+            room.x + (from + to) / 2,
+            room.floorY + 0.029,
+            room.z + z,
+            to - from,
+            0.012,
+            0.035,
+            "#14232d",
+            room.id,
+          );
+        from = x + 0.0175;
+      }
+    }
     part(
       0,
       ceiling - 0.43,
@@ -540,7 +557,7 @@ export function furnishBuilding(
       0.2,
       trim,
     );
-    part(outer, ceiling - 0.43, 0, 0.32, 0.52, room.depth, trim);
+    part(outer, ceiling - 0.43, 0, 0.32, 0.52, room.depth - 0.3, trim);
     for (let x = -halfWidth + 0.6; x < halfWidth - 0.4; x += 0.38)
       blocks.add(
         room.x + x,

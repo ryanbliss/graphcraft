@@ -86,6 +86,109 @@ describe("street traffic", () => {
     }
   });
 
+  it("retains neighborhood roads beyond the former longest-road limit", () => {
+    const graph = layout();
+    graph.paths = Array.from({ length: 130 }, (_, index) => ({
+      source: String(index),
+      target: "end",
+      points: [
+        { x: 0, z: index * 12 },
+        { x: 1000 - index, z: index * 12 },
+      ],
+    }));
+    const { nodes } = streetNetwork(graph);
+    expect(nodes.some((node) => node.z === 129 * 12)).toBe(true);
+    expect(nodes).toHaveLength(260);
+  });
+
+  it("keeps a nearby pool after a district move without relocating visible cars", () => {
+    const graph = layout();
+    graph.width = graph.depth = 1000;
+    graph.paths = [];
+    for (let coordinate = -500; coordinate <= 500; coordinate += 100) {
+      graph.paths.push({
+        source: "x",
+        target: "x",
+        points: [
+          { x: -500, z: coordinate },
+          { x: 500, z: coordinate },
+        ],
+      });
+      graph.paths.push({
+        source: "z",
+        target: "z",
+        points: [
+          { x: coordinate, z: -500 },
+          { x: coordinate, z: 500 },
+        ],
+      });
+    }
+    const scene = new THREE.Scene(),
+      traffic = new StreetTraffic(graph, scene),
+      fleet = cars(scene);
+    const camera = new THREE.PerspectiveCamera(60, 16 / 9, 0.1, 6500);
+    const player = { x: 0, y: 1.75, z: 0 };
+    let relocations = 0;
+    const advance = (seconds: number) => {
+      camera.position.set(player.x, player.y, player.z);
+      camera.lookAt(player.x, player.y, player.z - 20);
+      camera.updateMatrixWorld();
+      const view = new THREE.Frustum().setFromProjectionMatrix(
+        new THREE.Matrix4().multiplyMatrices(
+          camera.projectionMatrix,
+          camera.matrixWorldInverse,
+        ),
+      );
+      for (let frame = 0; frame < seconds * 60; frame++) {
+        const before = fleet.map((car) => ({
+          position: car.position.clone(),
+          visible: car.visible,
+        }));
+        traffic.update(1 / 60, [], player, camera);
+        fleet.forEach((car, index) => {
+          car.traverse((object) => {
+            if (!(object instanceof THREE.Mesh)) return;
+            for (const material of Array.isArray(object.material)
+              ? object.material
+              : [object.material]) {
+              if (material.opacity === 1)
+                expect(material.depthWrite).toBe(true);
+              if (!car.visible) expect(material.opacity).toBe(0);
+            }
+          });
+          if (!car.visible) expect(traffic.vehicles[index].speed).toBe(0);
+          if (car.position.distanceTo(before[index].position) < 5) return;
+          relocations++;
+          expect(
+            before[index].visible &&
+              view.intersectsSphere(
+                new THREE.Sphere(before[index].position, 3),
+              ),
+          ).toBe(false);
+          expect(view.intersectsSphere(new THREE.Sphere(car.position, 3))).toBe(
+            false,
+          );
+        });
+      }
+    };
+    const nearby = () =>
+      fleet.filter(
+        (car) =>
+          Math.hypot(car.position.x - player.x, car.position.z - player.z) < 90,
+      ).length;
+    advance(60);
+    expect(nearby()).toBeGreaterThanOrEqual(3);
+    player.x = 300;
+    player.z = 300;
+    advance(6);
+    expect(nearby()).toBeGreaterThanOrEqual(3);
+    advance(54);
+    expect(nearby()).toBeGreaterThanOrEqual(3);
+    expect(fleet).toHaveLength(8);
+    expect(relocations).toBeGreaterThan(0);
+    traffic.dispose();
+  });
+
   it("keeps cars outside building entrances", () => {
     const graph = layout();
     graph.buildings.push({
