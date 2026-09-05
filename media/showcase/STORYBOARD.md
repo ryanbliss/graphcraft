@@ -14,13 +14,13 @@ safe areas. The timing below is an editorial choice for this product.
 | 6.85–8.5  | Convex staircase     | Climb without pausing at the landing.                                |
 | 8.5–10.5  | High window          | Sweep across the neo-compose neon sign and city.                     |
 | 10.5–11.5 | Shuttle              | Arc around the craft before boarding.                                |
-| 11.5–16   | Inward shuttle ride  | Complete a four-second flight and landing.                           |
-| 16–17     | Sky                  | Frame a building corner beneath the selected galaxy.                 |
-| 17–20.5   | Constellation zooms  | Move from galaxy to building and room, separating the two flights.   |
-| 20.5–22   | Room arrival         | Imply teleportation with a match cut.                                |
-| 22–22.45  | Second ride          | Cut to an already airborne ship.                                     |
-| 22.45–26  | Cyber-cat parachute  | Deploy the pink canopy and snake toward the city.                    |
-| 26–28     | Neon end card        | Logo, call to action, URL, and music credit over a blurred city pan. |
+| 11.5–15   | Inward shuttle ride  | Cut from the landing approach before the handoff.                    |
+| 15–16     | Sky                  | Sweep upward from the building corner to the galaxy.                 |
+| 16–19.5   | Constellation zooms  | Move from galaxy to building and room, separating the two flights.   |
+| 19.5–21   | Room arrival         | Imply teleportation with a match cut.                                |
+| 21–21.45  | Second ride          | Cut to an already airborne ship.                                     |
+| 21.45–25  | Cyber-cat parachute  | Deploy the pink canopy and snake toward the city.                    |
+| 25–27     | Neon end card        | Logo, call to action, URL, and music credit over a blurred city pan. |
 
 Music is "Newer Wave" by Kevin MacLeod, 110 BPM. The excerpt starts at 17.4545s,
 is normalized to a -16 LUFS target, and fades in and out. This is a bright

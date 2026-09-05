@@ -27,12 +27,15 @@ function stages(size, y) {
     )
     .join(",");
 }
+// Remove the landing handoff after the approach, before the sky cut.
+// Apply this after captions so their source timestamps stay aligned.
+const landingCut = "select='lt(t,15)+gte(t,16)',setpts=N/(30*TB),fps=30";
 const music = ["-ss", "17.4545", "-i", `${destination}/newer-wave.mp3`];
 const audio = [
   "-t",
-  "28",
+  "27",
   "-af",
-  "loudnorm=I=-16:TP=-1.5:LRA=9,afade=t=in:d=0.35,afade=t=out:st=26.5:d=1.5",
+  "loudnorm=I=-16:TP=-1.5:LRA=9,afade=t=in:d=0.35,afade=t=out:st=25.5:d=1.5",
   "-ar",
   "48000",
   "-c:a",
@@ -75,7 +78,7 @@ run([
   "-map",
   "1:a:0",
   "-vf",
-  `scale=in_range=pc:out_range=tv:out_color_matrix=bt709,setsar=1,${stages(48, "h-132")}`,
+  `scale=in_range=pc:out_range=tv:out_color_matrix=bt709,setsar=1,${stages(48, "h-132")},${landingCut}`,
   ...audio,
   ...video,
   ...metadata,
@@ -88,7 +91,7 @@ run([
   "artifacts/showcase/silent.mp4",
   ...music,
   "-filter_complex",
-  `[0:v]split=2[bg][fg];[bg]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=35:2,eq=brightness=-0.18:saturation=0.55[back];[fg]scale=1080:608[front];[back][front]overlay=0:620,${text("Your code.", 64, 64, 320, ":enable='lt(t,26)'")},${text("A city to explore.", 64, 64, 400, ":enable='lt(t,26)'")},${stages(40, 1310)},${text("graphcraftcity.vercel.app", 36, 48, 1450, ":enable='lt(t,26)'")},${text("Explore Graphcraft", 56, "(w-tw)/2", 430, ":enable='gte(t,26)'")},${text("Newer Wave - Kevin MacLeod", 32, "(w-tw)/2", 1330, ":enable='gte(t,26)'")},${text("incompetech.com - CC BY 4.0", 28, "(w-tw)/2", 1380, ":enable='gte(t,26)'")},scale=in_range=pc:out_range=tv:out_color_matrix=bt709,setsar=1[v]`,
+  `[0:v]split=2[bg][fg];[bg]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=35:2,eq=brightness=-0.18:saturation=0.55[back];[fg]scale=1080:608[front];[back][front]overlay=0:620,${text("Your code.", 64, 64, 320, ":enable='lt(t,26)'")},${text("A city to explore.", 64, 64, 400, ":enable='lt(t,26)'")},${stages(40, 1310)},${text("graphcraftcity.vercel.app", 36, 48, 1450, ":enable='lt(t,26)'")},${text("Explore Graphcraft", 56, "(w-tw)/2", 430, ":enable='gte(t,26)'")},${text("Newer Wave - Kevin MacLeod", 32, "(w-tw)/2", 1330, ":enable='gte(t,26)'")},${text("incompetech.com - CC BY 4.0", 28, "(w-tw)/2", 1380, ":enable='gte(t,26)'")},scale=in_range=pc:out_range=tv:out_color_matrix=bt709,setsar=1,${landingCut}[v]`,
   "-map",
   "[v]",
   "-map",

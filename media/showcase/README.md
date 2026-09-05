@@ -1,6 +1,6 @@
 # Graphcraft showcase
 
-Two 28-second videos recorded from the app using the local neo-compose project,
+Two 27-second videos recorded from the app using the local neo-compose project,
 with permission from its owner. Both include music. The source graph stays in
 ignored artifacts and is not included in the repository.
 
@@ -67,12 +67,13 @@ Sans on Linux. Set `SHOWCASE_FONT` to another installed TrueType font.
   and the flickering neon end card. The staircase uses production collision physics. Constellation
   zooms use production selection handlers, followed by an editorial room cut.
   The first shuttle flies inward from the CLI port to the main district in four
-  seconds and completes its landing. The second ride begins 1.9 seconds into
+  seconds; the export cuts away before the landing handoff. The second ride begins 1.9 seconds into
   flight, then uses the real Space bailout and steering controls.
 - `scripts/showcase/fixture.ts`: synthetic extension of the demo with enough
   rooms for an upper floor. Each furnished artifact remains a graph node.
 - `scripts/showcase/captions.json`: timed editorial captions.
-- `scripts/showcase/render.mjs`: audio excerpt, fades, normalization and formats.
+- `scripts/showcase/render.mjs`: trims the landing handoff at source seconds
+  15–16, then exports with audio, fades, normalization and format adaptation.
 - `scripts/showcase/capture.mjs`: fixed 30 fps browser clock and frame capture.
 
 The capture intercepts `main.ts` only within its own browser session to access

@@ -184,7 +184,9 @@
     }
     if (shot === 6) {
       const p = c.star.position;
-      look(p.x, p.y, p.z);
+      const progress = Math.min(1, t - 16);
+      const sweep = 1 - progress * progress * (3 - 2 * progress);
+      look(p.x + sweep * 80, p.y - sweep * 28, p.z);
     }
     once("galaxy", 17.25, () => {
       celestial("galaxy:.");

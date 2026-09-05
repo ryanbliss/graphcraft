@@ -6,13 +6,13 @@ playback or the music mix.
 
 ## Current cut
 
-The 28-second edit follows Ryan's latest notes:
+The 27-second edit follows Ryan's latest notes:
 
 - Both furnished room shots precede the staircase.
 - The high-window view lasts two seconds and sweeps farther across the city.
 - The sky selection shows a building corner beneath the galaxy, with no giant
   sign overhead.
-- The constellation insert separates the completed landing from the next flight.
+- The constellation insert separates the landing approach from the next flight.
 - Split-room labels show the first file and `+N more`, replacing the file range.
 - The parachute ending is two seconds shorter.
 - A two-second end card shows the neon logo, call to action, URL, and music
@@ -27,6 +27,10 @@ corrected shot and confirmed that the enlarged portrait credits are readable.
 The added cursor arrows and click rings were removed after Ryan found their
 placement and timing distracting. Selection is unchanged. The preflight shot
 now makes a short, eased camera arc around the ship instead of holding still.
+
+The render removes source seconds 15–16, cutting from the landing approach
+to the sky before the ship reverses and the player exits. The sky camera sweeps
+upward and settles on the galaxy. Music remains continuous.
 
 ## Capture and verification
 
